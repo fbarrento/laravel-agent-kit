@@ -1,5 +1,5 @@
 ---
-name: fbarrento-laravel-rules
+name: laravel-rules
 description: Applies Francisco Barrento's Laravel, Pest, model, and naming conventions that override generic Laravel guidance. Use when writing, editing, reviewing, or refactoring Laravel PHP code in this project, especially tests, models, actions, services, and Pest files.
 license: MIT
 metadata:
