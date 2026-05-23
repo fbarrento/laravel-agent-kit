@@ -66,6 +66,12 @@ To uninstall, remove the symlink — the source in the kit is untouched.
 
 These are my personal conventions, but PRs that fix bugs, sharpen wording, or add missing rules within an existing skill are welcome. For wholly new skills, fork the kit and make your own — that's what they're for.
 
+Each `SKILL.md` frontmatter must parse as YAML with a `name` (matching its directory) and a `description` — a malformed block makes the skills.sh indexer silently skip the skill. CI enforces this; run it locally with:
+
+```bash
+python3 scripts/lint-skills.py
+```
+
 ## License
 
 MIT

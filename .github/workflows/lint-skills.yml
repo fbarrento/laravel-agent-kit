@@ -1,0 +1,22 @@
+name: lint-skills
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    paths:
+      - "skills/**/SKILL.md"
+      - "scripts/lint-skills.py"
+      - ".github/workflows/lint-skills.yml"
+
+jobs:
+  frontmatter:
+    name: SKILL.md frontmatter
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pyyaml
+      - run: python3 scripts/lint-skills.py
