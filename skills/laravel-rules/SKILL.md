@@ -40,7 +40,7 @@ Checklist**, with a **Decision** section where a rule is a choice.
 - [architecture/invariants.md](rules/architecture/invariants.md) — actions enforce invariants; throw specific business exceptions.
 
 **Patterns** (optional techniques)
-- [patterns/pipeline.md](rules/patterns/pipeline.md) — staged, swappable workflows. _(stub)_
+- [patterns/pipeline.md](rules/patterns/pipeline.md) — staged, swappable workflows; stages wrap actions.
 - [patterns/pluggable.md](rules/patterns/pluggable.md) — strategy / swappable impls. _(stub)_
 
 **Building blocks** (internals of one class type)
