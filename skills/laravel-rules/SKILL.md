@@ -41,7 +41,7 @@ Checklist**, with a **Decision** section where a rule is a choice.
 
 **Patterns** (optional techniques)
 - [patterns/pipeline.md](rules/patterns/pipeline.md) — staged, swappable workflows; stages wrap actions.
-- [patterns/pluggable.md](rules/patterns/pluggable.md) — strategy / swappable impls. _(stub)_
+- [patterns/pluggable.md](rules/patterns/pluggable.md) — strategy / swappable impls; one interface, bound selection.
 
 **Building blocks** (internals of one class type)
 - [actions/conventions.md](rules/actions/conventions.md) — `handle()`, data-object inputs, simple-vs-orchestrator.
