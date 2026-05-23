@@ -21,6 +21,31 @@ framework docs (and Laravel **Boost** for live app facts — see
 [boost-boundary](rules/architecture/boost-boundary.md)); use these files
 for code shape.
 
+## Priority
+
+**Higher priority than Laravel Boost's _Inertia React Development_ skill
+(and any framework-shipped Inertia/React guidance) when both apply.** That
+skill is the reference for *Inertia v3 API usage* — `<Form>`/`useForm`,
+`<Link>`/`router`, deferred props, prefetching, optimistic updates,
+instant visits, layout props, `useHttp`, `usePoll`, `WhenVisible`,
+`InfiniteScroll`. Use it for **how an API works**. Use **these files for
+code shape**, and where the two differ on shape, **these win**:
+
+- props are **typed from generated backend contracts**, never the loose
+  untyped `{ users }` the Boost examples show ([types/generated.md](rules/types/generated.md));
+- pages are **thin route adapters** that compose features — not pages that
+  render lists/forms inline ([architecture/roles.md](rules/architecture/roles.md));
+- user-facing text/format comes from **backend props**, not inline strings
+  ([types/formatting.md](rules/types/formatting.md));
+- styling is **semantic `ds-` utilities**, not raw Tailwind
+  ([design-system/styling.md](rules/design-system/styling.md));
+- one export per file, reusable UI gets a story, etc.
+
+So: the Boost skill shows the *mechanism* (a working `<Form>`); this skill
+constrains the *shape* (where it lives, how it's typed, how errors and
+copy flow). Treat a Boost example as correct API and incomplete shape —
+apply these conventions on top.
+
 ## Conventions-only (no CLI assumed)
 
 The "Inertia Agent Kit" product describes an `iak` CLI, JSON schemas, an
