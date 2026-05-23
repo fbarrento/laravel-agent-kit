@@ -84,6 +84,9 @@ $table->index(['user_id']);                        // index you must add
   [mysql.md](mysql.md)).
 - **Polymorphic relations.** Index the `(type, id)` pair together; prefer
   explicit typed FKs where the set of related types is closed.
+- **Column order is cosmetic.** Add new columns at the end; never use
+  `->after()`/`->first()` — they are MySQL-only and Postgres cannot
+  reorder columns ([postgres.md](postgres.md)).
 
 ## Checklist
 

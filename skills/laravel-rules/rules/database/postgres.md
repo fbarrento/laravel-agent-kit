@@ -43,6 +43,20 @@ default — migrations forbid DB defaults, so do not rely on
 insert (usable in the same request/transaction) and keeps id generation
 portable and explicit rather than hidden in a DB default.
 
+## Rule: never reorder columns — no `->after()` / `->first()`
+
+Postgres cannot reposition a column. `->after('x')` and `->first()` are
+MySQL-only; on Postgres they do not reorder anything. Genuinely changing
+physical column order would require recreating the table — create a new
+table, copy the data, drop the old one, rename — which this project does
+not do.
+
+**Why:** physical column order is cosmetic — it has no effect on queries,
+Eloquent, or the API, so it never justifies a destructive table rebuild.
+Add new columns at the end of the table and leave order alone; reaching
+for `->after()` to "tidy" placement either silently does nothing
+(Postgres) or tempts an unnecessary rebuild.
+
 ## Rule: index foreign keys explicitly — Postgres does not
 
 A foreign-key constraint in Postgres indexes the **referenced** (parent)
@@ -76,5 +90,7 @@ advisory lock for cross-row coordination) makes contention deterministic.
 - UUID PKs generated app-side (no `gen_random_uuid()` default), per
   migrations.md.
 - FK columns indexed explicitly (Postgres does not auto-index them).
+- No `->after()`/`->first()`; new columns added at the end (Postgres
+  cannot reorder columns).
 - Read-modify-write under contention uses `lockForUpdate()` (or advisory
   locks) within the action's transaction.
