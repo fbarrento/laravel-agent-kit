@@ -47,6 +47,10 @@ To uninstall, remove the symlink — the source in the kit is untouched.
 - **[laravel-rules](./skills/laravel-rules/SKILL.md)** — Applies my Laravel, Pest, model, and naming conventions when writing or reviewing Laravel code inside a full app. Overrides generic Laravel guidance.
 - **[saloon-laravel-integration](./skills/saloon-laravel-integration/SKILL.md)** — Integrates a third-party API into a Laravel app with SaloonPHP behind a ports-and-adapters boundary: contract + service, multi-tenant credentials, resilience, and a human-in-the-loop fixture-recording workflow. Layers on `saloon-integration`.
 
+### Inertia frontends
+
+- **[inertia-rules](./skills/inertia-rules/SKILL.md)** — Conventions for AI-assisted frontend work in Laravel + Inertia (v3) apps: Laravel-like frontend roles (thin page adapters, resource-local features, token-bound components), generated backend-derived types, backend-owned formatting, a three-tier design-system token contract, forms, navigation/data-loading, shared data and layouts, Storybook story contracts, and evidence-based verification. Sibling to `laravel-rules` for the frontend side.
+
 ### PHP packages
 
 - **[pest-package-tests](./skills/pest-package-tests/SKILL.md)** — Writes Pest tests for framework-agnostic PHP packages using project testing and naming conventions, with [`fbarrento/data-factory`](https://github.com/fbarrento/data-factory) as the default for data-object test data.

@@ -1,0 +1,103 @@
+---
+name: inertia-rules
+description: Conventions for AI-assisted frontend work in Laravel + Inertia (v3) apps — Laravel-like frontend roles (thin page adapters, resource-local features, token-bound components), generated backend-derived types, backend-owned formatting and translation, a three-tier design-system token contract, forms (`<Form>`/`useForm`), navigation and data loading (partial reloads, deferred props, prefetch), shared data and page meta, persistent layouts, Storybook story contracts, and evidence-based verification and handoffs. Use when writing, reviewing, or refactoring Inertia pages, feature components, forms, layouts, design-system primitives, stories, or typed fixtures in a Laravel/Inertia/React app. Sibling to laravel-rules (backend); this skill owns the Inertia frontend side.
+license: MIT
+metadata:
+  author: Francisco Barrento
+---
+
+# Inertia Rules
+
+Conventions that give AI agents Laravel-like discipline on the **Inertia
+frontend**: predictable page/resource/component roles, generated
+backend-derived types, backend-owned copy and formatting, a
+design-system token contract, story contracts, and evidence-based
+verification.
+
+Sibling to **laravel-rules** (which owns backend PHP shape). This skill
+owns the `resources/js` side of a Laravel + Inertia app. For Laravel,
+Inertia, React, Tailwind, Pest, or Wayfinder API syntax, use the
+framework docs (and Laravel **Boost** for live app facts — see
+[boost-boundary](rules/architecture/boost-boundary.md)); use these files
+for code shape.
+
+## Conventions-only (no CLI assumed)
+
+The "Inertia Agent Kit" product describes an `iak` CLI, JSON schemas, an
+MCP server, and a feedback store. **None of that is assumed here.** These
+files are the conventions an agent applies *by hand*, using tools that
+exist today: Spatie Laravel Data, `spatie/laravel-typescript-transformer`,
+Wayfinder, Storybook, Pest Browser / Playwright, and Boost. Where a rule
+references "audit" or "verify", treat it as a **manual checklist**, not a
+command — until the package ships.
+
+## The role graph at a glance
+
+```txt
+resources/js/
+  pages/<resource>/*        route adapters only (thin; mirror Laravel resource controllers)
+  features/<resource>/*     resource-local workflow UI + resource-local behavior
+  components/ui/*           token-bound, domain-free primitives
+  components/app/*          reusable, generic app components
+  layouts/*                 app shells
+  lib/*                     pure, framework-free helpers
+  types/generated/*         read-only backend-derived types (generators own these)
+  types/shared/*            small generic frontend-only types
+```
+
+**The one rule that governs everything:** the frontend never owns what
+Laravel owns. Backend-derived types, user-facing copy, translation, and
+locale-sensitive formatting come from PHP through Inertia props. The
+frontend composes UI, handles interaction, and renders display-ready
+values. No global `queries/`, `actions/`, `forms/`, `hooks/`, or
+`composables/` folders — resource behavior lives in `features/<resource>`.
+
+## Rule index
+
+**Architecture**
+- [architecture/roles.md](rules/architecture/roles.md) — the role graph, page=thin-adapter, resource-controller→page mapping, import boundaries, no global behavior folders.
+- [architecture/boost-boundary.md](rules/architecture/boost-boundary.md) — use Boost for Laravel facts; this layer for Inertia/frontend discipline; the required agent loop.
+
+**Types**
+- [types/generated.md](rules/types/generated.md) — Spatie Data + typescript-transformer + Wayfinder; the three type-ownership zones; never handwrite backend-derived types.
+- [types/formatting.md](rules/types/formatting.md) — backend owns formatting/translation; what is banned in render paths; what frontend formatting is allowed.
+
+**Design system**
+- [design-system/tokens.md](rules/design-system/tokens.md) — three-tier token model (primitives → semantic `--ds-*` → Tailwind bridge), bridge prefix rule, import order.
+- [design-system/styling.md](rules/design-system/styling.md) — allowed vs disallowed utilities; the styling decision procedure.
+- [design-system/components.md](rules/design-system/components.md) — primitive vs app vs feature component roles and their requirements.
+
+**Runtime behavior** (Inertia v3)
+- [forms/conventions.md](rules/forms/conventions.md) — `<Form>` vs `useForm`, Wayfinder actions, server-owned validation errors, processing/reset, file uploads.
+- [navigation/conventions.md](rules/navigation/conventions.md) — `<Link>`, partial reloads (`only`/lazy props), deferred props + `<Deferred>`, prefetch, no parallel client cache.
+- [shared-data/conventions.md](rules/shared-data/conventions.md) — `HandleInertiaRequests::share`, `usePage`, flash/errors, `<Head>` title/meta.
+- [layouts/conventions.md](rules/layouts/conventions.md) — persistent layouts, default-in-`createInertiaApp`, nested layouts, chrome vs content.
+
+**Stories**
+- [stories/conventions.md](rules/stories/conventions.md) — Storybook as the reusable-UI runtime contract, required stories, required states, typed fixtures.
+
+**Quality**
+- [state/conventions.md](rules/state/conventions.md) — server state from props; no client cache; ephemeral local state; derive don't store.
+- [loading-states/conventions.md](rules/loading-states/conventions.md) — explicit empty/loading/error; `<Deferred>` fallbacks; empty-state component; error boundaries.
+- [accessibility/conventions.md](rules/accessibility/conventions.md) — semantic HTML, labelled fields + associated errors, keyboard/focus, a11y in primitives.
+- [testing/conventions.md](rules/testing/conventions.md) — the test pyramid: story interaction vs Pest Browser route tests vs Vitest unit; test behavior not implementation.
+
+**Workflow & evidence**
+- [feedback/conventions.md](rules/feedback/conventions.md) — human-in-the-loop feedback discipline; resolve only with evidence.
+- [verification/conventions.md](rules/verification/conventions.md) — the pre-handoff verification checklist and the evidence it produces.
+- [audit/conventions.md](rules/audit/conventions.md) — the convention-violation catalog to self-check before handoff.
+- [handoff/conventions.md](rules/handoff/conventions.md) — what a complete, evidence-based handoff contains.
+
+**Naming**
+- [naming/conventions.md](rules/naming/conventions.md) — casing by kind, plural-folder/singular-file, story ids, frontend type-alias scheme, `data-part` selectors.
+
+**Brand**
+- [brand/conventions.md](rules/brand/conventions.md) — Brand OS boundary: consume the brand contract, adapt to `ds-` tokens, never own brand copy in the frontend.
+
+## How to apply
+
+1. Identify which role you're touching (page? feature? primitive? story?) and read the matching rule file before writing code.
+2. Before building UI, confirm the backend contract exists: generated types (Spatie Data) and routes/actions (Wayfinder). If they're missing, that's a backend task first — do not handwrite the shapes.
+3. Keep pages thin; put resource UI in `features/<resource>`; keep styling on semantic `ds-` utilities.
+4. Before handoff, run the [verification](rules/verification/conventions.md) checklist and assemble [handoff](rules/handoff/conventions.md) evidence.
+5. Use **Boost** for live Laravel facts (routes, schema, logs, docs) instead of guessing — see [boost-boundary](rules/architecture/boost-boundary.md).
