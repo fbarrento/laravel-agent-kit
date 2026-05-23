@@ -1,21 +1,54 @@
 # Database — MySQL
 
-> Status: stub — to be deepened (Pass 2). Per-file template. Engine-specific
-> notes only; portable rules live in [schema.md](schema.md) /
-> [migrations.md](migrations.md) / [performance.md](performance.md).
+MySQL-specific concerns that differ from the portable defaults. Portable
+rules live in [schema.md](schema.md) / [migrations.md](migrations.md) /
+[performance.md](performance.md); reach here only for engine behavior.
+Verify exact syntax/limits against the running MySQL version.
 
-## Scope
+## Rule: `utf8mb4` charset and a `utf8mb4` collation
 
-MySQL-specific concerns that differ from the portable defaults: charset/
-collation, index limits, JSON handling, transaction/locking quirks.
+Tables use `utf8mb4` (real 4-byte Unicode, including emoji), with a
+`utf8mb4` collation (e.g. `utf8mb4_unicode_ci`, or `utf8mb4_0900_ai_ci` on
+MySQL 8). Never the legacy `utf8` (3-byte) charset.
 
-## TODO (Pass 2)
+**Why:** MySQL's `utf8` silently truncates 4-byte characters, corrupting
+emoji and some scripts. `utf8mb4` is the only correct Unicode charset.
 
-- Charset/collation (utf8mb4) expectations.
-- Index length/prefix limits.
-- JSON column behavior vs Postgres.
-- Locking/isolation quirks relevant to actions/transactions.
+## Rule: mind index key-length limits on string columns
+
+InnoDB caps index key length (≈3072 bytes with `DYNAMIC` row format).
+A unique index on a long `varchar(255)` `utf8mb4` column (4 bytes/char)
+can exceed it. Keep indexed string columns appropriately short, or use a
+prefix index.
+
+**Why:** a too-long index errors at migration time or silently degrades —
+sizing the column for its index is the fix, not widening the limit.
+
+## Rule: JSON columns are plain JSON — index via generated columns
+
+MySQL has only `JSON` (no `JSONB`). To index a JSON path, add a generated
+(virtual/stored) column and index that; you cannot index a JSON document
+directly. If JSON querying/indexing is central, reconsider whether the
+data should be relational columns.
+
+## Rule: respect REPEATABLE READ and locking semantics
+
+InnoDB defaults to `REPEATABLE READ` and uses next-key/gap locks. A
+multi-write [action](../actions/conventions.md) that reads-then-writes
+under contention takes an explicit row lock (`lockForUpdate()`) inside its
+[transaction](../architecture/transactions.md) to avoid lost updates.
+
+**Why:** the default isolation can still lose updates on read-modify-write
+without an explicit lock; gap locks can also cause unexpected blocking on
+range conditions. Locking the rows you will write makes the contention
+deterministic.
 
 ## Checklist
 
-- _(to be written)_
+- `utf8mb4` charset + `utf8mb4` collation; never legacy `utf8`.
+- Indexed string columns sized within InnoDB key-length limits (or prefix
+  indexed).
+- JSON paths indexed via generated columns; relational columns preferred
+  when JSON is queried heavily.
+- Read-modify-write under contention uses `lockForUpdate()` within the
+  action's transaction.
