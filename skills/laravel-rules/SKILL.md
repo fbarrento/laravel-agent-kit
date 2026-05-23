@@ -47,7 +47,9 @@ Checklist**, with a **Decision** section where a rule is a choice.
 - [actions/conventions.md](rules/actions/conventions.md) — `handle()`, data-object inputs, simple-vs-orchestrator.
 - [queries/conventions.md](rules/queries/conventions.md) — fluent read-only query objects.
 - [models/conventions.md](rules/models/conventions.md) — explicit casts, no scopes, to-array test.
-- [data-objects/conventions.md](rules/data-objects/conventions.md) — Spatie Data; Casts/Transformers. _(stub)_
+- [data-objects/conventions.md](rules/data-objects/conventions.md) — immutable typed payloads; create/update/response roles.
+  - [data-objects/spatie-laravel-data.md](rules/data-objects/spatie-laravel-data.md) — `Optional`, mapping, casts/transformers, `toArray()` in actions.
+  - [data-objects/serialization.md](rules/data-objects/serialization.md) — queue boundary; IDs not models; plain-DTO escape hatch.
 - [value-objects/conventions.md](rules/value-objects/conventions.md) — immutable, value equality. _(stub)_
 - [enums/conventions.md](rules/enums/conventions.md) — backing, casting. _(stub)_
 - [exceptions/conventions.md](rules/exceptions/conventions.md) — business-exception shape. _(stub)_
