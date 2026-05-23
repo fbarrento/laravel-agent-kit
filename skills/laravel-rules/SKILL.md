@@ -64,7 +64,7 @@ Checklist**, with a **Decision** section where a rule is a choice.
 - [database/schema.md](rules/database/schema.md) — schema design. _(stub)_
 - [database/performance.md](rules/database/performance.md) — indexing, N+1. _(stub)_
 - [database/mysql.md](rules/database/mysql.md) · [database/postgres.md](rules/database/postgres.md) — engine specifics. _(stubs)_
-- [queues/conventions.md](rules/queues/conventions.md) — retries, failed jobs, Horizon. _(stub)_
+- [queues/conventions.md](rules/queues/conventions.md) — after_commit config, queue-name enum, profile-based organization, retries/failed jobs.
 - [logs/conventions.md](rules/logs/conventions.md) — injected logger, structured context, level discipline; never log secrets.
 
 **Security** (cross-cutting domain)
