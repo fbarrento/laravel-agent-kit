@@ -65,7 +65,7 @@ Checklist**, with a **Decision** section where a rule is a choice.
 - [database/performance.md](rules/database/performance.md) — indexing, N+1. _(stub)_
 - [database/mysql.md](rules/database/mysql.md) · [database/postgres.md](rules/database/postgres.md) — engine specifics. _(stubs)_
 - [queues/conventions.md](rules/queues/conventions.md) — retries, failed jobs, Horizon. _(stub)_
-- [logs/conventions.md](rules/logs/conventions.md) — structured logging. _(stub)_
+- [logs/conventions.md](rules/logs/conventions.md) — injected logger, structured context, level discipline; never log secrets.
 
 **Security** (cross-cutting domain)
 - [security/secrets.md](rules/security/secrets.md) — `#[\SensitiveParameter]`, never-log-secrets (canonical), config/serialization.
