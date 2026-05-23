@@ -48,7 +48,7 @@ Checklist**, with a **Decision** section where a rule is a choice.
 
 **Building blocks** (internals of one class type)
 - [actions/conventions.md](rules/actions/conventions.md) — `handle()`, data-object inputs, simple-vs-orchestrator.
-- [queries/conventions.md](rules/queries/conventions.md) — fluent read-only query objects.
+- [queries/conventions.md](rules/queries/conventions.md) — fluent read-only query objects; generic `QueriesRecords`/`ProjectsRecords` traits; model on write path, `toData()` on read path.
 - [models/conventions.md](rules/models/conventions.md) — explicit casts, no scopes, no soft deletes, to-array test.
 - [data-objects/conventions.md](rules/data-objects/conventions.md) — immutable typed payloads; create/update/response roles.
   - [data-objects/spatie-laravel-data.md](rules/data-objects/spatie-laravel-data.md) — `Optional`, mapping, casts/transformers, `toArray()` in actions.

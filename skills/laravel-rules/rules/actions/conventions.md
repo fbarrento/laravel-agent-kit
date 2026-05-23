@@ -27,6 +27,54 @@ Avoid passing Eloquent models directly into actions. Pass purpose-built data obj
 
 Use names that describe the input value, not generic names like `$data` when a precise data object name exists.
 
+## Reads: inject a query — never read Eloquent inline
+
+An action's only direct database operation is the **write**
+(`create`/`update`/`delete`). Every **read** it needs — loading the
+aggregate it is about to mutate, an existence check backing an invariant —
+goes through an **injected [query](../queries/conventions.md)**. An action
+never writes `Model::query()->find()/where()/get()`.
+
+```php
+final class UpdateArticle
+{
+    public function __construct(
+        private readonly FindArticleQuery $findArticle,   // reads go through it
+    ) {}
+
+    public function handle(UpdateArticleData $data): Article
+    {
+        $article = ($this->findArticle)()->forId($data->id)->firstOrFail(); // READ via query
+        $article->update($data->except('id')->toArray());                    // WRITE
+
+        return $article;
+    }
+}
+```
+
+A create needs no read, so it goes straight to the write:
+
+```php
+final class CreateArticle
+{
+    public function handle(CreateArticleData $data): Article
+    {
+        return Article::query()->create($data->toArray());   // write only
+    }
+}
+```
+
+**Why:** keeping reads in injected queries makes the query layer the sole
+home of composed Eloquent reads (CQRS, [../architecture/cqrs.md](../architecture/cqrs.md)),
+so an action's collaborators are explicit and its reads are reusable and
+testable in isolation. Loading the aggregate *inside* the action is also
+where a `lockForUpdate()` belongs when the write is contended
+([../database/mysql.md](../database/mysql.md) /
+[postgres.md](../database/postgres.md)) — the query returns the model on
+its write-path terminal ([../queries/conventions.md](../queries/conventions.md)),
+the action mutates it. The id reaches the action **inside the data
+object** (a typed identifier), not as a passed model.
+
 ## Decision: single-responsibility vs orchestrator
 
 Two action shapes. Choose by responsibility and number of writes:
@@ -69,7 +117,10 @@ restate it.
 ## Checklist
 
 - Action has a `handle()` method.
-- Action input is a data object where operation input is needed.
+- Action input is a data object where operation input is needed (the id
+  travels in the data object, never a passed model).
+- Reads go through an injected query; the action's only direct DB op is
+  the write — no `Model::query()->find/where/get` inline.
 - Action shape chosen via the Decision above (single vs orchestrator).
 - Transaction + invariant rules deferred to their canonical homes
   (linked above), not re-decided here.

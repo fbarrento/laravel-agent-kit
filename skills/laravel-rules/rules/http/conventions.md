@@ -40,6 +40,41 @@ final class RegisterOrganizationController
 }
 ```
 
+## Rule: delegate reads to injected queries, writes to injected actions
+
+A controller composes no Eloquent. It injects
+[queries](../queries/conventions.md) for reads and
+[actions](../actions/conventions.md) for writes — the same discipline
+actions follow. **Route-model binding is allowed**: that is framework
+resolution (with 404), not a read the controller composed.
+
+- **List / filtered read** → an injected query projects to data objects
+  (`toDataCollection()`); the controller hands them to the response.
+- **Single read** → **route-model binding** resolves the model, and the
+  controller projects it with `Data::from($model)` — binding already
+  loaded it, so re-fetching through a `Find…Query` is waste.
+- **Write** → an injected action, fed a data object built from
+  `$request->validated()` (+ the route id for updates); then redirect.
+
+```php
+public function index(): Response
+{
+    return Inertia::render('Articles/Index', [
+        'articles' => ($this->listArticles)()->published()->toDataCollection(),
+    ]);
+}
+
+public function show(Article $article): Response   // route-model binding
+{
+    return Inertia::render('Articles/Show', ['article' => ArticleData::from($article)]);
+}
+```
+
+**Why:** keeping composed reads in the query layer and writes in actions
+leaves the controller as pure transport glue — no `Model::query()`, no
+business logic. Route-model binding stays because it is declarative
+routing/authorization input, not query composition.
+
 ## Rule: structural input validation lives in a form request
 
 Validate the *shape* of the request (required, types, formats, lengths)

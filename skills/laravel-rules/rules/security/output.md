@@ -65,6 +65,12 @@ reason; opt out only for content you fully control and trust.
 - **Error responses.** Map business exceptions to a safe message/status at
   the boundary ([../exceptions/conventions.md](../exceptions/conventions.md));
   never echo raw exception messages or stack traces to clients.
+- **Where the response object is built.** A list/filtered read is projected
+  by the query itself (`toDataCollection()`); a single route-bound model is
+  projected by the controller (`Data::from($model)`). Either way a `Data`
+  object leaves the app, never the model — see
+  [../queries/conventions.md](../queries/conventions.md) and
+  [../http/conventions.md](../http/conventions.md).
 
 ## Checklist
 

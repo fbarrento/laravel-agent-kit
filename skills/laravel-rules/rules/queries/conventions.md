@@ -1,115 +1,198 @@
 # Query Rules
 
-## Shape
+Queries are the **read side** of CQRS: fluent, read-only query objects in
+flat `app/Queries`, `Query`-suffixed, `final`, `declare(strict_types=1)`
+([../architecture/classes.md](../architecture/classes.md)). They are the
+**only** place Eloquent reads are composed — actions and controllers
+*inject* queries and never compose reads inline.
 
-Queries are fluent read-only query objects. They live in flat `app/Queries` and use the `Query` suffix.
+## Rule: a query is a fluent, read-only object initialised in `__invoke()`
 
-Every query starts with `__invoke()` to initialize the builder and return a clone:
+`__invoke()` initialises the builder and returns a clone; filter methods
+mutate the builder and return `$this`; terminal methods read. No
+`handle()` (that belongs to [actions](../actions/conventions.md)). A query
+never mutates state and never calls external services.
 
 ```php
-/** @var Builder<Article> */
-private Builder $builder;
-
-public function __invoke(): self
+/** @use QueriesRecords<Article> */
+final class FindArticleQuery
 {
-    $this->builder = Article::query();
+    use QueriesRecords;
 
-    return clone $this;
+    public function __invoke(): self
+    {
+        $this->builder = Article::query();
+
+        return clone $this;
+    }
+
+    public function forSlug(string $slug): self
+    {
+        $this->builder->where('slug', $slug);
+
+        return $this;
+    }
 }
 ```
 
-Do not implement read queries as a single `handle()` method. `handle()` belongs to actions.
+Reusable read filters live here, **never** as model scopes
+([../models/conventions.md](../models/conventions.md)). Use model
+arguments when the caller already holds the model; scalars for external
+identifiers/value filters.
 
-## Filters
+## Rule: terminals come from the generic `QueriesRecords` trait
 
-Filter methods mutate the internal builder and return `$this`:
+The terminal reads (`builder/count/exists/first/firstOrFail/get`) are
+identical across every query, so they are composed in via a trait — reuse
+by composition, not a base class ([../architecture/classes.md](../architecture/classes.md))
+— made generic over the model with PHPStan `@template` so returns are
+typed per query.
 
 ```php
-public function forSource(Source $source): self
+// app/Queries/Concerns/QueriesRecords.php
+/** @template TModel of Model */
+trait QueriesRecords
 {
-    $this->builder->where('source_id', $source->id);
+    /** @var Builder<TModel> */
+    private Builder $builder;
 
-    return $this;
+    /** @return Builder<TModel> */
+    public function builder(): Builder { return $this->builder; }
+    public function count(): int { return $this->builder->count(); }
+    public function exists(): bool { return $this->builder->exists(); }
+    /** @return TModel|null */
+    public function first(): ?Model { return $this->builder->first(); }
+    /** @return TModel */
+    public function firstOrFail(): Model { return $this->builder->firstOrFail(); }
+    /** @return Collection<int, TModel> */
+    public function get(): Collection { return $this->builder->get(); }
 }
 ```
 
-Use model arguments when the caller already has the model. Use scalar arguments only for external identifiers or value filters.
+**Why:** every query needs the same terminals; a generic trait gives them
+once with correct per-model typing (`first(): Article`,
+`get(): Collection<Article>`), instead of copying six methods into every
+query or reaching for a base class.
 
-Reusable read filters belong here, not in model scopes. Do not add local or global Eloquent scopes to models.
+## Decision: return a model or a data object?
 
-## Terminal Methods
+The consumer's side of the CQRS line decides:
 
-Queries expose terminal read methods that delegate to the builder:
+- **Write path** — a consumer that will *mutate* (an
+  [action](../actions/conventions.md) loading the aggregate to write) →
+  use a **terminal** → get the **model**.
+- **Read / response path** — a consumer feeding presentation
+  (controller → Inertia/JSON) → use a **projection** → get a **`Data`
+  object**. A raw model must never cross to a response
+  ([../security/output.md](../security/output.md)).
+
+**Why:** the action needs Eloquent to act on; the response must not carry
+a mutable, lazy-loading, column-leaking model. The same query can offer
+both — a terminal for writes, a projection for reads — and the consumer
+picks.
+
+## Rule: projection is the generic `ProjectsRecords` trait → `toData()`
+
+A query that feeds the read path adds the projection trait, generic over
+the model **and** the target `Data` class. The query supplies the
+single-item `toData()`; the trait provides `toDataCollection()`. Because
+the trait calls `get()`, it requires the terminal contract — so a
+**projecting** query also implements `ReadsRecords` (a pure model-returning
+query does not).
 
 ```php
-/** @return Builder<Article> */
-public function builder(): Builder
+// app/Queries/Concerns/ReadsRecords.php — the terminal contract (typing seam)
+/** @template TModel of Model */
+interface ReadsRecords
 {
-    return $this->builder;
+    /** @return Builder<TModel> */ public function builder(): Builder;
+    public function count(): int;
+    public function exists(): bool;
+    /** @return TModel|null */ public function first(): ?Model;
+    /** @return TModel */ public function firstOrFail(): Model;
+    /** @return Collection<int, TModel> */ public function get(): Collection;
 }
 
-public function count(): int
+// app/Queries/Concerns/ProjectsRecords.php
+/**
+ * @template TModel of Model
+ * @template TData of Data
+ * @phpstan-require-implements ReadsRecords<TModel>
+ */
+trait ProjectsRecords
 {
-    return $this->builder->count();
+    /** @param TModel $model @return TData */
+    abstract public function toData(Model $model): Data;
+
+    /** @return SupportCollection<int, TData> */
+    public function toDataCollection(): SupportCollection
+    {
+        return $this->get()->map(fn (Model $model) => $this->toData($model));
+    }
 }
 
-public function exists(): bool
+// a projecting query wires all three
+/**
+ * @implements ReadsRecords<Article>
+ * @use QueriesRecords<Article>
+ * @use ProjectsRecords<Article, ArticleData>
+ */
+final class ListArticlesQuery implements ReadsRecords
 {
-    return $this->builder->exists();
-}
+    use QueriesRecords;
+    use ProjectsRecords;
 
-public function first(): ?Article
-{
-    return $this->builder->first();
-}
+    public function __invoke(): self { $this->builder = Article::query(); return clone $this; }
+    public function published(): self { $this->builder->where('published', true); return $this; }
 
-public function firstOrFail(): Article
-{
-    /** @var Article */
-    return $this->builder->firstOrFail();
-}
-
-/** @return Collection<int, Article> */
-public function get(): Collection
-{
-    return $this->builder->get();
+    /** @param Article $model */
+    public function toData(Model $model): ArticleData
+    {
+        return ArticleData::from($model);
+    }
 }
 ```
 
-## Projection Conversion
+**Why an interface, used only when projecting:** `ProjectsRecords` calls
+`$this->get()` but does not declare it; `@phpstan-require-implements`
+types that call without redeclaring `get()` (which would cause an
+abstract-vs-concrete trait collision). A pure model query skips the
+interface and the projection trait entirely.
 
-When consumers should not receive Eloquent models, add explicit projection methods using project terminology.
+There is **no `toResult`/result-object** concept — a query projects to a
+Spatie `Data` object, the cross-layer read contract
+([../data-objects/conventions.md](../data-objects/conventions.md)).
+
+## Call sites
 
 ```php
-public function toResult(Article $article): ArticleResult
-{
-    return new ArticleResult(...);
-}
-
-/** @return SupportCollection<int, ArticleResult> */
-public function toResultCollection(): SupportCollection
-{
-    return $this->get()->map(fn (Article $article): ArticleResult => $this->toResult($article));
-}
+($q)()->forId($id)->firstOrFail();        // model — write path (an action)
+($q)()->published()->toDataCollection();  // Collection<ArticleData> — read/response path
 ```
-
-Use consistent project terminology:
-
-- Use `toResult()` / `toResultCollection()` for result objects.
-- Use `toData()` / `toDataCollection()` for data objects.
-- Use `toDto()` / `toDtoCollection()` only if DTO is the project's established term.
-
-Avoid vague names like `toCollection()` for projected objects. Reserve `toCollection()` for raw collection conversion only when it does not imply projection.
 
 ## Boundaries
 
-- Queries never mutate state.
-- Queries do not call external services.
-- Queries may compose Eloquent filters, relationships, eager loading, ordering, counting, and explicit result/data projection.
-- Actions, controllers, jobs, and other application code may inject queries for reads.
+- Queries never mutate state and never call external services.
+- The **only** place composed Eloquent reads live; actions and
+  controllers inject queries rather than writing `Model::query()->...`.
+- Consumers: actions (reads), controllers (reads), jobs.
 
 ## Tests
 
-Query tests live in `tests/Unit/Queries` and resolve the query in `beforeEach()`.
+Query tests live in `tests/Unit/Queries` and resolve the query in
+`beforeEach()`. Cover every filter, terminal, ordering rule, empty state,
+and the `toData()` / `toDataCollection()` projection.
 
-Cover every filter, terminal method, ordering rule, empty state, and projection conversion method.
+## Checklist
+
+- Query is `final`, `strict_types`, `Query`-suffixed, in flat `app/Queries`;
+  initialised in `__invoke()` with a clone; filters return `$this`.
+- Terminals come from `QueriesRecords<TModel>` (generic trait), not copied
+  or inherited.
+- Return shape follows CQRS: terminal → model (write path); projection →
+  `Data` (read/response path).
+- Projection uses `ProjectsRecords<TModel, TData>` with a single-item
+  `toData()`; the query implements `ReadsRecords` only when it projects.
+- No model scopes; reusable read filters are query methods.
+- No `toResult`/result objects — project to a Spatie `Data` object.
+- Tests cover filters, terminals, ordering, empty state, and projection.
