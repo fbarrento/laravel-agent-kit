@@ -1,6 +1,6 @@
 ---
 name: finish-task
-description: Run a project's quality gates, get user review, then commit — the end-of-task counterpart to new-task. Tech-stack agnostic: discovers the project's own test, typecheck, lint, static-analysis, and format commands rather than hardcoding them. Use when a coding task is implemented and ready to commit, when the user says "finish this", "wrap up", "ready to commit", "ship it", or before any commit that concludes a task.
+description: Run a project's quality gates, get user review, then commit — the end-of-task counterpart to new-task. Tech-stack agnostic — discovers the project's own test, typecheck, lint, static-analysis, and format commands rather than hardcoding them. Use when a coding task is implemented and ready to commit, when the user says "finish this", "wrap up", "ready to commit", "ship it", or before any commit that concludes a task.
 ---
 
 # Finish Task
