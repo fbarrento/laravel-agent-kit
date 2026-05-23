@@ -34,6 +34,11 @@ public function handle(RegisterOrganizationData $data): Organization
 }
 ```
 
+`DB::transaction()` is declared `@throws Throwable` (it rethrows the
+closure and can throw on deadlock/rollback), so the wrapping method
+declares `@throws Throwable` in its docblock alongside its business
+exceptions — see [../exceptions/conventions.md](../exceptions/conventions.md).
+
 ## Rule: dispatch jobs and emit events only after commit
 
 Jobs and events fire only **after** the surrounding transaction commits

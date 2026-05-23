@@ -113,6 +113,48 @@ command or job), so it must not know about HTTP. Centralizing the mapping
 keeps status codes consistent and out of business code. (Boundary wiring
 lives in [../http/conventions.md](../http/conventions.md).)
 
+## Rule: the `@throws` docblock lists everything the method can throw — `Throwable` included
+
+A method documents in `@throws` **every** exception it can emit: the
+specific business exceptions it throws directly, **and** the broad
+`Throwable` it propagates from a framework call annotated to throw it. The
+type is imported and referenced bare, never `\Throwable`
+([../architecture/imports.md](../architecture/imports.md)).
+
+The case that bites: **`DB::transaction()` is declared `@throws Throwable`**
+— it rethrows whatever the closure throws and can throw on
+deadlock/rollback — so any action wrapping a transaction
+([../architecture/transactions.md](../architecture/transactions.md)) can
+emit `Throwable` and must say so.
+
+```php
+use Throwable;
+
+/**
+ * @throws InvitationAlreadyAcceptedException
+ * @throws InvitationExpiredException
+ * @throws InvitationEmailMismatchException
+ * @throws Throwable                         // DB::transaction can throw
+ */
+public function handle(TeamInvitation $invitation, User $user): Team
+{
+    // ... guards throw the specific business exceptions ...
+    return DB::transaction(function () use (...): Team { /* ... */ });
+}
+```
+
+**Why:** `@throws` is the method's failure contract — callers, the IDE,
+and a strict static analyzer (PHPStan's `@throws` checking) rely on it.
+Listing the business exceptions but omitting the `Throwable` a transaction
+(or other framework call) can raise is an *incomplete* contract: it reads
+as "only these typed failures happen here," which is false. Other common
+`Throwable` sources to declare: `DB::transaction`, a `LockTimeoutException`
+from `Cache::lock`, anything the method calls whose own `@throws` is
+`Throwable`.
+
+(Pest closures that exercise such a path carry the same `@throws` block —
+see [../testing/conventions.md](../testing/conventions.md).)
+
 ## Edge cases
 
 - **Wrapping a third-party exception.** Catch the package/SDK exception at
@@ -134,5 +176,8 @@ lives in [../http/conventions.md](../http/conventions.md).)
 - Structural/validation and 404 failures use framework machinery, not
   business exceptions (Decision above).
 - HTTP mapping happens at the boundary; actions only throw.
+- `@throws` lists every exception the method can emit, including
+  `Throwable` propagated from `DB::transaction()` and similar framework
+  calls; the type is imported, not `\Throwable`.
 - Pest tests assert the specific exception is thrown
   (`->toThrow(DuplicateWaitlistSignupException::class)`).
