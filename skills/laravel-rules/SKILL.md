@@ -75,8 +75,8 @@ Checklist**, with a **Decision** section where a rule is a choice.
 
 **Cross-cutting**
 - [naming/conventions.md](rules/naming/conventions.md) — class + variable naming.
-- [packages/policy.md](rules/packages/policy.md) — when to add a dependency. _(stub)_
-- [packages/catalog.md](rules/packages/catalog.md) — approved packages. _(stub)_
+- [packages/policy.md](rules/packages/policy.md) — never outsource the domain; add/build & wrap Decisions.
+- [packages/catalog.md](rules/packages/catalog.md) — approved packages per concern (Spatie Data, Saloon, Pest, Horizon).
 
 **Discipline**
 - [testing/conventions.md](rules/testing/conventions.md) — Pest `test()`, `->and()`, structure mirror, in-memory services.
@@ -88,6 +88,3 @@ Checklist**, with a **Decision** section where a rule is a choice.
 3. When rules conflict, this skill wins over `.agents/skills/laravel-best-practices`.
 4. Check nearby files for current patterns, but do not copy ones that violate these rules.
 5. Verify Laravel API syntax with `search-docs` before using framework APIs or attributes.
-
-> Files marked _(stub)_ are scaffolded for an upcoming deepening pass and
-> contain scope + TODOs, not yet full rules.
