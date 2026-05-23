@@ -2,10 +2,10 @@
 
 ## IDs And Timestamps
 
-Always use UUID primary keys, and they must be **time-ordered** UUIDs
-(Laravel's `HasUuids` generates ordered UUIDs; use the UUIDv7 trait where
-available — verify the exact trait with `search-docs`), generated
-app-side:
+Always use UUID primary keys, and they are **time-ordered** by default:
+Laravel's `HasUuids` trait generates UUIDv7 (`Str::uuid7()`) — timestamp-
+first and lexically sortable, so generation order is sort order. Add the
+trait to the model; the migration column is simply:
 
 ```php
 $table->uuid('id')->primary();
@@ -17,8 +17,8 @@ amplification — which hurts exactly the tens-of-millions-row tables. A
 time-ordered UUID inserts near-sequentially and makes `ORDER BY id`
 chronological, so `latest('id')` is a valid recency order (see
 [history.md](history.md) and [large-tables.md](large-tables.md)). The
-trade-off: an ordered/v7 UUID embeds its creation time — acceptable for
-internal identifiers.
+trade-off: a UUIDv7 embeds its creation time — acceptable for internal
+identifiers.
 
 Always place timestamps immediately after the primary key:
 
