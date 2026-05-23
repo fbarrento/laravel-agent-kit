@@ -57,7 +57,7 @@ Checklist**, with a **Decision** section where a rule is a choice.
 - [jobs/conventions.md](rules/jobs/conventions.md) — no business logic; inject actions.
 - [events/conventions.md](rules/events/conventions.md) — guardrail: avoid events; actions/jobs instead; only for package extension points or event bus.
 - [observers/conventions.md](rules/observers/conventions.md) — guardrail: no side effects in observers; actions/jobs instead; pure attribute derivation only.
-- [http/conventions.md](rules/http/conventions.md) — thin controllers, form requests, resources. _(stub)_
+- [http/conventions.md](rules/http/conventions.md) — thin controllers; form-request validation; response data objects for output.
 
 **Infrastructure / runtime**
 - [database/migrations.md](rules/database/migrations.md) — UUID PK, forward-only, no cascades/defaults/DB-enums.
