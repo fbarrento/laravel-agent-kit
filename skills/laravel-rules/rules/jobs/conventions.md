@@ -18,13 +18,14 @@ final class ImportIndicatorObservationsJob implements ShouldQueue
 
 ## Dispatching
 
-Jobs must always be dispatched after commit so queued work does not run before database state is durable.
-
-Use Laravel's after-commit dispatching APIs or job configuration whenever dispatching from code that may run inside a transaction.
+Dispatch timing and origin are governed by
+[architecture/transactions.md](../architecture/transactions.md): jobs are
+dispatched **only from actions**, and **only after commit**. This folder
+does not restate those rules — see the canonical home.
 
 ## Checklist
 
 - Job contains no business logic.
 - Job delegates business operations to actions.
 - Job dependencies are injected through `handle()` or the constructor.
-- Job dispatch is configured to run after commit.
+- Dispatch origin/timing deferred to architecture/transactions.md.
