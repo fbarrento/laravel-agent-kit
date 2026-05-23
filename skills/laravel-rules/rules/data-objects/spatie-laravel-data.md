@@ -4,9 +4,9 @@ How the project realizes [data-object conventions](conventions.md) with
 `spatie/laravel-data`. The principles (immutable, roles, no business
 logic) live in the anchor; this file is the package mechanics.
 
-Verify the exact API (attribute names, mappers, `Optional`, collections)
-with `search-docs` against the installed version — the syntax below is
-illustrative.
+The API below is verified against `spatie/laravel-data` v4 (the current
+stable line). If you ever land on an older major, confirm attribute names
+and the collection-typing idiom with `search-docs`.
 
 ## Rule: construct with `::from()` — never `new`
 
@@ -33,8 +33,7 @@ $data = new CreateOrganizationData(name: 'Acme', vat: new Optional());
 ## Rule: build collections with the data class, not raw arrays
 
 When you need a collection of data objects, build it with the data
-class's collection method (`::collect()`, or the typed collection your
-version provides) — not `array_map(fn () => new ...)`.
+class's `::collect()` method — not `array_map(fn () => new ...)`.
 
 **Why:** the collection method runs every item through `::from()`, so
 casts, transformers, and mapping apply uniformly across the set. A
@@ -191,9 +190,11 @@ final class CapturePaymentData extends Data
 
 - **Absent vs null.** `Optional` = key omitted; `?type = null` = key
   present, value null. Choose deliberately (see the `Optional` rule).
-- **Collections.** Type collections of data objects explicitly (e.g.
-  `#[DataCollectionOf(...)]` or the typed collection your version
-  provides), never a bare `array`.
+- **Collections.** Type the element class explicitly with a docblock
+  annotation — `/** @var array<OrganizationData> */` over the property —
+  never a bare untyped `array`. (`#[DataCollectionOf(OrganizationData::class)]`
+  still works but v4 prefers the annotation, for better static-analysis
+  and IDE support.)
 - **`toArray()` keys must match columns.** A write that fails on an
   unknown column usually means the output mapping (camel vs snake) is off
   — fix it with a mapper, not by renaming the column.
