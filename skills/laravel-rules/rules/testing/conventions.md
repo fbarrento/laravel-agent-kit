@@ -55,6 +55,34 @@ expect($waitlistSignup->created_at)->not->toBeNull();
 
 Do not create `tests/Unit/Console` or `tests/Unit/Http` for application Console or Http classes.
 
+## Test Order Within A File
+
+Add a new test at the **top** of the file's tests — immediately after the
+`beforeEach` / `afterEach` (and any other setup) hooks — never appended to
+the bottom. Tests read newest-first; the setup hooks stay anchored at the
+very top.
+
+```php
+beforeEach(function (): void {
+    $this->createWaitlistSignup = resolve(CreateWaitlistSignup::class);
+});
+
+// newest test goes directly under the hooks
+test('rejects a duplicate email', /** @throws Throwable */ function (): void {
+    // ...
+});
+
+test('creates a waitlist signup', /** @throws Throwable */ function (): void {
+    // ... older test below
+});
+```
+
+**Why:** the test you just added is the one you are most likely iterating
+on, so placing it directly under the setup keeps it in view without
+scrolling a long file. A single consistent insertion point (top, after
+hooks) also removes the "where does this go?" decision and keeps the hooks
+pinned at the top where setup belongs.
+
 ## Test Doubles
 
 Do not use generic mocks for project services. Prefer Laravel fakes for framework concerns such as events, queues, mail, notifications, HTTP, storage, bus, and time.
@@ -69,6 +97,52 @@ beforeEach(function (): void {
 });
 ```
 
+## Helper Functions
+
+Never declare a plain `function` inside a Pest test file. Test files have
+no namespace and are all loaded into the global namespace, so a function
+declared in a test file is global — and the moment a second test file
+declares the same name (or the file is loaded twice), PHP fatals with
+`Cannot redeclare function ...`.
+
+```php
+// Bad — global function in a test file; collides across files
+function makeUser(array $attrs = []): User
+{
+    return User::factory()->create($attrs);
+}
+
+test('...', function (): void {
+    $user = makeUser();
+});
+```
+
+Put shared test logic in the right home instead, in this order:
+
+1. **Reusable setup objects / arrange logic** → `beforeEach()`, assigned to
+   `$this` (the default for resolved actions/queries/services above).
+2. **A small helper used across many files** → declare it **once** in
+   `tests/Pest.php`, which is loaded a single time. This is the only
+   sanctioned place for a global test helper function.
+3. **Substantial reusable behavior** (builders, fakes, in-memory services)
+   → a proper namespaced class under `tests/` (e.g.
+   `tests/Utils/Services/*`), not a loose function.
+
+```php
+// Good — shared helper declared once in tests/Pest.php
+function makeUser(array $attrs = []): User
+{
+    return User::factory()->create($attrs);
+}
+```
+
+**Why:** the redeclaration fatal is caused precisely by declaring globals
+from a file that is included alongside every other test file. `Pest.php`
+is included once, so a helper there is safe; `beforeEach`/`$this` and
+namespaced util classes avoid the global namespace entirely. The choice
+between them follows reuse: setup → `beforeEach`; tiny shared helper →
+`Pest.php`; real behavior → a util class.
+
 ## Checklist
 
 - Use `test()`, never `it()`.
@@ -77,6 +151,8 @@ beforeEach(function (): void {
 - Put resolved actions, queries, services, and reusable setup objects in `beforeEach()`.
 - Assign setup objects to `$this` even if only one test currently uses them.
 - Mirror `app/` structure in `tests/Unit`, excluding Console and Http.
+- Add new tests at the top of the file, right after the `beforeEach`/`afterEach` hooks (newest-first).
 - Put Console and Http tests under `tests/Feature`.
 - Prefer Laravel fakes over mocks.
 - Use in-memory services in `tests/Utils/Services` for project service dependencies.
+- Never declare a global `function` in a test file — use `beforeEach`/`$this`, a helper in `tests/Pest.php`, or a namespaced `tests/Utils` class.

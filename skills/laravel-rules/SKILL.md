@@ -38,6 +38,7 @@ Checklist**, with a **Decision** section where a rule is a choice.
 - [architecture/dependency-injection.md](rules/architecture/dependency-injection.md) — inject over facades; contextual attributes.
 - [architecture/imports.md](rules/architecture/imports.md) — always import; no inline leading-backslash FQCN.
 - [architecture/classes.md](rules/architecture/classes.md) — `declare(strict_types=1)` per file; classes `final` by default (only `abstract` bases aren't); prefer composition over inheritance.
+- [architecture/scaffolding.md](rules/architecture/scaffolding.md) — always create classes via `php artisan make:*`; customize stubs for strict-types/`final`; concept→command catalog.
 - [architecture/transactions.md](rules/architecture/transactions.md) — transaction boundaries; after-commit; dispatch jobs only from actions.
 - [architecture/invariants.md](rules/architecture/invariants.md) — actions enforce invariants; throw specific business exceptions.
 
