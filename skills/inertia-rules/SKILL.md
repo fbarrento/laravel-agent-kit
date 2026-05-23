@@ -94,7 +94,8 @@ values. No global `queries/`, `actions/`, `forms/`, `hooks/`, or
 
 **Runtime behavior** (Inertia v3)
 - [forms/conventions.md](rules/forms/conventions.md) — `<Form>` vs `useForm`, Wayfinder actions, server-owned validation errors, processing/reset, file uploads.
-- [navigation/conventions.md](rules/navigation/conventions.md) — `<Link>`, partial reloads (`only`/lazy props), deferred props + `<Deferred>`, prefetch, no parallel client cache.
+- [navigation/conventions.md](rules/navigation/conventions.md) — `<Link>`, partial reloads (`only`/lazy props), deferred props + `<Deferred>`, prefetch, polling (`usePoll`), load-on-scroll (`<WhenVisible>`), infinite scroll + merge props, no parallel client cache.
+- [interactivity/conventions.md](rules/interactivity/conventions.md) — instant visits, optimistic updates (props snapshot + rollback), and `useHttp` as the only sanctioned non-Inertia request escape hatch.
 - [shared-data/conventions.md](rules/shared-data/conventions.md) — `HandleInertiaRequests::share`, `usePage`, flash/errors, `<Head>` title/meta.
 - [layouts/conventions.md](rules/layouts/conventions.md) — persistent layouts, default-in-`createInertiaApp`, nested layouts, chrome vs content.
 

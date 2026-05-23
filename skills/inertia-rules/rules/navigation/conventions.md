@@ -81,7 +81,73 @@ For links a user is likely to follow, add `prefetch` (hover by default;
 ```
 
 **Why:** prefetch-on-hover makes the next page feel instant for near-zero
-cost, using Inertia's own cache — no client query library needed.
+cost, using Inertia's own cache — no client query library needed. To also
+render the target *immediately* on click, see instant visits
+([../interactivity/conventions.md](../interactivity/conventions.md)).
+
+## Rule: poll live data with `usePoll`, scoped by `only`
+
+For data that changes server-side while the page is open (a job's status, a
+queue depth), refresh it with `usePoll` — a timed partial reload — fetching
+**only** the prop that changes. Drive conditional polling with the returned
+`start`/`stop` and `{ autoStart: false }`, and stop once the work is done.
+
+```tsx
+import { usePoll } from '@inertiajs/react'
+
+usePoll(5000, { only: ['queueDepth'] })            // refresh one prop every 5s
+const { start, stop } = usePoll(5000, { only: ['job'] }, { autoStart: false })
+```
+
+**Why:** `usePoll` is a partial reload on a timer — the polled prop refreshes
+from the server into page props and throttles automatically when the tab is
+backgrounded. A hand-rolled `setInterval` + `fetch` (or a `router.reload`
+without `only`) re-fetches more than changed and parks the result in client
+state — the two anti-patterns this layer bans
+([../state/conventions.md](../state/conventions.md)).
+
+## Rule: load below-the-fold props on scroll with `<WhenVisible>`
+
+For a prop that's expensive and off-screen at first paint, mark it
+deferred/optional on the server and load it when its element nears the
+viewport with `<WhenVisible>` (tune the lead distance with `buffer`).
+
+```tsx
+import { WhenVisible } from '@inertiajs/react'
+
+<WhenVisible data="activity" buffer={300} fallback={<ActivitySkeleton />}>
+  <ActivityFeed activity={activity} />
+</WhenVisible>
+```
+
+**Why:** `<WhenVisible>` is `<Deferred>` triggered by visibility instead of
+immediately — same contract: the server owns the prop, it lands in page
+props, the fallback is the loading state. Wiring an IntersectionObserver to
+a manual `fetch` rebuilds that by hand and lands the data in client state.
+
+## Rule: paginate endlessly with `<InfiniteScroll>` + server merge props
+
+For infinite lists, accumulate pages **into the prop** with
+`Inertia::scroll()` (or `Inertia::merge()`/`deepMerge()` with `matchOn`) on
+the server and render with `<InfiniteScroll>`. Reset the accumulation with
+`router.reload({ reset: ['vehicles'] })` when filters change.
+
+```tsx
+import { InfiniteScroll } from '@inertiajs/react'
+
+<InfiniteScroll data="vehicles">
+  {vehicles.data.map((v) => <VehicleRow key={v.id} vehicle={v} />)}
+</InfiniteScroll>
+```
+```php
+'vehicles' => Inertia::scroll(fn () => $this->query->paginate()),
+```
+
+**Why:** merge props make each page *append to the same prop* server-side,
+and Inertia merges successive responses into page props automatically — so
+the growing list is still server state in props. The React-state version,
+`setItems([...items, ...next])`, is the parallel client copy this layer
+forbids ([../state/conventions.md](../state/conventions.md)).
 
 ## Rule: don't duplicate server state in a client cache
 
@@ -106,6 +172,12 @@ perceived behavior.
   not full visits.
 - Expensive/non-critical data is `Inertia::defer()` + `<Deferred>` with a
   fallback, not a client `useEffect` fetch.
-- Likely-next links use `prefetch` where it pays off.
+- Likely-next links use `prefetch` where it pays off; instant rendering on
+  click uses `instant` ([../interactivity/conventions.md](../interactivity/conventions.md)).
+- Live data polled with `usePoll` scoped by `only`; no `setInterval`+fetch.
+- Below-fold props loaded via `<WhenVisible>` (server-deferred), not an
+  observer + manual fetch.
+- Infinite lists use `<InfiniteScroll>` + `Inertia::scroll()`/merge props;
+  pages accumulate in props, never `setItems`.
 - No parallel client data cache duplicating Inertia props.
 - `preserveScroll`/`preserveState` set deliberately, not by default.
