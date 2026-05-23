@@ -59,13 +59,23 @@ $table->string('email');
 $table->unique('email'); // backs the "one signup per email" invariant
 ```
 
-## Rule: declare structural indexes with the table
+## Rule: declare structural indexes with the table — including foreign keys
 
 Every foreign key and every column the app routinely filters, joins, or
 sorts on has an index, declared in the migration alongside the column.
 Composite-index column order follows the query (equality columns first,
 then range/sort). *Which* patterns need indexes is analysed in
 [performance.md](performance.md).
+
+A foreign-key **constraint does not create an index** on the FK column on
+every engine — Postgres does not auto-index FKs (MySQL/InnoDB does, see
+[postgres.md](postgres.md) / [mysql.md](mysql.md)). So always declare the
+FK column's index explicitly; do not assume `constrained()` covers it.
+
+```php
+$table->foreignIdFor(User::class)->constrained(); // constraint only
+$table->index(['user_id']);                        // index you must add
+```
 
 ## Edge cases
 
@@ -83,5 +93,6 @@ then range/sort). *Which* patterns need indexes is analysed in
 - Columns `NOT NULL` unless absence is a real domain state.
 - Uniqueness/referential invariants backed by a unique index / FK
   (backstop, per invariants.md).
-- FKs and routinely-queried columns are indexed; composite order matches
-  the query.
+- FKs and routinely-queried columns are indexed; the FK column's index is
+  declared explicitly (the constraint does not create it on Postgres);
+  composite order matches the query.

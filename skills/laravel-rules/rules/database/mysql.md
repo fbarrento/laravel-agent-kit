@@ -31,6 +31,14 @@ MySQL has only `JSON` (no `JSONB`). To index a JSON path, add a generated
 directly. If JSON querying/indexing is central, reconsider whether the
 data should be relational columns.
 
+## Note: InnoDB auto-indexes foreign keys (Postgres does not)
+
+InnoDB automatically creates an index on a foreign-key column, so the FK
+is covered for joins/filters even if you forget. Still declare the FK
+index explicitly in migrations ([schema.md](schema.md)) for portability —
+the same migration must perform on Postgres, which does **not** auto-index
+FKs ([postgres.md](postgres.md)).
+
 ## Rule: respect REPEATABLE READ and locking semantics
 
 InnoDB defaults to `REPEATABLE READ` and uses next-key/gap locks. A

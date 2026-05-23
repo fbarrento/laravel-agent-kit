@@ -43,6 +43,19 @@ default — migrations forbid DB defaults, so do not rely on
 insert (usable in the same request/transaction) and keeps id generation
 portable and explicit rather than hidden in a DB default.
 
+## Rule: index foreign keys explicitly — Postgres does not
+
+A foreign-key constraint in Postgres indexes the **referenced** (parent)
+column, but creates **no index on the referencing (child) FK column**. A
+query that filters or joins by the relation therefore does a sequential
+scan unless you declare the index yourself.
+
+**Why:** this is the most common "the FK is there, why is it slow?"
+surprise on Postgres. Unlike MySQL/InnoDB (which auto-creates the index),
+Postgres leaves it to you — so declare `$table->index('user_id')`
+alongside the constraint whenever you query by that relation
+([schema.md](schema.md)).
+
 ## Rule: respect READ COMMITTED and locking semantics
 
 Postgres defaults to `READ COMMITTED`. A multi-write
@@ -62,5 +75,6 @@ advisory lock for cross-row coordination) makes contention deterministic.
 - Partial/expression indexes used where a hot query justifies them.
 - UUID PKs generated app-side (no `gen_random_uuid()` default), per
   migrations.md.
+- FK columns indexed explicitly (Postgres does not auto-index them).
 - Read-modify-write under contention uses `lockForUpdate()` (or advisory
   locks) within the action's transaction.
