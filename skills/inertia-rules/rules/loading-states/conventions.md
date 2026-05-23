@@ -68,7 +68,8 @@ it failed. Both must fail *visibly*.
 When `can.*` capability flags forbid an action, render the control as
 disabled (or omit it) with the reason where useful — don't show an action
 that errors on click. Drive it from the backend capability prop, not a
-client guess.
+client guess. The backend-owned-authorization rule this rests on is the
+canonical [../authorization/conventions.md](../authorization/conventions.md).
 
 ## Checklist
 

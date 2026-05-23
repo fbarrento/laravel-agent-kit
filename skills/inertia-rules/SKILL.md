@@ -56,6 +56,16 @@ Wayfinder, Storybook, Pest Browser / Playwright, and Boost. Where a rule
 references "audit" or "verify", treat it as a **manual checklist**, not a
 command — until the package ships.
 
+## Scope: the Laravel + Inertia React adapter
+
+These conventions target the **Laravel + Inertia React** adapter
+(`@inertiajs/react`). The code *shape* — JSX components, `useForm`/`<Form>`,
+`usePage`, the hooks — is written for React. The *principles* — backend-owned
+types, copy, formatting, and authorization; props as the single source of
+state; thin pages composing resource-local features — carry to the Vue and
+Svelte adapters unchanged; the component and hook syntax does not. On another
+adapter, keep the boundaries and translate the syntax.
+
 ## The role graph at a glance
 
 ```txt
@@ -98,6 +108,7 @@ values. No global `queries/`, `actions/`, `forms/`, `hooks/`, or
 - [interactivity/conventions.md](rules/interactivity/conventions.md) — instant visits, optimistic updates (props snapshot + rollback), and `useHttp` as the only sanctioned non-Inertia request escape hatch.
 - [shared-data/conventions.md](rules/shared-data/conventions.md) — `HandleInertiaRequests::share`, `usePage`, flash/errors, `<Head>` title/meta.
 - [layouts/conventions.md](rules/layouts/conventions.md) — persistent layouts, default-in-`createInertiaApp`, nested layouts, chrome vs content.
+- [performance/conventions.md](rules/performance/conventions.md) — lazy page code-splitting (don't go eager), `React.lazy` for heavy feature components, Vite-driven asset versioning; optimize against measured cost.
 
 **Stories**
 - [stories/conventions.md](rules/stories/conventions.md) — Storybook as the reusable-UI runtime contract, required stories, required states, typed fixtures.
@@ -105,6 +116,7 @@ values. No global `queries/`, `actions/`, `forms/`, `hooks/`, or
 **Quality**
 - [state/conventions.md](rules/state/conventions.md) — server state from props; no client cache; ephemeral local state; derive don't store.
 - [loading-states/conventions.md](rules/loading-states/conventions.md) — explicit empty/loading/error; `<Deferred>` fallbacks; empty-state component; error boundaries.
+- [authorization/conventions.md](rules/authorization/conventions.md) — gate UI from backend `can.*` capability props; never reimplement authorization client-side; gating is UX, the server still authorizes.
 - [accessibility/conventions.md](rules/accessibility/conventions.md) — semantic HTML, labelled fields + associated errors, keyboard/focus, a11y in primitives.
 - [testing/conventions.md](rules/testing/conventions.md) — the test pyramid: story interaction vs Pest Browser route tests vs Vitest unit; test behavior not implementation.
 
