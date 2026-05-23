@@ -42,6 +42,50 @@ expect($waitlistSignup->email)->toBe('ana@example.com');
 expect($waitlistSignup->created_at)->not->toBeNull();
 ```
 
+## Asserting Database State
+
+Assert persisted state with a Pest expectation over a query you run
+yourself — never `assertDatabaseHas` / `assertDatabaseMissing` /
+`assertDatabaseCount`. Query through **Eloquent**; reach for the `DB`
+facade only when Eloquent genuinely cannot express it, and only for a
+stated reason.
+
+```php
+// Good — Eloquent query, asserted with expect()->and()
+$signup = WaitlistSignup::sole();
+
+expect($signup->email)->toBe('ana@example.com')
+    ->and($signup->confirmed_at)->toBeNull()
+    ->and(WaitlistSignup::count())->toBe(1);
+```
+
+Avoid the framework database assertions:
+
+```php
+// Bad — asserts a raw column array, bypassing the model
+$this->assertDatabaseHas('waitlist_signups', ['email' => 'ana@example.com']);
+$this->assertDatabaseCount('waitlist_signups', 1);
+```
+
+Use the `DB` facade only when no model fits the query — a pivot row with no
+Eloquent model, or a column the model doesn't expose — and keep it to that
+case:
+
+```php
+// Acceptable only here — a pivot table with no model
+expect(
+    DB::table('role_user')->where(['user_id' => $user->id, 'role_id' => $role->id])->exists()
+)->toBeTrue();
+```
+
+**Why:** `assertDatabaseHas` matches a raw column array, bypassing the
+model — it ignores casts and accessors, doesn't exercise the read path the
+app actually uses, and silently drifts when a column the model would catch
+is renamed. An Eloquent query asserts the same state *through the model the
+application reads*, so the test verifies the real shape and stays
+expression-consistent with the rest of the suite. The `DB` facade is the
+escape hatch for the genuine no-model case, not a default.
+
 ## Test Structure
 
 `tests/Unit` mirrors the `app` folder structure, except `app/Console` and `app/Http` code belongs in feature tests.
@@ -147,6 +191,7 @@ between them follows reuse: setup → `beforeEach`; tiny shared helper →
 
 - Use `test()`, never `it()`.
 - Chain related expectations with `->and()`.
+- Assert DB state with a Pest `expect()` over an Eloquent query (`sole()`/`exists()`/`count()`), never `assertDatabaseHas`/`Missing`/`Count`; use the `DB` facade only when no model fits.
 - Add an exception PHPDoc directly before Pest closures that may throw.
 - Put resolved actions, queries, services, and reusable setup objects in `beforeEach()`.
 - Assign setup objects to `$this` even if only one test currently uses them.
