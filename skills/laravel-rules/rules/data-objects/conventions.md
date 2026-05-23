@@ -105,9 +105,19 @@ Governed canonically by
 object asserts *its fields are well-formed*; it must not assert *the
 operation is allowed*.
 
+## Rule: a secret field is a wrapped value object, never a raw string
+
+When a data object carries a credential or PII, the field is a `Secret`
+value object and its promoted parameter is marked `#[SensitiveParameter]`.
+The full layered pattern (value-object wrap + trace redaction + unwrap at
+the boundary + keep out of queue payloads) is governed canonically by
+[../security/secrets.md](../security/secrets.md) — do not restate it here.
+
 ## Checklist
 
 - Properties are promoted and `readonly`; the object is immutable.
+- Secret/PII fields are wrapped value objects (not raw strings) per
+  [../security/secrets.md](../security/secrets.md).
 - The object holds data only — no queries, services, dispatch, or domain
   rules.
 - Role is one of create / update / response, as a distinct type — none

@@ -36,6 +36,7 @@ Checklist**, with a **Decision** section where a rule is a choice.
 - [architecture/structure.md](rules/architecture/structure.md) — flat folders + nesting-exception registry.
 - [architecture/cqrs.md](rules/architecture/cqrs.md) — actions write, queries read, services for external.
 - [architecture/dependency-injection.md](rules/architecture/dependency-injection.md) — inject over facades; contextual attributes.
+- [architecture/imports.md](rules/architecture/imports.md) — always import; no inline leading-backslash FQCN.
 - [architecture/transactions.md](rules/architecture/transactions.md) — transaction boundaries; after-commit; dispatch jobs only from actions.
 - [architecture/invariants.md](rules/architecture/invariants.md) — actions enforce invariants; throw specific business exceptions.
 
@@ -65,6 +66,12 @@ Checklist**, with a **Decision** section where a rule is a choice.
 - [database/mysql.md](rules/database/mysql.md) · [database/postgres.md](rules/database/postgres.md) — engine specifics. _(stubs)_
 - [queues/conventions.md](rules/queues/conventions.md) — retries, failed jobs, Horizon. _(stub)_
 - [logs/conventions.md](rules/logs/conventions.md) — structured logging. _(stub)_
+
+**Security** (cross-cutting domain)
+- [security/secrets.md](rules/security/secrets.md) — `#[\SensitiveParameter]`, never-log-secrets (canonical), config/serialization.
+- [security/authorization.md](rules/security/authorization.md) — policies/gates, where authz is enforced. _(stub)_
+- [security/mass-assignment.md](rules/security/mass-assignment.md) — fillable/guarded; data objects over raw input. _(stub)_
+- [security/output.md](rules/security/output.md) — no secrets in responses; hidden attributes. _(stub)_
 
 **Cross-cutting**
 - [naming/conventions.md](rules/naming/conventions.md) — class + variable naming.

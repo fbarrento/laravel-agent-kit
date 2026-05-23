@@ -99,6 +99,14 @@ column. (This is a *model* cast — distinct from a Spatie Data cast, which
 lives under `app/Data/Casts`; see
 [../architecture/structure.md](../architecture/structure.md).)
 
+## Rule: secrets are a redacting value object
+
+A credential/PII value (`Secret` / `HiddenString`) is a value object that
+redacts itself on `__toString`, `jsonSerialize`, and `toArray`, exposing
+the raw value only through an explicit `reveal()`. This is the central
+leak guard data objects rely on; the full pattern is governed by
+[../security/secrets.md](../security/secrets.md).
+
 ## Edge cases
 
 - **Multi-field values.** A value object may hold several fields
