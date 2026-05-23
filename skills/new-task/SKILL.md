@@ -25,16 +25,13 @@ git switch --create feat/short-description origin/main
 
 ## Branch Naming
 
-Use one of these prefixes based on intent:
+Format: `type/kebab-description`. The type vocabulary (`feat`, `fix`,
+`refactor`, `chore`, `docs`, `test`, …) and naming rules are owned by the
+**git-conventions** skill — use it as the canonical source so branch,
+commit, and PR names stay aligned. This skill does not restate the vocab.
 
-- `feat/short-description` for new user-facing capability.
-- `fix/short-description` for bug fixes.
-- `refactor/short-description` for behavior-preserving restructuring.
-- `chore/short-description` for maintenance, dependencies, tooling, or workflow changes.
-- `docs/short-description` for documentation-only changes.
-- `test/short-description` for test-only changes.
-
-Use lowercase kebab-case after the prefix. Keep names short and specific, for example `fix/waitlist-validation` or `chore/upgrade-laravel-13`.
+Lowercase kebab-case after the prefix, short and specific, for example
+`fix/waitlist-validation` or `chore/upgrade-laravel-12`.
 
 ## Guardrails
 
