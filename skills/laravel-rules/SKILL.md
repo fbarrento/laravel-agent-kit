@@ -69,9 +69,9 @@ Checklist**, with a **Decision** section where a rule is a choice.
 
 **Security** (cross-cutting domain)
 - [security/secrets.md](rules/security/secrets.md) — `#[\SensitiveParameter]`, never-log-secrets (canonical), config/serialization.
-- [security/authorization.md](rules/security/authorization.md) — policies/gates, where authz is enforced. _(stub)_
-- [security/mass-assignment.md](rules/security/mass-assignment.md) — fillable/guarded; data objects over raw input. _(stub)_
-- [security/output.md](rules/security/output.md) — no secrets in responses; hidden attributes. _(stub)_
+- [security/authorization.md](rules/security/authorization.md) — authorize at the boundary, not in actions; authz vs invariant.
+- [security/mass-assignment.md](rules/security/mass-assignment.md) — data object is the allow-list; unguarded ok with an enforced boundary.
+- [security/output.md](rules/security/output.md) — response data objects; keep `$hidden`/redacting cast for secrets.
 
 **Cross-cutting**
 - [naming/conventions.md](rules/naming/conventions.md) — class + variable naming.
