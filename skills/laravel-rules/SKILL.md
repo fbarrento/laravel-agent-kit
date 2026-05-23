@@ -53,7 +53,7 @@ Checklist**, with a **Decision** section where a rule is a choice.
   - [data-objects/serialization.md](rules/data-objects/serialization.md) — queue boundary; IDs not models; plain-DTO escape hatch.
 - [value-objects/conventions.md](rules/value-objects/conventions.md) — immutable, self-validating, value equality; vs scalar/enum/data.
 - [enums/conventions.md](rules/enums/conventions.md) — backing, casting. _(stub)_
-- [exceptions/conventions.md](rules/exceptions/conventions.md) — business-exception shape. _(stub)_
+- [exceptions/conventions.md](rules/exceptions/conventions.md) — specific business exceptions; static factory construction; map at boundary.
 - [jobs/conventions.md](rules/jobs/conventions.md) — no business logic; inject actions.
 - [events/conventions.md](rules/events/conventions.md) — event/listener shape. _(stub)_
 - [observers/conventions.md](rules/observers/conventions.md) — guardrail: prefer actions/events. _(stub)_
