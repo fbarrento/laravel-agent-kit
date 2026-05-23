@@ -55,7 +55,7 @@ Checklist**, with a **Decision** section where a rule is a choice.
 - [enums/conventions.md](rules/enums/conventions.md) — string-backed, no `Enum` suffix, model cast, thin (pure-of-case behavior).
 - [exceptions/conventions.md](rules/exceptions/conventions.md) — specific business exceptions; static factory construction; map at boundary.
 - [jobs/conventions.md](rules/jobs/conventions.md) — no business logic; inject actions.
-- [events/conventions.md](rules/events/conventions.md) — event/listener shape. _(stub)_
+- [events/conventions.md](rules/events/conventions.md) — guardrail: avoid events; actions/jobs instead; only for package extension points or event bus.
 - [observers/conventions.md](rules/observers/conventions.md) — guardrail: prefer actions/events. _(stub)_
 - [http/conventions.md](rules/http/conventions.md) — thin controllers, form requests, resources. _(stub)_
 
