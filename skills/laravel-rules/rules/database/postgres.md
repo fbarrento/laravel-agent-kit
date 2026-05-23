@@ -43,6 +43,23 @@ default — migrations forbid DB defaults, so do not rely on
 insert (usable in the same request/transaction) and keeps id generation
 portable and explicit rather than hidden in a DB default.
 
+## Rule: build/drop indexes on large tables `CONCURRENTLY`
+
+On a big table, create and drop indexes with `CREATE INDEX CONCURRENTLY`
+/ `DROP INDEX CONCURRENTLY` so writes are not blocked
+([large-tables.md](large-tables.md)). It cannot run inside a transaction,
+so set `public $withinTransaction = false;` on the migration and issue it
+via raw `DB::statement` (the schema builder does not emit `CONCURRENTLY`).
+A failed concurrent build leaves an **invalid** index — drop it and retry.
+For a column that must become `NOT NULL`, add a `CHECK ... NOT VALID` then
+`VALIDATE CONSTRAINT` (weak lock) instead of a scanning `SET NOT NULL`.
+Set a short `lock_timeout` before DDL so a blocked migration does not
+queue ahead of the whole table.
+
+**Why:** a plain `CREATE INDEX` takes an `ACCESS EXCLUSIVE`-class lock that
+stops writes for the build — minutes of outage on a large table.
+`CONCURRENTLY` trades a longer build for staying online.
+
 ## Rule: never reorder columns — no `->after()` / `->first()`
 
 Postgres cannot reposition a column. `->after('x')` and `->first()` are
@@ -92,5 +109,8 @@ advisory lock for cross-row coordination) makes contention deterministic.
 - FK columns indexed explicitly (Postgres does not auto-index them).
 - No `->after()`/`->first()`; new columns added at the end (Postgres
   cannot reorder columns).
+- Index changes on large tables use `CONCURRENTLY` (`$withinTransaction =
+  false`, raw `DB::statement`, `lock_timeout` set); failed builds dropped
+  and retried.
 - Read-modify-write under contention uses `lockForUpdate()` (or advisory
   locks) within the action's transaction.

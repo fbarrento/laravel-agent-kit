@@ -63,7 +63,9 @@ Checklist**, with a **Decision** section where a rule is a choice.
 - [database/migrations.md](rules/database/migrations.md) — UUID PK, forward-only, no cascades/defaults/DB-enums.
 - [database/schema.md](rules/database/schema.md) — portable types, NOT NULL default, constraints back invariants, money as integer cents.
 - [database/performance.md](rules/database/performance.md) — index real patterns, no N+1, bound large reads.
-- [database/mysql.md](rules/database/mysql.md) · [database/postgres.md](rules/database/postgres.md) — engine specifics (charset/JSON/indexes/locking).
+- [database/large-tables.md](rules/database/large-tables.md) — online schema changes at scale; split add/backfill/constrain; lock timeouts.
+- [database/history.md](rules/database/history.md) — append-only history is source of truth; latest-query indexing; order by date/ordered-id.
+- [database/mysql.md](rules/database/mysql.md) · [database/postgres.md](rules/database/postgres.md) — engine specifics (charset/JSON/indexes/locking/online-DDL).
 - [queues/conventions.md](rules/queues/conventions.md) — after_commit config, queue-name enum, profile-based organization, retries/failed jobs.
 - [logs/conventions.md](rules/logs/conventions.md) — injected logger, structured context, level discipline; never log secrets.
 

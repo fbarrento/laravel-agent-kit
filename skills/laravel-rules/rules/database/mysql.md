@@ -31,6 +31,21 @@ MySQL has only `JSON` (no `JSONB`). To index a JSON path, add a generated
 directly. If JSON querying/indexing is central, reconsider whether the
 data should be relational columns.
 
+## Rule: change large tables with online DDL, stated explicitly
+
+On a big table, run schema changes online and name the algorithm so MySQL
+fails fast instead of silently falling back to a copying, locking build:
+`ALTER TABLE ... ADD INDEX ..., ALGORITHM=INPLACE, LOCK=NONE`. Add-column
+is often `INSTANT` (8.0.12+) at end-of-table; index builds are `INPLACE,
+LOCK=NONE`. For operations InnoDB cannot do online (or older MySQL), use
+**gh-ost** or **pt-online-schema-change** (shadow table + chunked copy +
+swap). Portable strategy: [large-tables.md](large-tables.md).
+
+**Why:** an unqualified `ALTER` may pick a copying algorithm that locks
+the table for the whole rebuild. Stating `ALGORITHM`/`LOCK` makes MySQL
+reject the statement rather than lock a tens-of-millions-row table behind
+your back.
+
 ## Note: InnoDB auto-indexes foreign keys (Postgres does not)
 
 InnoDB automatically creates an index on a foreign-key column, so the FK
@@ -58,5 +73,7 @@ deterministic.
   indexed).
 - JSON paths indexed via generated columns; relational columns preferred
   when JSON is queried heavily.
+- Large-table schema changes use explicit `ALGORITHM=INPLACE, LOCK=NONE`
+  (or gh-ost / pt-osc) — never an unqualified locking `ALTER`.
 - Read-modify-write under contention uses `lockForUpdate()` within the
   action's transaction.
