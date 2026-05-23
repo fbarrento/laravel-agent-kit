@@ -30,16 +30,16 @@ Date/time columns use the **immutable** cast types (`immutable_datetime` / `immu
 
 ## Property Annotations
 
-Every model carries a class-level docblock annotating **every** attribute and relation it exposes — `@property` for persisted columns and casts, `@property-read` for relations, accessors, and appended values. The annotated type matches the cast: a nullable column is `?T`, an enum cast is the enum type, an `immutable_datetime` column is `CarbonImmutable`.
+Every model carries a class-level docblock annotating **every** attribute and relation it exposes as `@property-read` — persisted columns, casts, accessors, appended values, and relations alike. Never `@property`. The annotated type matches the cast: a nullable column is `?T`, an enum cast is the enum type, an `immutable_datetime` column is `CarbonImmutable`.
 
 ```php
 /**
- * @property string $id
- * @property string $email
- * @property ?string $name
- * @property WaitlistStatus $status
- * @property CarbonImmutable $created_at
- * @property CarbonImmutable $updated_at
+ * @property-read string $id
+ * @property-read string $email
+ * @property-read ?string $name
+ * @property-read WaitlistStatus $status
+ * @property-read CarbonImmutable $created_at
+ * @property-read CarbonImmutable $updated_at
  * @property-read Organization $organization
  */
 final class WaitlistSignup extends Model
@@ -48,7 +48,7 @@ final class WaitlistSignup extends Model
 }
 ```
 
-**Why:** Eloquent attributes are magic — they are not declared PHP properties, so without the docblock the IDE and PHPStan cannot see them: every `$model->email` is an unchecked guess, and a typo or a renamed column fails silently at runtime instead of at analysis time. The annotation block is the model's typed public surface; keeping it complete and in sync with the casts is what lets static analysis catch attribute and type mistakes before they ship.
+**Why:** Eloquent attributes are magic — they are not declared PHP properties, so without the docblock the IDE and PHPStan cannot see them: every `$model->email` is an unchecked guess, and a typo or a renamed column fails silently at runtime instead of at analysis time. Marking them all `@property-read` adds the second guarantee — attributes are **read** off a model, never mutated by direct assignment (`$model->email = …`); writes go through actions and mass-assignment arrays (`create`/`update`/`fill`), consistent with CQRS ([../architecture/cqrs.md](../architecture/cqrs.md)). Static analysis then flags a stray in-place write as well as an unknown attribute. Keep the block complete and in sync with the casts.
 
 ## Scopes
 
@@ -102,7 +102,7 @@ The expected array keys should match the public serialized shape, including hidd
 - Include enum casts for enum-backed columns.
 - Include decimal precision in decimal casts.
 - Include timestamp casts rather than relying on Laravel defaults; date/datetime columns use the `immutable_*` casts.
-- Annotate every attribute and relation in the model's class docblock (`@property` / `@property-read`), with types matching the casts.
+- Annotate every attribute and relation in the model's class docblock as `@property-read` (never `@property`), with types matching the casts.
 - Do not add local or global model scopes.
 - Do not use the `SoftDeletes` trait; deletes are hard deletes (retain
   history via an append-only table, not `deleted_at`).
