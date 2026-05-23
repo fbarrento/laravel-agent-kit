@@ -23,14 +23,25 @@ captured at dispatch time may be out of date — or reference a row that
 changed or was deleted — by the time the job runs.
 
 ```php
-// Good — job carries a lean data object of scalars/IDs; action re-fetches
-ProcessSignup::dispatch(new ProcessSignupData(
-    waitlistSignupId: $signup->id,
-    locale: $signup->locale,
-));
+// Good — fields are scalars/IDs; built via ::from() like any Data object;
+// the action re-fetches the model by id inside handle()
+final class ProcessSignupData extends Data
+{
+    public function __construct(
+        public readonly string $waitlistSignupId,
+        public readonly string $locale,
+    ) {}
+}
 
-// Bad — a model embedded in the queued payload: heavy and stale on run
-ProcessSignup::dispatch(new ProcessSignupData(signup: $signup));
+ProcessSignup::dispatch(ProcessSignupData::from($signup));
+
+// Bad — an Eloquent model as a field: serialized whole and stale on run
+final class ProcessSignupData extends Data
+{
+    public function __construct(
+        public readonly WaitlistSignup $signup,
+    ) {}
+}
 ```
 
 ## Rule: do not hand-roll `__serialize` / `__unserialize` to paper over Spatie
@@ -50,31 +61,34 @@ objects.
 internal state representation, which changes between versions — exactly
 the kind of drift the queue will surface in production, not in tests.
 
-## Decision: Spatie `Data` or a plain readonly DTO?
+## Decision: keep Spatie `Data`, or drop to a plain DTO?
 
-Both are valid; choose by what the object needs at its boundary:
+**Default: keep Spatie `Data`.** A Data object is a plain PHP object and
+serializes onto a queue fine in the common case — so the everyday object,
+including collections (built with `::collect()`), stays Spatie `Data`
+created via `::from()` ([spatie-laravel-data.md](spatie-laravel-data.md)).
+Carrying IDs (rule above) is what keeps a queued payload lean, not
+abandoning the package.
 
-- **Spatie `Data`** — use at the edges that need its powers: request
-  hydration, validation, casting/transforming, response mapping (HTTP and
-  API). See [spatie-laravel-data.md](spatie-laravel-data.md).
-- **Plain readonly DTO implementing `Arrayable` + `JsonSerializable`** —
-  use for internal, serialization-sensitive payloads (queued jobs,
-  internal carriers) where you need none of Spatie's machinery. No
-  package magic means nothing surprising to serialize.
+Drop to a **plain readonly DTO implementing `Arrayable` +
+`JsonSerializable`** only as a last resort — when a specific Data object
+provably will not round-trip through the queue (a `Lazy`/partial edge
+case you cannot remove) and you need none of its boundary powers.
 
 ```php
-// Plain DTO escape hatch — no Spatie, trivially serializable
-final readonly class ProcessSignupData implements Arrayable, JsonSerializable
+// Plain DTO — the narrow exception. It has no ::from() pipeline, so it is
+// the one data object you legitimately construct with `new`.
+final readonly class LedgerExportData implements Arrayable, JsonSerializable
 {
     public function __construct(
-        public string $waitlistSignupId,
-        public string $locale,
+        public string $organizationId,
+        public string $period,
     ) {}
 
-    /** @return array{waitlistSignupId: string, locale: string} */
+    /** @return array{organizationId: string, period: string} */
     public function toArray(): array
     {
-        return ['waitlistSignupId' => $this->waitlistSignupId, 'locale' => $this->locale];
+        return ['organizationId' => $this->organizationId, 'period' => $this->period];
     }
 
     public function jsonSerialize(): array
@@ -84,10 +98,10 @@ final readonly class ProcessSignupData implements Arrayable, JsonSerializable
 }
 ```
 
-**Why:** because [jobs already carry IDs](../jobs/conventions.md), *most*
-data objects never touch a queue — so the everyday object stays Spatie
-`Data`. The plain DTO is the lean exception for the narrow case that does
-cross the wire and needs no boundary powers.
+**Why:** Spatie `Data` is the consistent default everywhere — one way to
+build (`::from()`), one way to collect (`::collect()`), casts and mapping
+always applied. Reaching for a plain DTO routinely fragments that
+consistency; reserve it for the rare object the queue genuinely rejects.
 
 ## Edge cases
 
@@ -103,7 +117,7 @@ cross the wire and needs no boundary powers.
   Eloquent models.
 - The job's action re-fetches models by ID inside `handle()`.
 - No bespoke `__serialize`/`__unserialize` added to dodge Spatie quirks.
-- Object type chosen via the Decision: Spatie `Data` at boundaries needing
-  its powers, plain `Arrayable`/`JsonSerializable` DTO for lean queued
-  payloads.
+- Spatie `Data` (built via `::from()`, collected via `::collect()`) is the
+  default on queues too; a plain DTO is a last resort for an object that
+  provably will not round-trip.
 - No secrets in queued payloads.

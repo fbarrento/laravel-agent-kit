@@ -8,6 +8,51 @@ Verify the exact API (attribute names, mappers, `Optional`, collections)
 with `search-docs` against the installed version — the syntax below is
 illustrative.
 
+## Rule: construct with `::from()` — never `new`
+
+Always create a Spatie Data object through `::from()`, passing a request,
+Eloquent model, array, or JSON. Never instantiate one with `new`.
+
+**Why:** `::from()` runs the full pipeline — casts, transformers, name
+mapping, and `Optional` resolution. `new` bypasses all of it: casts never
+fire (you store raw input instead of the typed value), mapping is
+skipped, and you must hand-build every `Optional` yourself. Forget one
+and a property that should be *absent* becomes an unintended `null` —
+silently changing the output contract (see the `Optional` rule below).
+
+```php
+// Good — from() resolves casts, mapping, and Optionals from any source
+$data = CreateOrganizationData::from($request->all());  // request / array
+$data = CreateOrganizationData::from($organization);     // Eloquent model
+$data = CreateOrganizationData::from($payloadJson);      // JSON string
+
+// Bad — new bypasses casts/mapping and forces hand-built Optionals
+$data = new CreateOrganizationData(name: 'Acme', vat: new Optional());
+```
+
+## Rule: build collections with the data class, not raw arrays
+
+When you need a collection of data objects, build it with the data
+class's collection method (`::collect()`, or the typed collection your
+version provides) — not `array_map(fn () => new ...)`.
+
+**Why:** the collection method runs every item through `::from()`, so
+casts, transformers, and mapping apply uniformly across the set. A
+hand-mapped array of `new`-ed objects skips the pipeline per item and
+loses the type guarantees on serialization — the same trap as `new`, once
+per element.
+
+```php
+// Good — each item resolved through the pipeline
+$rows = CreateOrganizationData::collect($request->input('organizations'));
+
+// Bad — raw array of hand-constructed objects, pipeline skipped
+$rows = array_map(
+    fn (array $r) => new CreateOrganizationData(...$r),
+    $request->input('organizations'),
+);
+```
+
 ## Rule: `Optional` omits the field from output — mind API/frontend contracts
 
 A property typed `Type|Optional` that was not supplied is **excluded**
@@ -157,6 +202,8 @@ final class CapturePaymentData extends Data
 
 ## Checklist
 
+- Objects are constructed with `::from()` (and collections with
+  `::collect()`) — never `new`, so casts/mapping/`Optional` resolve.
 - `Optional` vs `null` chosen deliberately; the API/frontend output
   contract is intentional.
 - Writes use `->toArray()` with `->only()`/`->except()` or an explicit
