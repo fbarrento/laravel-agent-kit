@@ -52,7 +52,7 @@ Checklist**, with a **Decision** section where a rule is a choice.
   - [data-objects/spatie-laravel-data.md](rules/data-objects/spatie-laravel-data.md) — `Optional`, mapping, casts/transformers, `toArray()` in actions.
   - [data-objects/serialization.md](rules/data-objects/serialization.md) — queue boundary; IDs not models; plain-DTO escape hatch.
 - [value-objects/conventions.md](rules/value-objects/conventions.md) — immutable, self-validating, value equality; vs scalar/enum/data.
-- [enums/conventions.md](rules/enums/conventions.md) — backing, casting. _(stub)_
+- [enums/conventions.md](rules/enums/conventions.md) — string-backed, no `Enum` suffix, model cast, thin (pure-of-case behavior).
 - [exceptions/conventions.md](rules/exceptions/conventions.md) — specific business exceptions; static factory construction; map at boundary.
 - [jobs/conventions.md](rules/jobs/conventions.md) — no business logic; inject actions.
 - [events/conventions.md](rules/events/conventions.md) — event/listener shape. _(stub)_
