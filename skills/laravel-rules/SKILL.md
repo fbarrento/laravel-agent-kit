@@ -37,6 +37,7 @@ Checklist**, with a **Decision** section where a rule is a choice.
 - [architecture/cqrs.md](rules/architecture/cqrs.md) — actions write, queries read, services for external.
 - [architecture/dependency-injection.md](rules/architecture/dependency-injection.md) — inject over facades; contextual attributes.
 - [architecture/imports.md](rules/architecture/imports.md) — always import; no inline leading-backslash FQCN.
+- [architecture/classes.md](rules/architecture/classes.md) — `declare(strict_types=1)` per file; classes `final` by default (only `abstract` bases aren't); prefer composition over inheritance.
 - [architecture/transactions.md](rules/architecture/transactions.md) — transaction boundaries; after-commit; dispatch jobs only from actions.
 - [architecture/invariants.md](rules/architecture/invariants.md) — actions enforce invariants; throw specific business exceptions.
 
@@ -47,7 +48,7 @@ Checklist**, with a **Decision** section where a rule is a choice.
 **Building blocks** (internals of one class type)
 - [actions/conventions.md](rules/actions/conventions.md) — `handle()`, data-object inputs, simple-vs-orchestrator.
 - [queries/conventions.md](rules/queries/conventions.md) — fluent read-only query objects.
-- [models/conventions.md](rules/models/conventions.md) — explicit casts, no scopes, to-array test.
+- [models/conventions.md](rules/models/conventions.md) — explicit casts, no scopes, no soft deletes, to-array test.
 - [data-objects/conventions.md](rules/data-objects/conventions.md) — immutable typed payloads; create/update/response roles.
   - [data-objects/spatie-laravel-data.md](rules/data-objects/spatie-laravel-data.md) — `Optional`, mapping, casts/transformers, `toArray()` in actions.
   - [data-objects/serialization.md](rules/data-objects/serialization.md) — queue boundary; IDs not models; plain-DTO escape hatch.
@@ -60,7 +61,7 @@ Checklist**, with a **Decision** section where a rule is a choice.
 - [http/conventions.md](rules/http/conventions.md) — thin controllers; form-request validation; response data objects for output.
 
 **Infrastructure / runtime**
-- [database/migrations.md](rules/database/migrations.md) — UUID PK, forward-only, no cascades/defaults/DB-enums.
+- [database/migrations.md](rules/database/migrations.md) — ordered-UUID PK, forward-only, always-constrained FKs, no cascades/defaults/DB-enums/soft-deletes.
 - [database/schema.md](rules/database/schema.md) — portable types, NOT NULL default, constraints back invariants, money as integer cents.
 - [database/performance.md](rules/database/performance.md) — index real patterns, no N+1, bound large reads.
 - [database/large-tables.md](rules/database/large-tables.md) — online schema changes at scale; split add/backfill/constrain; lock timeouts.

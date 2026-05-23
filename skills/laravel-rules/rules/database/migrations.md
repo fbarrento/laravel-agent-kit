@@ -29,13 +29,25 @@ $table->timestamps();
 
 ## Foreign Keys
 
-Always use `foreignIdFor()` for foreign keys and always constrain them:
+Always use `foreignIdFor()` for foreign keys and **always** constrain them:
 
 ```php
 $table->foreignIdFor(User::class)->constrained();
 ```
 
-Never use cascading deletes or cascading updates in migrations. Domain behavior should be explicit in actions, not hidden in database cascade rules.
+The constraint is not optional. Without it, deleting a parent while child
+rows still reference it silently leaves orphaned rows — no exception, just
+stale data, which is also a GDPR liability when those children hold
+personal data you believe was deleted. A constrained foreign key instead
+*throws* on the forgotten child, forcing the deletion to be explicit and
+complete.
+
+Never use cascading deletes or cascading updates in migrations. Domain
+behavior must be explicit in actions, not hidden in database cascade
+rules: the action deletes children before the parent, inside one
+transaction ([../architecture/transactions.md](../architecture/transactions.md)).
+So a constrained FK with no cascade is exactly the safety net — it blocks
+an incomplete delete instead of silently orphaning or silently cascading.
 
 ## Defaults And Enums
 
@@ -52,8 +64,12 @@ Never define a `down()` method. Migrations are forward-only in this project.
 - UUID primary key via `$table->uuid('id')->primary()`, generated
   app-side and **time-ordered** (never random UUIDv4).
 - `$table->timestamps()` appears immediately after the primary key.
-- Foreign keys use `foreignIdFor(...)->constrained()`.
-- No `cascadeOnDelete()`, `cascadeOnUpdate()`, or equivalent cascade behavior.
+- Foreign keys use `foreignIdFor(...)->constrained()` — always
+  constrained, so a forgotten child throws instead of orphaning data.
+- No `cascadeOnDelete()`, `cascadeOnUpdate()`, or equivalent cascade
+  behavior; children are deleted explicitly in the action's transaction.
+- No `SoftDeletes` — deletes are hard deletes (see
+  [../models/conventions.md](../models/conventions.md)).
 - No column defaults.
 - No database enum columns.
 - No `down()` method.
