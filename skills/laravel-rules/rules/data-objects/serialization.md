@@ -2,9 +2,10 @@
 
 What happens when a data object is carried by a queued job, and how to
 keep it lean and correct. Read alongside [conventions.md](conventions.md)
-and [../jobs/conventions.md](../jobs/conventions.md). The Spatie-version
-specifics below should be confirmed with `search-docs` / the app's
-`composer.lock` before relying on them.
+and [../jobs/conventions.md](../jobs/conventions.md). The queue/serialization
+behavior below is framework-level (PHP `serialize()` + `SerializesModels`)
+and holds regardless of `spatie/laravel-data` version; if a `Lazy`/`Optional`
+object fights the queue, fall back to the rules here rather than patching.
 
 ## Rule: a queued data object carries IDs and scalars, never Eloquent models
 
