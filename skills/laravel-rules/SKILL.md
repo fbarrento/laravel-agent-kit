@@ -41,6 +41,7 @@ Checklist**, with a **Decision** section where a rule is a choice.
 - [architecture/scaffolding.md](rules/architecture/scaffolding.md) — always create classes via `php artisan make:*`; customize stubs for strict-types/`final`; concept→command catalog.
 - [architecture/transactions.md](rules/architecture/transactions.md) — transaction boundaries; after-commit; dispatch jobs only from actions.
 - [architecture/invariants.md](rules/architecture/invariants.md) — actions enforce invariants; throw specific business exceptions.
+- [architecture/dates.md](rules/architecture/dates.md) — dates are always `CarbonImmutable`; global `Date::use`, `immutable_*` casts, reassign transforms.
 
 **Patterns** (optional techniques)
 - [patterns/pipeline.md](rules/patterns/pipeline.md) — staged, swappable workflows; stages wrap actions.

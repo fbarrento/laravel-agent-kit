@@ -26,6 +26,30 @@ Every Eloquent model must cast every persisted attribute in `casts(): array`, in
 
 Do not rely on Laravel's implicit timestamp casts when editing or creating a model. Keep casts explicit and complete.
 
+Date/time columns use the **immutable** cast types (`immutable_datetime` / `immutable_date`), never the mutable `datetime` / `date` casts — see [../architecture/dates.md](../architecture/dates.md).
+
+## Property Annotations
+
+Every model carries a class-level docblock annotating **every** attribute and relation it exposes — `@property` for persisted columns and casts, `@property-read` for relations, accessors, and appended values. The annotated type matches the cast: a nullable column is `?T`, an enum cast is the enum type, an `immutable_datetime` column is `CarbonImmutable`.
+
+```php
+/**
+ * @property string $id
+ * @property string $email
+ * @property ?string $name
+ * @property WaitlistStatus $status
+ * @property CarbonImmutable $created_at
+ * @property CarbonImmutable $updated_at
+ * @property-read Organization $organization
+ */
+final class WaitlistSignup extends Model
+{
+    // ...
+}
+```
+
+**Why:** Eloquent attributes are magic — they are not declared PHP properties, so without the docblock the IDE and PHPStan cannot see them: every `$model->email` is an unchecked guess, and a typo or a renamed column fails silently at runtime instead of at analysis time. The annotation block is the model's typed public surface; keeping it complete and in sync with the casts is what lets static analysis catch attribute and type mistakes before they ship.
+
 ## Scopes
 
 Never implement Eloquent scopes on models. Model scopes hide query behavior behind Laravel magic and make it harder to understand what is being called and when.
@@ -77,7 +101,8 @@ The expected array keys should match the public serialized shape, including hidd
 - Cast all persisted columns explicitly.
 - Include enum casts for enum-backed columns.
 - Include decimal precision in decimal casts.
-- Include timestamp casts rather than relying on Laravel defaults.
+- Include timestamp casts rather than relying on Laravel defaults; date/datetime columns use the `immutable_*` casts.
+- Annotate every attribute and relation in the model's class docblock (`@property` / `@property-read`), with types matching the casts.
 - Do not add local or global model scopes.
 - Do not use the `SoftDeletes` trait; deletes are hard deletes (retain
   history via an append-only table, not `deleted_at`).
