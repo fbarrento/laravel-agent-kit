@@ -1,5 +1,7 @@
 # Observers (guardrail)
 
+> **[Observer](../../LANGUAGE.md)** is defined in `LANGUAGE.md` (a guardrail term); this file owns the grammar.
+
 Model observers — framed as a **guardrail**. Consistent with the
 no-model-magic stance (explicit reads, no query scopes), observers are
 discouraged: they hide side effects behind Eloquent lifecycle hooks. This

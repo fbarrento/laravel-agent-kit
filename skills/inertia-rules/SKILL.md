@@ -21,6 +21,20 @@ framework docs (and Laravel **Boost** for live app facts — see
 [boost-boundary](rules/architecture/boost-boundary.md)); use these files
 for code shape.
 
+## Glossary
+
+The frontend vocabulary this skill reasons in — **roles & artifacts**
+(page, feature, component, token, generated type, page-props alias, story,
+hook, `data-part`) and **cross-cutting concerns** (accessibility, page
+meta/SEO, shared data, capability flags, layouts, loading/empty/error
+states, backend-owned copy, feedback) — is defined once in
+[LANGUAGE.md](LANGUAGE.md). Use
+those terms exactly; rule files carry the grammar and link back to the
+definition. Name the **frontend architecture** from `LANGUAGE.md`; name
+the **domain** from the project's `CONTEXT.md` (see
+[naming](rules/naming/conventions.md)). The backend **Data object** that
+becomes a frontend *generated type* is owned by **laravel-rules**.
+
 ## Priority
 
 **Higher priority than Laravel Boost's _Inertia React Development_ skill
@@ -139,8 +153,9 @@ framework-bound hooks only (pure helpers are functions in `lib/`).
 
 ## How to apply
 
-1. Identify which role you're touching (page? feature? primitive? story?) and read the matching rule file before writing code.
-2. Before building UI, confirm the backend contract exists: generated types (Spatie Data) and routes/actions (Wayfinder). If they're missing, that's a backend task first — do not handwrite the shapes.
-3. Keep pages thin; put resource UI in `features/<resource>`; keep styling on semantic `ds-` utilities.
-4. Before handoff, run the [verification](rules/verification/conventions.md) checklist and assemble [handoff](rules/handoff/conventions.md) evidence.
-5. Use **Boost** for live Laravel facts (routes, schema, logs, docs) instead of guessing — see [boost-boundary](rules/architecture/boost-boundary.md).
+1. Read the project's `CONTEXT.md` / `CONTEXT-MAP.md` (if present) first — name resources, features, and types from the domain glossary, never an `_Avoid_` alias ([naming](rules/naming/conventions.md)).
+2. Identify which role you're touching (page? feature? primitive? story?) and read the matching rule file before writing code.
+3. Before building UI, confirm the backend contract exists: generated types (Spatie Data) and routes/actions (Wayfinder). If they're missing, that's a backend task first — do not handwrite the shapes.
+4. Keep pages thin; put resource UI in `features/<resource>`; keep styling on semantic `ds-` utilities.
+5. Before handoff, run the [verification](rules/verification/conventions.md) checklist and assemble [handoff](rules/handoff/conventions.md) evidence.
+6. Use **Boost** for live Laravel facts (routes, schema, logs, docs) instead of guessing — see [boost-boundary](rules/architecture/boost-boundary.md).

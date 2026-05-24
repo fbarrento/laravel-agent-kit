@@ -4,6 +4,31 @@ Cross-cutting naming for `resources/js`. Consistent names are what let a
 flat, feature-sliced layout stay navigable — you find a file by guessing
 its name, not by browsing folders.
 
+The **kinds** being named (page, feature, component, generated type,
+page-props alias, hook, `data-part`) are defined in
+[../../LANGUAGE.md](../../LANGUAGE.md); the rules below say how to spell
+them.
+
+## Rule: domain names come from `CONTEXT.md`
+
+`LANGUAGE.md` names the **frontend architecture** (page, feature,
+generated type); the project's `CONTEXT.md` names the **domain** (Signup,
+Invoice, Vehicle). A resource folder, feature, or type alias is named with
+the **domain** term — `features/vehicles/`, `VehicleListItem` — where
+`vehicle` is the `CONTEXT.md` term (matching the backend route resource).
+
+- If the repo has a `CONTEXT.md` / `CONTEXT-MAP.md`, name every domain
+  concept with **its** term, and never with a term that glossary lists
+  under `_Avoid_`. Keep the frontend resource name aligned with the
+  backend route resource and the `CONTEXT.md` term — all three should read
+  the same.
+- If the concept isn't in the glossary, that's a signal — either you're
+  inventing language the project doesn't use (reconsider) or there's a
+  real gap; surface it and suggest `/grill-with-docs` rather than coining
+  a term silently.
+- No `CONTEXT.md` at all → proceed silently. The glossary is produced by
+  `/grill-with-docs`, not by this skill.
+
 ## Rule: casing by kind
 
 | Kind | Casing | Example |

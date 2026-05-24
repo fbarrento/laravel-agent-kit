@@ -1,5 +1,7 @@
 # Design-system tokens
 
+> **[Token](../../LANGUAGE.md)** is defined in `LANGUAGE.md`; this file owns the three-tier model.
+
 A three-tier token model so brand/theme values change in one place and
 component code never does. App code consumes semantic utilities; the
 values behind them move freely.

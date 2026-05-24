@@ -1,5 +1,7 @@
 # Query Rules
 
+> **[Query](../../LANGUAGE.md)** is defined in `LANGUAGE.md`; this file owns the grammar.
+
 Queries are the **read side** of CQRS: fluent, read-only query objects in
 flat `app/Queries`, `Query`-suffixed, `final`, `declare(strict_types=1)`
 ([../architecture/classes.md](../architecture/classes.md)). They are the
@@ -91,7 +93,7 @@ a mutable, lazy-loading, column-leaking model. The same query can offer
 both — a terminal for writes, a projection for reads — and the consumer
 picks.
 
-## Rule: projection is the generic `ProjectsToData` trait → `toData()`
+## Rule: projection is the generic `TransformsToData` trait → `toData()`
 
 A query that feeds the read path adds the projection trait, generic over
 the model **and** the target `Data` class. The query supplies the
@@ -113,13 +115,13 @@ interface ReadsRecords
     /** @return Collection<int, TModel> */ public function get(): Collection;
 }
 
-// app/Queries/Concerns/ProjectsToData.php
+// app/Queries/Concerns/TransformsToData.php
 /**
  * @template TModel of Model
  * @template TData of Data
  * @phpstan-require-implements ReadsRecords<TModel>
  */
-trait ProjectsToData
+trait TransformsToData
 {
     /** @param TModel $model @return TData */
     abstract public function toData(Model $model): Data;
@@ -135,12 +137,12 @@ trait ProjectsToData
 /**
  * @implements ReadsRecords<Article>
  * @use QueriesRecords<Article>
- * @use ProjectsToData<Article, ArticleData>
+ * @use TransformsToData<Article, ArticleData>
  */
 final class ListArticlesQuery implements ReadsRecords
 {
     use QueriesRecords;
-    use ProjectsToData;
+    use TransformsToData;
 
     public function __invoke(): self { $this->builder = Article::query(); return clone $this; }
     public function published(): self { $this->builder->where('published', true); return $this; }
@@ -153,7 +155,7 @@ final class ListArticlesQuery implements ReadsRecords
 }
 ```
 
-**Why an interface, used only when projecting:** `ProjectsToData` calls
+**Why an interface, used only when projecting:** `TransformsToData` calls
 `$this->get()` but does not declare it; `@phpstan-require-implements`
 types that call without redeclaring `get()` (which would cause an
 abstract-vs-concrete trait collision). A pure model query skips the
@@ -195,7 +197,7 @@ and the `toData()` / `toDataCollection()` projection.
   or inherited.
 - Return shape follows CQRS: terminal → model (write path); projection →
   `Data` (read/response path).
-- Projection uses `ProjectsToData<TModel, TData>` with a single-item
+- Projection uses `TransformsToData<TModel, TData>` with a single-item
   `toData()`; the query implements `ReadsRecords` only when it projects.
 - No model scopes; reusable read filters are query methods.
 - No `toResult`/result objects — project to a Spatie `Data` object.

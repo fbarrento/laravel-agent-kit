@@ -1,5 +1,7 @@
 # Component roles
 
+> **[Component](../../LANGUAGE.md)** (primitive / app / feature) is defined in `LANGUAGE.md`; this file owns the contracts.
+
 Three component roles, each with a different contract. The role decides
 what a component may know and what it must ship with.
 

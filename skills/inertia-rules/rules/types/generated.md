@@ -1,5 +1,7 @@
 # Generated backend-derived types
 
+> **[Generated type](../../LANGUAGE.md)** is defined in `LANGUAGE.md` (the frontend face of a backend Data object, owned by laravel-rules); this file owns the grammar.
+
 PHP is the source of truth for every backend-derived shape: page props,
 DTOs, enums, form payloads, filters, validation field names, capability
 flags, and routes/actions. The frontend **imports** these contracts; it

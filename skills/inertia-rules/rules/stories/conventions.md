@@ -1,5 +1,7 @@
 # Stories
 
+> **[Story](../../LANGUAGE.md)** is defined in `LANGUAGE.md`; this file owns the contract.
+
 Storybook is the runtime contract for **reusable UI** — primitives, app
 components, and eligible feature components. Stories are executable
 component contracts, not a marketing doc site, and not a replacement for
