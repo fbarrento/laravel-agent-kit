@@ -18,8 +18,13 @@ what a component may know and what it must ship with.
 directly.** A primitive encapsulates each visual decision as a named
 **variant** (`tone`, `variant`, `size`); consumers select appearance by
 passing those props, never by writing `ds-` classes themselves (see the
-appearance rule below). Layout primitives (`Stack`, `Grid`, `Row`) are
-primitives too — they own the spacing scale. Requirements:
+appearance rule below). Layout primitives (e.g. a `Stack`, an `Inline`, a
+`Grid`, a generic `Box`) are primitives too — they own the spacing scale and
+emit the raw layout tags. **All markup lives here:** every raw HTML element the
+app renders is emitted by a `components/ui` primitive; features, pages, and
+layouts hand-write none (see the no-raw-HTML rule below). The primitive names
+are illustrative — a project may spell them differently — but the boundary is
+not. Requirements:
 
 - colocated story (required);
 - small typed public API; finite variant/size sets, all represented in the
@@ -89,9 +94,11 @@ it in the feature folder (not in a primitive or app component) preserves
 the reusability of the lower roles and keeps the resource's surface
 together.
 
-## Rule: appearance is variant props; arrangement is layout primitives + structural utilities
+## Rule: appearance is variant props; arrangement is layout primitives
 
-Two separate axes, two separate mechanisms:
+Two separate axes, two separate mechanisms — and **both** are owned by
+primitives, so a feature/page/layout writes neither raw `ds-` classes nor raw
+structural utilities:
 
 - **Appearance** (color, intent, emphasis, size) is selected by passing a
   primitive's **variant props** — `<Badge tone="danger" variant="outlined">` —
@@ -99,27 +106,91 @@ Two separate axes, two separate mechanisms:
   **add a variant to the primitive**; never inline a one-off `ds-` value in a
   feature/app/page.
 - **Arrangement** (rows, stacks, grids, spacing between regions) uses the
-  layout **primitives** (`Stack`/`Grid`/`Row`) for the common cases, with raw
-  **structural** utilities (`flex`, `grid`, `gap`, sizing) as an escape for
-  one-off layouts — including structural arbitrary values like
-  `grid-cols-[1fr_auto]`. Structural utilities are *not* `ds-` tokens, so they
-  are allowed outside `ui` ([styling.md](styling.md)).
+  layout **primitives** — a vertical stack, a horizontal inline row, a grid, a
+  generic box — selecting spacing/alignment through **their props**
+  (`gap`/`align`/`cols`). A consumer does **not** hand-write `flex`/`grid`/
+  `gap`/`items-*`/`justify-*` (or arbitraries like `grid-cols-[1fr_auto]`):
+  those are arrangement decisions, and arrangement is the layout primitive's
+  job. The only structural classes a consumer may pass are **positioning of
+  the element within its parent** (margin, width, `col-span`) — the narrow
+  `className` allow-list in [styling.md](styling.md).
 
 ```tsx
-// Good — appearance via props, arrangement via layout + structural utility
-<Stack direction="row" gap="3" align="center">
+// Good — appearance via props, arrangement via a layout primitive's props
+<Inline gap="3" align="center">
   <StatusPill tone="danger" variant="outlined" />
   <Text>{vehicle.name}</Text>
-</Stack>
+</Inline>
 
-// Bad — appearance hand-styled with ds- classes in a feature
-<div className="ds-text-danger ds-rounded-control">{vehicle.name}</div>
+// Bad — appearance hand-styled, arrangement hand-rolled on a raw tag
+<div className="flex items-center gap-3 ds-text-danger">{vehicle.name}</div>
 ```
 
 **Why:** routing every visual decision through a primitive's variants is what
-keeps tokens in `ui` (the theme-swap guarantee). Splitting arrangement off as
-a separate, token-free axis lets layout be expressed freely without leaking
-design tokens upward.
+keeps tokens in `ui` (the theme-swap guarantee); routing every *arrangement*
+decision through a layout primitive is what keeps structure consistent and
+greppable instead of re-derived `flex`/`gap` strings scattered across pages.
+Both axes collapse to the same boundary — markup, tokens, and layout all live
+in `components/ui`, and nothing above it hand-writes HTML.
+
+## Rule: features, pages, and layouts contain no raw HTML — only components
+
+`resources/js/{features,pages,layouts}/**` render **components, not tags**.
+A raw `<div>`, `<span>`, `<p>`, `<h1>`–`<h6>`, `<button>`, `<input>`, `<ul>`,
+`<li>`, `<section>`, `<header>`, `<nav>`, `<main>` does not appear there — each
+is emitted by a `components/ui` primitive instead. `components/ui` and the
+design-system/token files are **out of scope**: primitives are where raw HTML
+legitimately lives.
+
+This is the same boundary as the token rule, widened from *styling* to *all
+markup*: tokens, appearance, arrangement, **and the tags themselves** are
+owned below the `ui` line. The reasons primitives own tokens (one place to
+change, a typed/finite contract, a11y handled once) are exactly the reasons
+they own the markup.
+
+**A typical realization** (illustrative — a project may name and split these
+differently; the boundary is the rule, the vocabulary is an example):
+
+- generic container, padding/bg/radius/border via tokens → a `Box`;
+- vertical / horizontal / grid arrangement → a `Stack` / `Inline` / `Grid`,
+  spacing & alignment through props;
+- the type scale → a `Heading` (owns the document outline: a required `level`
+  drives the `h1`–`h6` tag, an independent `size` drives the visual scale) and
+  a `Text` for non-outline copy (`body`/`label`/`caption` via `p`/`span`;
+  never emits an `h*`);
+- mono/tabular figures → a `Numeric` that stays **domain-free** — a generic
+  `positive`/`negative` tone, not `gain`/`loss`; the domain meaning (which
+  direction is "good") is applied by a wrapper **above** `ui`. (`Numeric` is
+  the worked example of the no-domain-in-primitives clause above — not an
+  exception to it.)
+- semantic landmarks → a constrained, **typed** `as` on `Box` (a finite union,
+  not `string`), with the a11y label part of the type so `nav`/`aside` *cannot
+  compile* without an `aria-label` — a stronger guarantee than a lint;
+- list semantics → a dedicated `List` / `ListItem` pair, so the `ul`→`li`
+  parent–child contract is structural (TypeScript-checkable), not a loose
+  `Box as="ul"`;
+- existing primitives absorb the obvious cases: a raw `<button>` → `Button`,
+  `<input>` → `Input`, a card/panel `<div>` → `Card`, an "eyebrow"/tag
+  `<span>` → a `Badge` variant.
+
+A backend-provided SVG injected via `dangerouslySetInnerHTML` (e.g. a 2FA QR)
+is the documented exception — there is no component alternative.
+
+**Enforcement.** A lint that forbids raw HTML tags in `features/pages/layouts`
+(e.g. `react/forbid-elements`, scoped to exclude `components/ui` and stories)
+**plus** a `className`-content check are both required: `forbid-elements`
+alone cannot see through a polymorphic `as` (`<Box as="div" className="flex">`
+is a laundered `<div className="flex">`), so the second check forbids
+arrangement utilities (`flex`/`grid`/`gap-*`/`items-*`/`justify-*`/`grid-cols`)
+in any `className` there ([styling.md](styling.md)). Without both, the "zero
+raw tags" audit passes while scattered arrangement persists — the metric and
+the intent diverge.
+
+**Why:** one consistent, declarative composition layer above the `ui` line —
+no per-file styling, arrangement, or tag decisions to drift. a11y (semantic
+tags, labelled controls, list contracts) is handled once in the primitive that
+owns the tag; restyling or re-tagging is a primitive-level edit, not a sweep
+across every page.
 
 ## Decision: which role does this component belong to?
 
@@ -137,8 +208,13 @@ shared feature-to-feature.
 
 ## Checklist
 
-- Primitives: the only role that writes `ds-` tokens; domain-free, finite
-  typed variant/size API, colocated story. Layout primitives live here too.
+- Primitives: the only role that writes `ds-` tokens **and the only place raw
+  HTML tags appear**; domain-free, finite typed variant/size API, colocated
+  story. Layout primitives live here too.
+- Features/pages/layouts render only components — no raw `<div>`/`<span>`/
+  `<p>`/`<h*>`/`<button>`/`<ul>`/`<li>`/landmark tags (the `dangerouslySetInnerHTML`
+  backend-SVG exception aside). Enforced by forbid-elements **plus** a
+  `className`-content lint.
 - App components: domain-free, **token-free** (compose primitives; appearance
   via variant props), no resource names, colocated story. Lone exception: a
   framework-coupled styled component (`NavLink`) may use `ds-` here.
@@ -146,6 +222,8 @@ shared feature-to-feature.
   reusable/stateful. Domain-free UI is built in `components/app` instead
   (anticipatory); features never import each other.
 - Appearance via variant props (add a variant if none fits — never inline
-  `ds-`); arrangement via layout primitives + structural utilities.
+  `ds-`); arrangement via a layout primitive's props (never hand-written
+  `flex`/`grid`/`gap` in a consumer). `className` in app code is limited to the
+  positioning allow-list in [styling.md](styling.md).
 - Role chosen via the Decision above (domain, not use-count), not by where the
   file was first dropped.

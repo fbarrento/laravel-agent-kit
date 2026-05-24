@@ -39,7 +39,7 @@ disciplines that apply across them.
 |---|---|---|---|
 | **Page** | A thin route adapter (`pages/<resource>/*`): takes typed props, picks a layout, composes feature/app components. No workflow UI/formatting. Declares only its page-props alias. | [roles](rules/architecture/roles.md) | screen, view, container, controller |
 | **Feature** | Resource-local workflow UI + behavior (`features/<resource>/*`) — the tables, forms, hooks for **one** resource. Frontend counterpart to a backend resource. | [roles](rules/architecture/roles.md) | module, widget, section, partial |
-| **Component** | Reusable UI in one of three roles: **primitive** (`ui/*`, domain-free, owns `ds-` tokens, defines variants), **app** (`app/*`, generic), **feature** (`features/<resource>/*`, knows one resource). | [components](rules/design-system/components.md) | "component" for a page/layout; styling a primitive via `ds-` classes from outside |
+| **Component** | Reusable UI in one of three roles: **primitive** (`ui/*`, domain-free, owns `ds-` tokens, defines variants, **and is the only place raw HTML tags live**), **app** (`app/*`, generic), **feature** (`features/<resource>/*`, knows one resource). | [components](rules/design-system/components.md) | "component" for a page/layout; styling a primitive via `ds-` classes from outside; hand-writing raw HTML or `flex`/`gap` in a feature/page/layout |
 | **Token** | A design-system value in the **three-tier** model: Tier 1 raw primitives → Tier 2 semantic `--ds-*` → Tier 3 Tailwind `ds-` utility bridge. App code consumes `ds-` utilities. | [tokens](rules/design-system/tokens.md) | raw hex/px in component code; a hard-coded Tailwind class where a `ds-` utility exists |
 | **Generated type** | A read-only `*Data` type imported from `@/types/generated` (from Spatie Data / PHP enums). The backend **Data object** (**laravel-rules**) as it arrives on the frontend — never handwritten. | [generated](rules/types/generated.md) | handwriting page-prop/enum/form-value types; duplicating a backend contract; "interface" for a backend-derived shape |
 | **Page-props alias** | The **local, un-exported** alias a page declares for its generated `*PageData` (`type VehicleIndexPageProps = VehicleIndexPageData`). Feature-type aliases are optional sugar. | [naming](rules/naming/conventions.md) | exporting page-props; reusing one page's props type in another |
@@ -79,5 +79,8 @@ disciplines that apply across them.
 - **Handwriting backend-derived shapes** "to move faster." A handwritten
   copy is a second source of truth that drifts silently — always import the
   **generated type**.
-- **Styling app code with raw `ds-`/Tailwind values.** Appearance comes from
-  a **primitive's** variants; only primitives touch **tokens**.
+- **Styling app code with raw `ds-`/Tailwind values, or hand-writing raw HTML /
+  `flex`·`grid`·`gap` in features/pages/layouts.** Appearance comes from a
+  **primitive's** variants and arrangement from a layout primitive's props;
+  only primitives touch **tokens**, emit raw **markup**, or write arrangement
+  utilities.
