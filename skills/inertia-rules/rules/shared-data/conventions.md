@@ -73,6 +73,22 @@ visits; a manual `document.title` write isn't tracked and gets clobbered
 on the next navigation. The global callback keeps the app-name suffix in
 one place instead of every page.
 
+## Rule: `seo` (document meta) and `copy` (on-page text) are separate props
+
+The `<Head>` is driven by the page's `seo` prop (title/description/meta) — a
+different concern from `copy` (the visible `<h1>`/body). They stay separate even
+when their values coincide: `seo.title` serves SERPs and the browser tab,
+`copy.title` serves people already on the page. Feed `<Head title={seo.title} />`
+from `seo` and headings from `copy`. The backend sends `seo.title` **raw**
+(`"Teams"`); the app-name suffix is the `createInertiaApp` `title` callback's job
+(above), never baked into the prop. The `seo`/`PageSeoData` shape is owned by
+laravel-rules `data-objects/inertia-page-data`.
+
+```tsx
+<Head title={seo.title} />     {/* meta — raw title, suffix added by the global callback */}
+<h1>{copy.title}</h1>          {/* on-page copy — a separate field */}
+```
+
 ## Rule: page copy still comes from the backend, not shared dictionaries
 
 Shared data is for *state* (who's logged in, a flash message), not for a
@@ -89,4 +105,6 @@ domain copy come from the backend too.
   the global `errors` prop.
 - Title/meta set via `<Head>` (+ global `title` callback, `head-key`
   dedup); no `document.title` writes.
+- `seo` (meta) and `copy` (on-page text) are separate props; `seo.title` is the
+  raw backend title, suffix applied by the global callback.
 - Shared data carries state, not a frontend copy/translation dictionary.

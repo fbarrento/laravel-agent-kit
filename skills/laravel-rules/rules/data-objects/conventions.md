@@ -81,6 +81,10 @@ than one model.
 array/JSON. A dual-purpose object accumulates "set sometimes" fields —
 exactly how nullable rot and leaky API payloads begin.
 
+When the frontend is **Inertia**, the response role takes a specific shape —
+one per-page `*PageData` object (`can`/`copy`/`seo`) — governed by
+[inertia-page-data.md](inertia-page-data.md).
+
 ## Rule: carry scalars, value objects, and IDs — not Eloquent models
 
 A data object's fields are primitives, [value objects](../value-objects/conventions.md),

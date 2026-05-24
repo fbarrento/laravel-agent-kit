@@ -37,7 +37,8 @@ code shape**, and where the two differ on shape, **these win**:
   render lists/forms inline ([architecture/roles.md](rules/architecture/roles.md));
 - user-facing text/format comes from **backend props**, not inline strings
   ([types/formatting.md](rules/types/formatting.md));
-- styling is **semantic `ds-` utilities**, not raw Tailwind
+- styling flows through **design-system primitives and their variant props**
+  (`ds-` tokens live in `ui`), not raw Tailwind or inline `ds-` in features
   ([design-system/styling.md](rules/design-system/styling.md));
 - one export per file, reusable UI gets a story, etc.
 
@@ -76,7 +77,8 @@ resources/js/
   components/app/*          reusable, generic app components
   layouts/*                 app shells
   lib/*                     pure, framework-free helpers
-  types/generated/*         read-only backend-derived types (generators own these)
+  hooks/*                   generic, framework-bound hooks (bottom tier, peer of lib/)
+  types/generated.ts        read-only backend-derived types (one generated module; gitignored, regenerated)
   types/shared/*            small generic frontend-only types
 ```
 
@@ -84,23 +86,25 @@ resources/js/
 Laravel owns. Backend-derived types, user-facing copy, translation, and
 locale-sensitive formatting come from PHP through Inertia props. The
 frontend composes UI, handles interaction, and renders display-ready
-values. No global `queries/`, `actions/`, `forms/`, `hooks/`, or
-`composables/` folders — resource behavior lives in `features/<resource>`.
+values. No *resource* behaviour in a global bucket — a resource's UI lives in
+`features/<resource>`; no top-level `queries/`/`forms/`/`composables/`. The one
+hand-written global bucket is `hooks/`, for **generic** (non-resource)
+framework-bound hooks only (pure helpers are functions in `lib/`).
 
 ## Rule index
 
 **Architecture**
-- [architecture/roles.md](rules/architecture/roles.md) — the role graph, page=thin-adapter, resource-controller→page mapping, import boundaries, no global behavior folders.
+- [architecture/roles.md](rules/architecture/roles.md) — the role graph, page=thin-adapter, resource-controller→page mapping, downward import boundaries, the hook-placement decision tree (pure→lib / resource→features / generic→`hooks/` bottom tier).
 - [architecture/boost-boundary.md](rules/architecture/boost-boundary.md) — use Boost for Laravel facts; this layer for Inertia/frontend discipline; the required agent loop.
 
 **Types**
-- [types/generated.md](rules/types/generated.md) — Spatie Data + typescript-transformer + Wayfinder; the three type-ownership zones; never handwrite backend-derived types.
+- [types/generated.md](rules/types/generated.md) — Spatie Data + typescript-transformer (flat named imports from one gitignored, Vite-regenerated module) + Wayfinder; three type-ownership zones; never handwrite or re-narrow backend-derived types.
 - [types/formatting.md](rules/types/formatting.md) — backend owns formatting/translation; what is banned in render paths; what frontend formatting is allowed.
 
 **Design system**
 - [design-system/tokens.md](rules/design-system/tokens.md) — three-tier token model (primitives → semantic `--ds-*` → Tailwind bridge), bridge prefix rule, import order.
-- [design-system/styling.md](rules/design-system/styling.md) — allowed vs disallowed utilities; the styling decision procedure.
-- [design-system/components.md](rules/design-system/components.md) — primitive vs app vs feature component roles and their requirements.
+- [design-system/styling.md](rules/design-system/styling.md) — `ds-` tokens live in `ui` primitives (via variants); consumers pass variant props; structural utilities + layout primitives for arrangement; the decision procedure.
+- [design-system/components.md](rules/design-system/components.md) — primitive/app/feature roles; `ui` owns tokens, `app` is token-free (bar the `NavLink` exception); anticipatory + domain-free promotion; appearance-via-variants, arrangement-via-layout-primitives.
 
 **Runtime behavior** (Inertia v3)
 - [forms/conventions.md](rules/forms/conventions.md) — `<Form>` vs `useForm`, Wayfinder actions, server-owned validation errors, processing/reset, file uploads.
@@ -111,13 +115,14 @@ values. No global `queries/`, `actions/`, `forms/`, `hooks/`, or
 - [performance/conventions.md](rules/performance/conventions.md) — lazy page code-splitting (don't go eager), `React.lazy` for heavy feature components, Vite-driven asset versioning; optimize against measured cost.
 
 **Stories**
-- [stories/conventions.md](rules/stories/conventions.md) — Storybook as the reusable-UI runtime contract, required stories, required states, typed fixtures.
+- [stories/conventions.md](rules/stories/conventions.md) — Storybook as the reusable-UI runtime contract, required stories/states, typed fixtures, sidebar taxonomy + autodocs, foundation-page bar (live values/meaning/applying).
+- [stories/operations.md](rules/stories/operations.md) — project-CI gotchas for the headless suite (vite-plugin bypass, SSR-warmup noise, a11y gate, theme/viewport); not conventions.
 
 **Quality**
 - [state/conventions.md](rules/state/conventions.md) — server state from props; no client cache; ephemeral local state; derive don't store.
 - [loading-states/conventions.md](rules/loading-states/conventions.md) — explicit empty/loading/error; `<Deferred>` fallbacks; empty-state component; error boundaries.
 - [authorization/conventions.md](rules/authorization/conventions.md) — gate UI from backend `can.*` capability props; never reimplement authorization client-side; gating is UX, the server still authorizes.
-- [accessibility/conventions.md](rules/accessibility/conventions.md) — semantic HTML, labelled fields + associated errors, keyboard/focus, a11y in primitives.
+- [accessibility/conventions.md](rules/accessibility/conventions.md) — WCAG 2.2 AA target (laws set the level; confirm per project); semantic HTML, labelled fields + associated errors, keyboard/focus, a11y in primitives; "compliance" is build-to-standard + partial axe + human testing, not an agent certification.
 - [testing/conventions.md](rules/testing/conventions.md) — the test pyramid: story interaction vs Pest Browser route tests vs Vitest unit; test behavior not implementation.
 
 **Workflow & evidence**

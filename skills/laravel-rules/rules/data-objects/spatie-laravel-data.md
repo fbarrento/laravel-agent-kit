@@ -168,6 +168,15 @@ DB disagree on casing safely.
 - Shape a property for array/JSON output with a **transformer** —
   `CarbonImmutable` → ISO string via `#[WithTransformer(...)]`.
 
+**Type the property precisely — it is the frontend contract, too.** When a
+Data class feeds an Inertia page, the generated TypeScript (inertia-rules
+`types/generated`) is only as narrow as the PHP type. A property typed as
+the enum (or a precise Data class) generates a narrow TS type; a generic
+stringly-typed shape — `LabeledValue { value: string }` — generates
+`value: string` and forces a frontend re-narrow. Prefer `RoleData { value:
+TeamRole }` over a generic `value: string` so the type narrows **at the
+source**; the frontend never re-narrows.
+
 Custom casts live in `app/Data/Casts`, transformers in
 `app/Data/Transformers` — the **only** sanctioned nesting (registry in
 [../architecture/structure.md](../architecture/structure.md)); the data
