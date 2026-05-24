@@ -29,6 +29,19 @@ and ships business logic (who owns what, which roles may act) to a place the
 user controls. Reading a `can.*` boolean keeps the decision in one place —
 the backend — and the frontend honest about only displaying it.
 
+## Rule: capability fields are outcome-named — `can.createTeam`, not `can.canCreateTeam`
+
+The `can` field is the **outcome**, so it doesn't stutter against the `can`
+accessor: read `can.createTeam`, never `can.canCreateTeam`. The backing object is
+the page's `*PageAuthorizationData` (exposed as the `can` prop), with one boolean
+per action outcome. The naming and backend shape are owned by laravel-rules
+`data-objects/inertia-page-data`; the frontend only reads the field.
+
+```tsx
+{can.createTeam && <CreateTeamButton />}      // Good — reads as a sentence
+{can.canCreateTeam && <CreateTeamButton />}   // Bad — stutters
+```
+
 ## Rule: hide or disable the control from the capability, at the right granularity
 
 When `can.x` is false, omit the control or render it disabled (with a reason
@@ -63,5 +76,7 @@ enforcement — the frontend gate is a courtesy to the user, not a lock.
   rendered as controls that 403.
 - Capability props are typed from generated backend contracts
   ([../types/generated.md](../types/generated.md)).
+- Capability fields are outcome-named (`can.createTeam`), not `can.can*`; backed
+  by the page's `*PageAuthorizationData` (laravel-rules `data-objects/inertia-page-data`).
 - Server-side policy enforcement is assumed in place — the UI gate is UX,
   not the security boundary.

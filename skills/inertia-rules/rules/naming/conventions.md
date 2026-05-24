@@ -67,6 +67,12 @@ export). State exports come from the fixed vocabulary in
 predictable and stable, so feedback, fixtures, and verification can
 reference a story without anyone hand-maintaining the id.
 
+**Documentation-page titles** use a fixed top-level vocabulary so the same
+title scheme drives the sidebar groups
+([../stories/conventions.md](../stories/conventions.md)): `Introduction`,
+`brand/<page>` (e.g. `brand/tone-of-voice`), and `design-system/<token>`
+(e.g. `design-system/colors`).
+
 ## Rule: hooks are `use-<thing>.ts` / `use<Thing>`
 
 A resource-local hook is a kebab file `use-vehicle-filters.ts` exporting a
@@ -78,35 +84,39 @@ global `hooks/` ([../architecture/roles.md](../architecture/roles.md)).
 Aliases drop the `Data` suffix the transformer produces and name for
 intent:
 
-| Generated (PHP-derived) | Frontend alias | Lives in |
+| Generated (imported by name) | Frontend alias | Lives in |
 |---|---|---|
-| `App.Data.Vehicles.VehicleIndexPageData` | `VehicleIndexPageProps` | the page file (local) |
-| `…VehicleListItemData` | `VehicleListItem` | `vehicle.types.ts` (shared) |
-| `…VehicleFormData` | `VehicleFormValues` | `vehicle.types.ts` (shared) |
-| `…VehicleFiltersData` | `VehicleFilters` | `vehicle.types.ts` (shared) |
+| `VehicleIndexPageData` | `VehicleIndexPageProps` | the page file (local) |
+| `VehicleListItemData` | `VehicleListItem` | `vehicle.types.ts` (shared) |
+| `VehicleFormData` | `VehicleFormValues` | `vehicle.types.ts` (shared) |
+| `VehicleFiltersData` | `VehicleFilters` | `vehicle.types.ts` (shared) |
 
-The **page-props** alias is page-specific, so it is declared **locally in
-the page file** and not exported ([../architecture/roles.md](../architecture/roles.md)).
-Aliases shared across ≥2 files live in the feature's `*.types.ts`.
+The **page-props** alias is the firm case — every page names its props
+**locally** in the page file, not exported
+([../architecture/roles.md](../architecture/roles.md)). **Feature-type
+aliases are optional** readability sugar: import and use the generated
+`*Data` name directly, or alias it (in the feature's `*.types.ts`, when
+shared across ≥2 files) where the rename reads better at use sites.
 
 ```ts
 // pages/vehicles/index.tsx — page-props alias is local, not exported
-import type { App } from '@/types/generated'
-type VehicleIndexPageProps = App.Data.Vehicles.VehicleIndexPageData
+import type { VehicleIndexPageData } from '@/types/generated'
+type VehicleIndexPageProps = VehicleIndexPageData
 
-// features/vehicles/vehicle.types.ts — shared aliases (grouped; type-only file)
-import type { App } from '@/types/generated'
-export type VehicleListItem = App.Data.Vehicles.VehicleListItemData
-export type VehicleFormValues = App.Data.Vehicles.VehicleFormData
-export type VehicleFilters = App.Data.Vehicles.VehicleFiltersData
+// features/vehicles/vehicle.types.ts — optional shared aliases (grouped; type-only file)
+import type { VehicleListItemData, VehicleFormData, VehicleFiltersData } from '@/types/generated'
+export type VehicleListItem = VehicleListItemData
+export type VehicleFormValues = VehicleFormData
+export type VehicleFilters = VehicleFiltersData
 ```
 
 **Why:** the alias is the frontend's vocabulary — `VehicleListItem` reads
 better at use sites than `VehicleListItemData`, and `…PageProps` says "this
 is what a page receives." It also gives one place to absorb a backend
-rename. The *generated* symbol shape (`App.Data.<Resource>.<Name>Data`,
-always `PascalCase`) is owned by [../types/generated.md](../types/generated.md);
-this rule only governs the frontend alias.
+rename. The *generated* symbol shape (`<Name>Data`, a flat `PascalCase`
+name imported from `@/types/generated`) is owned by
+[../types/generated.md](../types/generated.md); this rule only governs the
+frontend alias.
 
 ## Rule: stable selector hooks use `data-part`
 
@@ -131,10 +141,12 @@ one convention, don't mix.)
 - Resource folder plural; file basenames singular; page files named for
   the action.
 - Story file shares the component basename; `meta.title` is the lowercase
-  component path.
+  component path. Doc-page titles use the fixed vocab `Introduction` /
+  `brand/<page>` / `design-system/<token>`.
 - Resource-local hooks are `use-<thing>.ts` / `use<Thing>`, inside the
   feature folder.
-- Frontend type aliases drop `Data` and name for intent; generated symbol
-  shape deferred to `types/generated.md`.
+- Page-props type is a local alias of the generated `*PageData`;
+  feature-type aliases (drop `Data`, name for intent) are optional;
+  generated symbol shape deferred to `types/generated.md`.
 - Stable selectors use `data-part`, never generated classes or DOM
   position.

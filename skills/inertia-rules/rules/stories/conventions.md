@@ -57,12 +57,12 @@ Wayfinder / enum / form / page-prop shapes; or call `Intl`/date
 libraries/label maps to fake user-facing output.
 
 ```ts
-import type { App } from '@/types/generated'
+import type { VehicleIndexPageData } from '@/types/generated'
 export const vehicleIndexWithRows = {
   vehicles: [/* ... */],
   can: { createVehicle: true },
   copy: { title: 'Vehicles', emptyTitle: 'No vehicles yet' },
-} satisfies Pick<App.Data.Vehicles.VehicleIndexPageData, 'vehicles' | 'can' | 'copy'>
+} satisfies Pick<VehicleIndexPageData, 'vehicles' | 'can' | 'copy'>
 ```
 
 **Why:** an inline blob is an untyped, drifting copy of a backend shape —
@@ -79,6 +79,22 @@ variables are violations ([../design-system/styling.md](../design-system/styling
 **Why:** a story styled differently from production verifies nothing — it
 proves a component that won't exist. Same CSS = the story is a faithful
 contract.
+
+## Rule: responsive components are reviewed across viewports
+
+A component whose layout changes across breakpoints — a table that becomes
+cards, a sidebar that collapses, a multi-column grid — must be reviewable across
+the wired viewport presets, **mobile / tablet / desktop** (set in
+`.storybook/preview.tsx`, [operations.md](operations.md)). Viewport is a render
+*condition* like theme, not a fixture state: exercise it via the viewport
+toolbar/global, never by hardcoding widths into a story. A non-responsive
+primitive needs none.
+
+**Why:** reviewing a responsive component only at desktop hides exactly the
+breakage responsive design exists to prevent. Verified across breakpoints, the
+story stays a faithful contract — and it's where mobile reflow and the a11y
+200%-zoom concern ([../accessibility/conventions.md](../accessibility/conventions.md))
+get caught.
 
 ## Rule: stories are the headless check surface for components
 
@@ -97,6 +113,66 @@ documentation, it's a component with no automated contract at all. (Note:
 the a11y run yields pass/fail, not per-violation JSON, and covers DOM-level
 WCAG only — a backstop, not full a11y.)
 
+## Rule: the sidebar taxonomy comes from the `meta.title` path, not file moves
+
+Storybook's sidebar grouping is driven entirely by the `meta.title`
+lowercase-path scheme ([../naming/conventions.md](../naming/conventions.md)) — no
+parallel folder structure, no file moves. Top-level groups, in order:
+`Introduction`, `brand/*`, `design-system/*`, `components/*` (`ui` then `app`),
+`features/<resource>/*`. The order is enforced once in `.storybook/preview.tsx`
+via `storySort` (this project's instance):
+
+```ts
+storySort: { order: ['Introduction', 'brand', 'design-system', 'components', ['ui', 'app'], 'features', '*'] }
+```
+
+**Storybook-only documentation** (MDX) lives under `.storybook/docs/**/*.mdx`
+(added to the `stories` glob in `.storybook/main.ts`) — deliberately **outside
+`resources/js`**, because docs are not shipped app code and so stay out of the
+role graph ([../architecture/roles.md](../architecture/roles.md)). Foundation
+token pages, by contrast, *are* `*.stories.tsx` under
+`resources/js/design-system/` (they render real components).
+
+**Why:** deriving groups from the title path means one naming rule controls both
+the story id and the sidebar — no second taxonomy to maintain. Keeping MDX docs
+in `.storybook/` keeps non-shipped prose out of the app the role graph governs.
+
+## Rule: reusable-component metas opt into autodocs
+
+Every reusable-component and foundation meta sets `tags: ['autodocs']` and a
+`parameters.docs.description.component` string; autodocs then generates the Docs
+tab (description + args table + source) from the meta.
+
+**Why:** the component's API table and description should come from the same
+typed meta that drives the stories, not a hand-written doc that drifts — one
+source of truth for both the runtime contract and its docs.
+
+## Rule: foundation (`design-system/*`) pages show live values, meaning, and application
+
+A token/foundation page must do three things — never a static swatch dump:
+
+1. **Live resolved values** — read the computed token off the rendered element
+   (`getComputedStyle`); never hardcode a primitive (`oklch(...)`). Drift-proof
+   and theme-aware ([../design-system/styling.md](../design-system/styling.md)
+   bans raw values; this is its docs corollary).
+2. **Product meaning** — state the semantic intent, not just the value (status:
+   `emerald=gain`, `rose=loss`, `amber=alert`, `blue=brand`).
+3. **An "Applying …" story** — the token in real UI, across surfaces
+   (`surface` / `surface-muted` / `surface-raised`) and light + dark.
+
+Shared doc helpers (presentational, `ds-`-only, not matched by the `*.stories`
+glob) live in `resources/js/design-system/token-docs.tsx`. Colored status text on
+these pages must clear contrast ([../accessibility/conventions.md](../accessibility/conventions.md)).
+
+**Why:** a hardcoded swatch lies the moment the theme changes; a value with no
+meaning doesn't tell an agent *when* to use it; a token shown only in isolation
+hides that it must survive every surface and theme. Live + meaning + application
+is what makes the page a contract, not decoration.
+
+> Gotchas for running the headless story/docs suite in CI (vite-plugin guard, SSR
+> warmup noise, a11y gating, theme/viewport wiring) are project-ops, recorded
+> separately in [operations.md](operations.md).
+
 ## Checklist
 
 - Reusable UI (ui/app + eligible feature components) has a colocated
@@ -108,3 +184,14 @@ WCAG only — a backstop, not full a11y.)
 - Fixtures are typed against generated/shared/feature types — no `any`, no
   inline backend shapes, no faked formatting.
 - Stories render with the app's token/theme CSS; no raw styling.
+- Responsive components (breakpoint-dependent layout) are reviewable across the
+  mobile/tablet/desktop viewport presets; non-responsive ones need none.
+- Sidebar groups derive from the `meta.title` path; `storySort` order set once in
+  `.storybook/preview.tsx`; Storybook-only MDX docs in `.storybook/docs/` (outside
+  `resources/js`).
+- Reusable/foundation metas set `tags: ['autodocs']` + a
+  `docs.description.component`.
+- Foundation (`design-system/*`) pages show live resolved token values (no
+  hardcoded primitives), product meaning, and an "Applying …" story across
+  surfaces + light/dark.
+- CI/ops gotchas for the headless suite live in [operations.md](operations.md).

@@ -11,7 +11,7 @@ components/ui/*        token-bound, domain-free primitives
 components/app/*       reusable, generic app components
 layouts/*             app shells
 lib/*                 pure, framework-free helpers
-types/generated/*     read-only backend-derived types
+types/generated.ts    read-only backend-derived types (one generated module)
 types/shared/*        small generic frontend-only types
 ```
 
@@ -32,11 +32,11 @@ in the page as a local alias — not exported, not in a feature file.
 
 ```tsx
 // Good — props type is a local alias of the generated PageData; thin adapter
-import type { App } from '@/types/generated'
+import type { VehicleIndexPageData } from '@/types/generated'
 import { AppLayout } from '@/layouts/app-layout'
 import { VehicleTable } from '@/features/vehicles/vehicle-table'
 
-type VehicleIndexPageProps = App.Data.Vehicles.VehicleIndexPageData // local, not exported
+type VehicleIndexPageProps = VehicleIndexPageData // local, not exported
 
 export default function VehiclesIndex({ vehicles, can, copy }: VehicleIndexPageProps) {
   return (

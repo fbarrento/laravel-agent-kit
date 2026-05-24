@@ -6,6 +6,23 @@ right affordances; the audit/verify a11y check
 ([../verification/conventions.md](../verification/conventions.md)) is the
 backstop, not the strategy.
 
+## The conformance target: WCAG 2.2 AA
+
+These rules sum to **WCAG 2.2 AA** — treat that as the bar they aim at (2.1 AA
+is the floor most laws still cite). Where a legal obligation applies — the **EU
+Accessibility Act** (Directive 2019/882, via `EN 301 549`), the **ADA** or
+**Section 508** (US) — it sets, and can raise, the required level. **Confirm the
+project's jurisdiction and target level**; default to 2.2 AA when unspecified.
+
+**"Compliance" is not something the agent certifies.** WCAG conformance is not
+machine-verifiable: you *build to* the standard via the rules below, and the
+automated axe gate ("Running the automated check") is a **partial backstop** —
+DOM-level only (~57% of criteria). Keyboard operability, focus order,
+screen-reader semantics, and cognitive criteria are covered by the build-time
+rules plus **human testing** (a real screen reader, keyboard-only, 200% zoom). An
+agent reports "built to WCAG 2.2 AA; axe gate green; manual checks {done/skipped}"
+— never a bare "WCAG compliant."
+
 ## Rule: semantic HTML first
 
 Use the element that means what you intend: `<button>` for actions,
@@ -60,7 +77,11 @@ some get it wrong. Same leverage as token-bound styling.
 
 Convey state with text/icon/shape in addition to color (semantic `ds-`
 tokens should meet contrast). Honor `prefers-reduced-motion` for
-animation.
+animation. **Colored status text** (gain/loss/alert) is especially
+contrast-sensitive: keep it at large sizes and on a neutral `ds-surface`,
+never small or set on a colored swatch — a constraint the foundation token
+pages must meet ([../stories/conventions.md](../stories/conventions.md)),
+and one the headless a11y gate will fail.
 
 **Why:** color-only state excludes colorblind and low-vision users, and
 unbounded motion harms users with vestibular sensitivity. Both are common
@@ -99,5 +120,9 @@ Two limits to remember:
   visits.
 - A11y affordances (focus ring, `aria-*`, roles) live in primitives.
 - State not conveyed by color alone; contrast met; reduced-motion
-  respected.
+  respected. Colored status text kept large and on `ds-surface`, not on a
+  colored swatch.
 - The verify a11y check is a backstop, not the only line of defense.
+- Built to the **WCAG 2.2 AA** bar; project's legal level/jurisdiction (EAA/ADA/
+  508) confirmed. "Compliance" = build-to-standard + axe backstop + human testing,
+  never an agent certification.

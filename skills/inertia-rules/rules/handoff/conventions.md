@@ -50,6 +50,16 @@ lets the reader decide whether that's acceptable; a silent omission or a
 false "passed" removes their ability to. The whole point of the evidence
 trail is that it can be trusted.
 
+## Rule: a handoff lives at `docs/handoff/<topic>.md`
+
+A handoff document is committed at `docs/handoff/<topic>.md`, alongside the
+project's `docs/adr/` and `docs/postmortem/` trees — a predictable home so the
+next agent finds it without searching.
+
+**Why:** an evidence trail nobody can locate is no trail. A single canonical path
+(mirroring `adr/`/`postmortem/`) makes handoffs discoverable and keeps the doc
+trees consistent.
+
 ## Rule: keep it small — reference, don't embed
 
 Summaries, ids, counts, and paths go in the handoff. Screenshots, DOM
@@ -70,3 +80,5 @@ to the screenshot is as good as the screenshot and a hundredth the size.
   enabled.
 - Skipped/deferred items stated with reasons, never disguised as passed.
 - Verbose artifacts referenced by path, not embedded.
+- The handoff is committed at `docs/handoff/<topic>.md` (alongside `docs/adr/`,
+  `docs/postmortem/`).

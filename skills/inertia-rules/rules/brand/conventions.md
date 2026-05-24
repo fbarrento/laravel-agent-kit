@@ -44,7 +44,11 @@ backend Data DTOs ([../types/formatting.md](../types/formatting.md)).
 
 Frontend code must not import Brand OS markdown/copy or construct
 translation keys from brand terms. Brand voice rules may appear as review
-references (in feedback), never as a frontend runtime dictionary.
+references (in feedback), never as a frontend runtime dictionary. Their home
+is Storybook MDX under `.storybook/docs/brand/*.mdx` (overview, tone-of-voice,
+dos & don'ts) — read during design/review, deliberately **outside**
+`resources/js` so they can never be imported as runtime copy
+([../stories/conventions.md](../stories/conventions.md)).
 
 **Why:** the brand guides *tone*; the backend still *delivers* the words.
 A frontend brand-copy dictionary reintroduces exactly the formatting/
@@ -68,5 +72,6 @@ shipping brand.
 - Brand values reach the app only through the `ds-` token tiers; no direct
   brand-token imports or hard-coded brand values.
 - Production copy/translation comes from Laravel, not Brand OS markdown;
-  no frontend brand-copy dictionary.
+  no frontend brand-copy dictionary. Brand-voice references live as
+  `.storybook/docs/brand/*.mdx`, outside `resources/js`.
 - Stories render with the active adapted brand tokens and app-path assets.
