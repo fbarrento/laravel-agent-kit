@@ -1,5 +1,30 @@
 # Naming Rules
 
+This file owns the *grammar* of names — suffixes, verb-first order,
+variable naming. The **class types** being named (Action, Query, Service,
+Model, …) are defined in [../../LANGUAGE.md](../../LANGUAGE.md); the rules
+below say how to spell them.
+
+## Domain names come from `CONTEXT.md`
+
+`LANGUAGE.md` names the **architecture** (Action, Query, Data object); the
+project's `CONTEXT.md` names the **domain** (Signup, Invoice, Vehicle). A
+class name is one of each — `CreateSignup` is the `Create` verb + the
+`Signup` domain term.
+
+- If the repo has a `CONTEXT.md` / `CONTEXT-MAP.md`, name every domain
+  concept with **its** term, and never with a term that glossary lists
+  under `_Avoid_`. Read the relevant context before naming
+  (`CONTEXT-MAP.md` points at per-context glossaries in multi-context
+  repos).
+- If the concept you need to name **isn't in the glossary**, that is a
+  signal — either you are inventing language the project doesn't use
+  (reconsider the name) or there's a real gap. Surface it, and suggest
+  `/grill-with-docs` to resolve the term rather than coining it silently.
+- If there is **no `CONTEXT.md` at all**, proceed silently — do not nag to
+  create one. The glossary is produced by `/grill-with-docs`, not by this
+  skill.
+
 ## Class Names
 
 - Actions do not use the `Action` suffix.

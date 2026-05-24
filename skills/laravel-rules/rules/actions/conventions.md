@@ -1,5 +1,7 @@
 # Action Rules
 
+> **[Action](../../LANGUAGE.md)** is defined in `LANGUAGE.md`; this file owns the grammar.
+
 ## Purpose
 
 Actions encapsulate all business logic and state mutation workflows. Controllers, console commands, and jobs may depend on actions, but they must not implement business logic themselves.

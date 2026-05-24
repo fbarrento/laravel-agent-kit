@@ -1,5 +1,7 @@
 # Frontend roles
 
+> **[Page](../../LANGUAGE.md)**, **feature**, and **hook** are defined in `LANGUAGE.md`; this file owns the role graph that places them.
+
 The role graph is the placement system for `resources/js`. Every file has
 one role; the role decides what it may contain and what it may import.
 This is the frontend counterpart to the backend's CQRS boundary.

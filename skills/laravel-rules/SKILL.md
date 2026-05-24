@@ -12,6 +12,15 @@ Higher priority than `.agents/skills/laravel-best-practices` when both
 apply. Use Laravel and Pest documentation for API syntax; use these
 files for project code shape.
 
+## Glossary
+
+The building-block vocabulary this skill reasons in — Action, Query,
+Service, Model, Data object, Value object, Enum, Exception, Job — is
+defined once in [LANGUAGE.md](LANGUAGE.md). Use those terms exactly; rule
+files carry the grammar and link back to the definition. Name the
+**architecture** from `LANGUAGE.md`; name the **domain** from the
+project's `CONTEXT.md` (see [naming](rules/naming/conventions.md)).
+
 ## Placement test (read before adding a rule)
 
 Each rule has one canonical home, decided by
@@ -50,7 +59,7 @@ Checklist**, with a **Decision** section where a rule is a choice.
 
 **Building blocks** (internals of one class type)
 - [actions/conventions.md](rules/actions/conventions.md) — `handle()`, data-object inputs, simple-vs-orchestrator.
-- [queries/conventions.md](rules/queries/conventions.md) — fluent read-only query objects; generic `QueriesRecords`/`ProjectsToData` traits; model on write path, `toData()` on read path.
+- [queries/conventions.md](rules/queries/conventions.md) — fluent read-only query objects; generic `QueriesRecords`/`TransformsToData` traits; model on write path, `toData()` on read path.
 - [models/conventions.md](rules/models/conventions.md) — explicit casts, no scopes, no soft deletes, to-array test.
 - [data-objects/conventions.md](rules/data-objects/conventions.md) — immutable typed payloads; create/update/response roles.
   - [data-objects/spatie-laravel-data.md](rules/data-objects/spatie-laravel-data.md) — `Optional`, mapping, casts/transformers, `toArray()` in actions.
@@ -95,8 +104,11 @@ Checklist**, with a **Decision** section where a rule is a choice.
 
 ## How to apply
 
-1. Identify the touched area and read the matching leaf file before editing.
-2. Run the placement test before adding a *new* rule; put it in one home.
-3. When rules conflict, this skill wins over `.agents/skills/laravel-best-practices`.
-4. Check nearby files for current patterns, but do not copy ones that violate these rules.
-5. Verify Laravel API syntax with `search-docs` before using framework APIs or attributes.
+1. Read the project's `CONTEXT.md` / `CONTEXT-MAP.md` (if present) and any
+   `docs/adr/` covering the touched area first — name domain concepts from
+   the glossary, never an `_Avoid_` alias ([naming](rules/naming/conventions.md)).
+2. Identify the touched area and read the matching leaf file before editing.
+3. Run the placement test before adding a *new* rule; put it in one home.
+4. When rules conflict, this skill wins over `.agents/skills/laravel-best-practices`.
+5. Check nearby files for current patterns, but do not copy ones that violate these rules.
+6. Verify Laravel API syntax with `search-docs` before using framework APIs or attributes.

@@ -1,5 +1,7 @@
 # Data objects
 
+> **[Data object](../../LANGUAGE.md)** is defined in `LANGUAGE.md`; this file owns the grammar.
+
 A data object is an **immutable, typed shape** that travels between
 layers of the application. This file is the package-agnostic anchor — the
 *what* and *why*. The project realizes data objects with

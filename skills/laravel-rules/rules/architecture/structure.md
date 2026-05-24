@@ -35,7 +35,7 @@ exception, add it here with its justification.
 |------|----------------------------|
 | `app/Data/Casts/` | Spatie Laravel Data casts are a distinct, reusable mechanism, not data objects themselves; grouping keeps `app/Data/` readable. |
 | `app/Data/Transformers/` | Same as casts — transformers are infrastructure for data objects, not data objects. |
-| `app/Queries/Concerns/` | Query traits (`ProjectsToData`) and the `ReadsRecords` typing-seam interface are reusable infrastructure *for* queries, not query classes; grouping them in `Concerns/` keeps `app/Queries/` to the queries. Block-internal seams, deliberately **not** hoisted to `app/Contracts/` (see Rule: contracts below). See [../queries/conventions.md](../queries/conventions.md). |
+| `app/Queries/Concerns/` | Query traits (`TransformsToData`) and the `ReadsRecords` typing-seam interface are reusable infrastructure *for* queries, not query classes; grouping them in `Concerns/` keeps `app/Queries/` to the queries. Block-internal seams, deliberately **not** hoisted to `app/Contracts/` (see Rule: contracts below). See [../queries/conventions.md](../queries/conventions.md). |
 
 **Why a registry:** "flat unless justified" only holds if exceptions
 are enumerated in one place. An open-ended "nest when it feels right"

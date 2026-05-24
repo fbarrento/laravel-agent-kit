@@ -1,5 +1,7 @@
 # Enums
 
+> **[Enum](../../LANGUAGE.md)** is defined in `LANGUAGE.md`; this file owns the grammar.
+
 Internals of PHP enums: how they are backed, named, kept, and cast.
 Building-block folder (internals of one class type, see
 [../architecture/placement.md](../architecture/placement.md)). Use an enum
