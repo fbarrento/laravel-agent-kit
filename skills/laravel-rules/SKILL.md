@@ -46,10 +46,11 @@ Checklist**, with a **Decision** section where a rule is a choice.
 **Patterns** (optional techniques)
 - [patterns/pipeline.md](rules/patterns/pipeline.md) — staged, swappable workflows; stages wrap actions.
 - [patterns/pluggable.md](rules/patterns/pluggable.md) — strategy / swappable impls; one interface, bound selection.
+- [patterns/caching.md](rules/patterns/caching.md) — opt-in; when to cache + the read/write topology menu; decision map for the `cache/` leaves.
 
 **Building blocks** (internals of one class type)
 - [actions/conventions.md](rules/actions/conventions.md) — `handle()`, data-object inputs, simple-vs-orchestrator.
-- [queries/conventions.md](rules/queries/conventions.md) — fluent read-only query objects; generic `QueriesRecords`/`ProjectsRecords` traits; model on write path, `toData()` on read path.
+- [queries/conventions.md](rules/queries/conventions.md) — fluent read-only query objects; generic `QueriesRecords`/`ProjectsToData` traits; model on write path, `toData()` on read path.
 - [models/conventions.md](rules/models/conventions.md) — explicit casts, no scopes, no soft deletes, to-array test.
 - [data-objects/conventions.md](rules/data-objects/conventions.md) — immutable typed payloads; create/update/response roles.
   - [data-objects/spatie-laravel-data.md](rules/data-objects/spatie-laravel-data.md) — `Optional`, mapping, casts/transformers, `toArray()` in actions.
@@ -70,6 +71,10 @@ Checklist**, with a **Decision** section where a rule is a choice.
 - [database/history.md](rules/database/history.md) — append-only history is source of truth; latest-query indexing; order by date/ordered-id.
 - [database/mysql.md](rules/database/mysql.md) · [database/postgres.md](rules/database/postgres.md) — engine specifics (charset/JSON/indexes/locking/online-DDL).
 - [queues/conventions.md](rules/queues/conventions.md) — after_commit config, queue-name enum, profile-based organization, retries/failed jobs.
+- [cache/reads.md](rules/cache/reads.md) — decorator cache-queries, direct object payloads, negative caching, per-request L1, external-service reads.
+- [cache/invalidation.md](rules/cache/invalidation.md) — delete-on-write, blast-radius tiers, versioned-group keys + `CacheGroup` enum, TTL backstop, stampede single-flight.
+- [cache/write-behind.md](rules/cache/write-behind.md) — disposable counters only; action `INCR`s, scheduled job flushes by delta (never reset); durable data goes via a queue instead.
+- [cache/conventions.md](rules/cache/conventions.md) — store/eviction separation (cache/locks/counters), `serializable_classes`, `flush()` is not invalidation, operational caching.
 - [logs/conventions.md](rules/logs/conventions.md) — injected logger, structured context, level discipline; never log secrets.
 
 **Security** (cross-cutting domain)

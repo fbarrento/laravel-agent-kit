@@ -115,6 +115,24 @@ response object is the allow-list of what ships, which is also the output
 API Resources redundant here — the data object already shapes and types
 the payload.
 
+## Rule: cache data, not responses — never share-cache an authenticated response
+
+In an authed app the default is to cache at the
+[data layer](../patterns/caching.md), not to cache rendered responses.
+Full-response caching (keyed by URL, replayed without running the controller) is
+reserved for **public, anonymous, identical-for-every-user** responses, and is
+invalidated through the same
+[after-commit + version](../cache/invalidation.md) machinery. **Never** store a
+personalized/authenticated response in a shared cache — it serves one user's
+data to another (an output-safety failure, see
+[../security/output.md](../security/output.md)).
+
+Set cache headers deliberately even when not caching server-side, because
+CDNs/proxies obey them: `Cache-Control: private` (or `no-store`) for anything
+authed/personalized, `public, max-age=…` only for truly public responses, and
+`ETag`/`Last-Modified` (→ `304`) for cacheable GETs. Inertia/JSON responses are
+per-user — never full-response-cached.
+
 ## Rule: routes are resourceful, named, and use route-model binding
 
 Prefer RESTful resource routes, named consistently, with implicit
