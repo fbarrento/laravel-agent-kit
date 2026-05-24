@@ -19,7 +19,8 @@ Scan `resources/js` (and `resources/css`); skip `vendor`, `node_modules`,
 - A page implements a table, list, grid, or form directly instead of
   composing a feature component.
 - A page defines a layout shell inline or exports a reusable component.
-- A feature imports a page module or a page-owned type.
+- A feature imports a page module or a page-owned type, **or another feature**
+  (sideways): cross-feature reuse goes through `components/app` or the page.
 - A domain/resource concept appears in a `components/ui/*` primitive.
 - A resource-specific name appears in a `components/app/*` component.
 - A new top-level `queries/`, `forms/`, or `composables/` folder exists
@@ -45,8 +46,17 @@ Scan `resources/js` (and `resources/css`); skip `vendor`, `node_modules`,
 
 ## Design-system violations → [../design-system/styling.md](../design-system/styling.md)
 
+- A `ds-` **visual** utility appears outside `components/ui` — in a feature,
+  app component, or page (the lone exception is a framework-coupled `NavLink`
+  in `components/app`). Appearance there must come from a primitive's variant
+  prop, not a `ds-` class.
+- Appearance set with a `className`/`ds-` value on a consumer instead of a
+  primitive **variant prop** (`<Badge tone="danger">`); a one-off look inlined
+  rather than added as a primitive variant.
 - Raw hex outside `tokens.css`.
-- Arbitrary Tailwind value (`p-[34px]`, `bg-[#fff]`) outside token files.
+- Arbitrary **visual** Tailwind value (`p-[34px]`, `rounded-[11px]`,
+  `bg-[#fff]`) outside token files. (Structural arbitraries for layout, e.g.
+  `grid-cols-[1fr_auto]`, are allowed.)
 - Primitive color utility (`bg-blue-500`, `text-slate-700`) in app/story
   code.
 - Direct primitive CSS variable (`var(--neutral-500)`) outside

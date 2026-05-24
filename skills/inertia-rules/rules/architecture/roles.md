@@ -66,6 +66,15 @@ actions never become pages — they are generated Wayfinder calls.
 | `@edit` | `pages/vehicles/edit.tsx` | thin adapter |
 | `@store` / `@update` / `@destroy` | none | use generated Wayfinder action |
 
+**Non-resource screens are first-class.** Not every page maps to a resource
+controller — a dashboard, a settings overview, an onboarding flow is a
+cohesive *screen*, not a CRUD resource. It still gets a thin page
+(`pages/dashboard/index.tsx`) and its composing UI still lives in a feature
+(`features/dashboard/*`); it just isn't backed by `index/show/create/edit`.
+A page is keyed on a cohesive **concept** — usually a resource, sometimes a
+screen — and stays an adapter either way: it composes features and owns no
+workflow UI.
+
 ## Rule: pages are flat — one resource folder deep, never nested
 
 `pages/` has exactly one level of resource folder, each holding only
@@ -119,8 +128,27 @@ forms/vehicle-form.tsx
 actions/vehicles.ts                         // not generated → forbidden
 ```
 
-If a component becomes generic across resources, promote it to
-`components/app/*`.
+If UI is **domain-free** (it names no resource concept and reads identically
+for any resource), it belongs in `components/app/*` — build it there as soon
+as you judge it reusable, even with a single consumer
+([../design-system/components.md](../design-system/components.md) owns the
+promotion rule). Domain-bound UI stays in the feature; when a second feature
+needs it, **generify** it (strip the resource vocabulary, drive by props) on
+the way to `components/app` — never import it sideways from another feature
+(see the import rule below).
+
+## Rule: feature folders are flat — files self-index, no internal subfolders
+
+A `features/<resource>/` folder is **flat**: its components, its
+resource-local hook, and its `*.types.ts` all sit at one level, named to
+self-index (`vehicle-table.tsx`, `vehicle-row.tsx`, `vehicle-filters.tsx`,
+`use-vehicle-filters.ts`, `vehicle.types.ts`). Do **not** add `components/`,
+`hooks/`, or `types/` subfolders inside a feature.
+
+**Why:** a flat feature mirrors the flat-folder discipline used in `pages/`
+and the backend — the filename predicts the file, with no hierarchy to guess.
+A feature that feels like it *needs* subfolders is usually two concepts; split
+it into sibling features rather than nesting one.
 
 ## Rule: place a hook by the decision tree — pure → `lib/`, resource → `features/`, generic → `hooks/`
 
@@ -156,7 +184,11 @@ downward-import rule already permits everyone to reach.
 The dependency direction is `pages → features → components/app →
 components/ui → lib / types / hooks`. A lower role never imports a higher one.
 
-- A **feature** never imports a **page** or a page-owned type.
+- A **feature** never imports a **page** or a page-owned type, and never
+  imports **another feature** (no sideways coupling): cross-feature
+  composition happens at the **page** — the only composer that reaches
+  multiple features — and genuinely shared UI is generified into
+  `components/app`.
 - A **primitive** (`components/ui`) never imports a feature, app
   component, or any resource/domain concept — but it **may** import the bottom
   tier: `lib/*`, `types/*`, and `@/hooks/*` (e.g. `ui/sidebar → @/hooks/use-mobile`),
@@ -203,18 +235,23 @@ no "hidden second component" problem — the risk the rule guards against.
 - Page is a thin adapter: typed props in, layout selected, features
   composed; no tables/forms/formatting. Its only declared type is its own
   props, a local un-exported alias of the generated `*PageData`.
-- Pages exist only for `index`/`show`/`create`/`edit`; mutations use
-  Wayfinder, not page files.
+- Resource pages exist only for `index`/`show`/`create`/`edit`; mutations use
+  Wayfinder, not page files. Non-resource screens (dashboard, settings) get a
+  thin page too, just not backed by a resource controller.
 - Resource UI is under `features/<resource>`; no global
   `queries/forms/composables` folders, and no *resource* behaviour in a global
   bucket.
+- Feature folders are flat (files self-index); no `components/`/`hooks/`/`types/`
+  subfolders inside a feature.
+- Cross-feature reuse goes through `components/app` (generified) or page-level
+  composition; features never import each other.
 - A hook is placed by the tree: pure → `lib/` (a plain function, not a hook);
   resource → `features/<resource>`; generic + framework-bound → top-level
   `hooks/` (the one hand-written global bucket — generic hooks only).
 - One exported symbol per runtime module (component/hook); `*.types.ts`
   may group type aliases.
-- Imports point downward; no feature→page imports, no domain concepts in
-  `components/ui` (which may still import the `lib`/`types`/`hooks` bottom tier),
-  no resource names in `components/app`.
+- Imports point downward; no feature→page or feature→feature imports, no
+  domain concepts in `components/ui` (which may still import the
+  `lib`/`types`/`hooks` bottom tier), no resource names in `components/app`.
 - `resources/js/actions` and `resources/js/routes` hold only generated
   output.

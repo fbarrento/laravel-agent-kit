@@ -37,7 +37,8 @@ code shape**, and where the two differ on shape, **these win**:
   render lists/forms inline ([architecture/roles.md](rules/architecture/roles.md));
 - user-facing text/format comes from **backend props**, not inline strings
   ([types/formatting.md](rules/types/formatting.md));
-- styling is **semantic `ds-` utilities**, not raw Tailwind
+- styling flows through **design-system primitives and their variant props**
+  (`ds-` tokens live in `ui`), not raw Tailwind or inline `ds-` in features
   ([design-system/styling.md](rules/design-system/styling.md));
 - one export per file, reusable UI gets a story, etc.
 
@@ -102,8 +103,8 @@ framework-bound hooks only (pure helpers are functions in `lib/`).
 
 **Design system**
 - [design-system/tokens.md](rules/design-system/tokens.md) — three-tier token model (primitives → semantic `--ds-*` → Tailwind bridge), bridge prefix rule, import order.
-- [design-system/styling.md](rules/design-system/styling.md) — allowed vs disallowed utilities; the styling decision procedure.
-- [design-system/components.md](rules/design-system/components.md) — primitive vs app vs feature component roles and their requirements.
+- [design-system/styling.md](rules/design-system/styling.md) — `ds-` tokens live in `ui` primitives (via variants); consumers pass variant props; structural utilities + layout primitives for arrangement; the decision procedure.
+- [design-system/components.md](rules/design-system/components.md) — primitive/app/feature roles; `ui` owns tokens, `app` is token-free (bar the `NavLink` exception); anticipatory + domain-free promotion; appearance-via-variants, arrangement-via-layout-primitives.
 
 **Runtime behavior** (Inertia v3)
 - [forms/conventions.md](rules/forms/conventions.md) — `<Form>` vs `useForm`, Wayfinder actions, server-owned validation errors, processing/reset, file uploads.
