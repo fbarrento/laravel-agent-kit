@@ -51,6 +51,7 @@ disciplines that apply across them.
 
 | Term | Definition (what it *is*) | Grammar | `_Avoid_` |
 |---|---|---|---|
+| **Side effect** | Implicit client-side work that should be explicit — a `useEffect` fetch, a `useState` copy of props, a shadow-copy optimistic update. The frontend counterpart to a hidden backend observer; the creed is *one source of truth, explicit mutations, no hidden work*. | [side-effects](rules/side-effects/conventions.md) | a `useEffect` doing work Inertia already does; client state mirroring server state |
 | **Accessibility** | A **build-time** convention targeting **WCAG 2.2 AA** (confirm jurisdiction/level per project): semantic markup + primitive affordances. The verify a11y check is the backstop, not the strategy. | [accessibility](rules/accessibility/conventions.md) | bolt-on a11y / "audit later"; an agent self-certifying "compliant" |
 | **Page meta (SEO)** | The document head — title, meta — rendered via `<Head>`. The **content is backend-owned** (the `seo` slice of a page's `*PageData`); the frontend only renders it. | [shared-data](rules/shared-data/conventions.md) | handwriting meta/title strings in the frontend; client-side title juggling |
 | **Shared data** | Ambient page context (auth user, flash, app config) shared **once** via `HandleInertiaRequests::share()` and read through `usePage().props`. | [shared-data](rules/shared-data/conventions.md) | prop-drilling ambient data through pages/components; a client store for server state |

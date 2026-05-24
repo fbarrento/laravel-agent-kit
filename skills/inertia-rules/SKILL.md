@@ -25,7 +25,7 @@ for code shape.
 
 The frontend vocabulary this skill reasons in — **roles & artifacts**
 (page, feature, component, token, generated type, page-props alias, story,
-hook, `data-part`) and **cross-cutting concerns** (accessibility, page
+hook, `data-part`) and **cross-cutting concerns** (side effects, accessibility, page
 meta/SEO, shared data, capability flags, layouts, loading/empty/error
 states, backend-owned copy, feedback) — is defined once in
 [LANGUAGE.md](LANGUAGE.md). Use
@@ -133,6 +133,7 @@ framework-bound hooks only (pure helpers are functions in `lib/`).
 - [stories/operations.md](rules/stories/operations.md) — project-CI gotchas for the headless suite (vite-plugin bypass, SSR-warmup noise, a11y gate, theme/viewport); not conventions.
 
 **Quality**
+- [side-effects/conventions.md](rules/side-effects/conventions.md) — guardrail: no `useEffect` fetch / `useState` prop-copy / shadow-copy optimism; the "should this be a `useEffect`?" decision tree. Frontend counterpart to laravel-rules' observers guardrail.
 - [state/conventions.md](rules/state/conventions.md) — server state from props; no client cache; ephemeral local state; derive don't store.
 - [loading-states/conventions.md](rules/loading-states/conventions.md) — explicit empty/loading/error; `<Deferred>` fallbacks; empty-state component; error boundaries.
 - [authorization/conventions.md](rules/authorization/conventions.md) — gate UI from backend `can.*` capability props; never reimplement authorization client-side; gating is UX, the server still authorizes.
