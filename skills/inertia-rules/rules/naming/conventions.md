@@ -75,9 +75,13 @@ title scheme drives the sidebar groups
 
 ## Rule: hooks are `use-<thing>.ts` / `use<Thing>`
 
-A resource-local hook is a kebab file `use-vehicle-filters.ts` exporting a
-camelCase `useVehicleFilters`. It lives in the feature folder, never a
-global `hooks/` ([../architecture/roles.md](../architecture/roles.md)).
+A hook is a kebab file `use-<thing>.ts` exporting a camelCase `use<Thing>`
+(`use-vehicle-filters.ts` → `useVehicleFilters`). The name is identical
+wherever it lives; only the **home** differs, by the hook decision tree
+([../architecture/roles.md](../architecture/roles.md)): a **resource-local**
+hook lives in its feature folder (`features/vehicles/use-vehicle-filters.ts`); a
+**generic, framework-bound** hook lives in the top-level `hooks/` tier
+(`hooks/use-mobile.ts`). A pure helper is a plain function in `lib/`, not a hook.
 
 ## Rule: frontend type aliases drop the backend `Data` suffix and name for intent
 
@@ -143,8 +147,8 @@ one convention, don't mix.)
 - Story file shares the component basename; `meta.title` is the lowercase
   component path. Doc-page titles use the fixed vocab `Introduction` /
   `brand/<page>` / `design-system/<token>`.
-- Resource-local hooks are `use-<thing>.ts` / `use<Thing>`, inside the
-  feature folder.
+- Hooks are `use-<thing>.ts` / `use<Thing>`; resource hooks in the feature
+  folder, generic framework-bound hooks in the top-level `hooks/` tier.
 - Page-props type is a local alias of the generated `*PageData`;
   feature-type aliases (drop `Data`, name for intent) are optional;
   generated symbol shape deferred to `types/generated.md`.

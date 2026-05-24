@@ -76,6 +76,7 @@ resources/js/
   components/app/*          reusable, generic app components
   layouts/*                 app shells
   lib/*                     pure, framework-free helpers
+  hooks/*                   generic, framework-bound hooks (bottom tier, peer of lib/)
   types/generated.ts        read-only backend-derived types (one generated module; gitignored, regenerated)
   types/shared/*            small generic frontend-only types
 ```
@@ -84,13 +85,15 @@ resources/js/
 Laravel owns. Backend-derived types, user-facing copy, translation, and
 locale-sensitive formatting come from PHP through Inertia props. The
 frontend composes UI, handles interaction, and renders display-ready
-values. No global `queries/`, `actions/`, `forms/`, `hooks/`, or
-`composables/` folders — resource behavior lives in `features/<resource>`.
+values. No *resource* behaviour in a global bucket — a resource's UI lives in
+`features/<resource>`; no top-level `queries/`/`forms/`/`composables/`. The one
+hand-written global bucket is `hooks/`, for **generic** (non-resource)
+framework-bound hooks only (pure helpers are functions in `lib/`).
 
 ## Rule index
 
 **Architecture**
-- [architecture/roles.md](rules/architecture/roles.md) — the role graph, page=thin-adapter, resource-controller→page mapping, import boundaries, no global behavior folders.
+- [architecture/roles.md](rules/architecture/roles.md) — the role graph, page=thin-adapter, resource-controller→page mapping, downward import boundaries, the hook-placement decision tree (pure→lib / resource→features / generic→`hooks/` bottom tier).
 - [architecture/boost-boundary.md](rules/architecture/boost-boundary.md) — use Boost for Laravel facts; this layer for Inertia/frontend discipline; the required agent loop.
 
 **Types**

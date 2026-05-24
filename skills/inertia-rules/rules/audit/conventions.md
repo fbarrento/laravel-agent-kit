@@ -22,8 +22,9 @@ Scan `resources/js` (and `resources/css`); skip `vendor`, `node_modules`,
 - A feature imports a page module or a page-owned type.
 - A domain/resource concept appears in a `components/ui/*` primitive.
 - A resource-specific name appears in a `components/app/*` component.
-- A new top-level `queries/`, `actions/`, `forms/`, `hooks/`, or
-  `composables/` folder exists (non-generated).
+- A new top-level `queries/`, `forms/`, or `composables/` folder exists
+  (non-generated), or a **resource** hook sits in the global `hooks/` tier
+  (which is for *generic* hooks only — [../architecture/roles.md](../architecture/roles.md)).
 
 ## Type violations → [../types/generated.md](../types/generated.md)
 
