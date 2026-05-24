@@ -123,14 +123,53 @@ owns content; the frontend owns presentation.
 ## Rule: user-facing copy lives in lang files, camelCase keys
 
 `copy`/`seo` text comes from `lang/en/<resource>.php` under `seo`/`copy`
-sections, keyed in **camelCase** so the Data object maps directly:
+sections, keyed in **camelCase** so the Data object maps directly. Hydrate the
+copy/seo objects with `::from(__(...))` — **never** `new` with inline string
+literals ([spatie-laravel-data.md](spatie-laravel-data.md): construct with
+`::from`, never `new`). The PHP only *references* the copy; the lang file owns it.
 
 ```php
+// Good — text lives in lang/en/teams.php; ::from maps the array onto the object
 $copy = TeamsIndexPageCopyData::from(__('teams.index.copy'));
+$seo  = PageSeoData::from(__('teams.index.seo'));
+
+// Bad — copy hardcoded in PHP, and `new` bypasses ::from (the lang file is its home)
+$seo  = new PageSeoData(title: 'Decisões financeiras…', description: '…', noindex: false);
+$copy = new TeamsIndexPageCopyData(heroTitle: 'Decisões financeiras', /* …more literals… */);
 ```
 
 **Why:** camelCase keys map straight onto camelCase Data properties — the project
 sets no Spatie input name-mapping strategy, so snake_case lang keys would not map.
+Hardcoding strings in PHP puts user-facing content in code — untranslatable, not
+reviewable as content, and duplicated across pages; the lang file is the single
+home for copy, and `::from` runs the mapping pipeline `new` skips.
+
+## Rule: the controller assembles the `*PageData` via `::from`
+
+A controller composes the page object from typed pieces — collection/item DTOs
+from a query projection ([../queries/conventions.md](../queries/conventions.md)),
+`can` from policies, `copy`/`seo` from lang — **each through `::from`** — then
+hands the one object to `Inertia::render`. It authors no content and no
+capability values; it references them.
+
+```php
+public function index(Request $request): Response
+{
+    return Inertia::render('teams/index', TeamsIndexPageData::from([
+        'teams' => $this->listTeamsQuery->toDataCollection(),
+        'can'   => TeamsIndexPageAuthorizationData::from([
+            'createTeam' => $request->user()->can('create', Team::class),
+        ]),
+        'copy'  => TeamsIndexPageCopyData::from(__('teams.index.copy')),
+        'seo'   => PageSeoData::from(__('teams.index.seo')),
+    ]));
+}
+```
+
+**Why:** the assembly is the snippet agents copy. Showing every piece built via
+`::from` (DTOs, capabilities from a policy, copy/seo from lang) is what forecloses
+the `new`-with-inline-literals shortcut that buries content and capability logic
+in the controller.
 
 ## Edge cases
 
@@ -154,6 +193,9 @@ sets no Spatie input name-mapping strategy, so snake_case lang keys would not ma
 - `seo` and `copy` are separate; `seo.title` is raw (no app-name suffix).
 - SEO uses the shared `PageSeoData`; marketing fields `Optional` (omitted when
   absent); `title`/`description` required, `noindex` defaults true.
-- Copy from `lang/en/<resource>.php`, camelCase keys, via `::from(__(...))`.
+- Copy/seo from `lang/en/<resource>.php`, camelCase keys, via `::from(__(...))` —
+  never `new` with inline string literals.
+- Controller assembles the `*PageData` via `::from` (DTOs, `can` from policy,
+  `copy`/`seo` from lang); it authors no content or capability values inline.
 - Frontend consumption follows the sibling inertia-rules skill (authorization,
   shared-data, generated types).
