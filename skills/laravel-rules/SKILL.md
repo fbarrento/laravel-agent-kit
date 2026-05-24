@@ -55,8 +55,9 @@ Checklist**, with a **Decision** section where a rule is a choice.
 - [data-objects/conventions.md](rules/data-objects/conventions.md) — immutable typed payloads; create/update/response roles.
   - [data-objects/spatie-laravel-data.md](rules/data-objects/spatie-laravel-data.md) — `Optional`, mapping, casts/transformers, `toArray()` in actions.
   - [data-objects/serialization.md](rules/data-objects/serialization.md) — queue boundary; IDs not models; plain-DTO escape hatch.
+  - [data-objects/inertia-page-data.md](rules/data-objects/inertia-page-data.md) — Inertia only: one `*PageData` per page (`can`/`copy`/`seo`); outcome-named capabilities; shared `PageSeoData`.
 - [value-objects/conventions.md](rules/value-objects/conventions.md) — immutable, self-validating, value equality; vs scalar/enum/data.
-- [enums/conventions.md](rules/enums/conventions.md) — string-backed, no `Enum` suffix, model cast, thin (pure-of-case behavior).
+- [enums/conventions.md](rules/enums/conventions.md) — backed (string default; int a measured large-table exception), no `Enum` suffix, model cast, thin (pure-of-case behavior).
 - [exceptions/conventions.md](rules/exceptions/conventions.md) — specific business exceptions; static factory construction; map at boundary.
 - [jobs/conventions.md](rules/jobs/conventions.md) — no business logic; inject actions.
 - [events/conventions.md](rules/events/conventions.md) — guardrail: avoid events; actions/jobs instead; only for package extension points or event bus.
@@ -90,6 +91,7 @@ Checklist**, with a **Decision** section where a rule is a choice.
 
 **Discipline**
 - [testing/conventions.md](rules/testing/conventions.md) — Pest `test()`, `->and()`, structure mirror, in-memory services.
+- [testing/architecture.md](rules/testing/architecture.md) — enforce mandatory invariants with `arch()`; custom expectations over imperative loops; red-green; the enforcement catalog.
 
 ## How to apply
 

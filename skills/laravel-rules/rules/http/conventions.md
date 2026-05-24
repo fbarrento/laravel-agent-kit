@@ -115,6 +115,10 @@ response object is the allow-list of what ships, which is also the output
 API Resources redundant here — the data object already shapes and types
 the payload.
 
+When the frontend is **Inertia**, that response object is one per-page
+`*PageData` (composing `can`/`copy`/`seo`), governed by
+[../data-objects/inertia-page-data.md](../data-objects/inertia-page-data.md).
+
 ## Rule: cache data, not responses — never share-cache an authenticated response
 
 In an authed app the default is to cache at the
