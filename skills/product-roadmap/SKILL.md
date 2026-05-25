@@ -20,14 +20,10 @@ reconcile with a changed strategy or capability map.
 
 ## Where the state tree lives
 
-This skill is generic. It hard-codes no path. Resolve the state-tree root from
-the consuming project's `CLAUDE.md` (the path it declares for the
-product/capabilities tree, the same way the rules skills read `docs/adr/` and
-the same way the other pipeline skills resolve it). If the project declares no
-root, use the default `docs/` and say so explicitly in your reply.
-
-Throughout this skill, `{state-root}` is that declared root (default `docs/`),
-so the roadmap lives at `{state-root}/product/roadmap.md`, the strategy at
+Generic skill — hard-codes no path. Resolve the state-tree root from the
+project's `CLAUDE.md` (project-declared paths, DESIGN_PRODUCT_PIPELINE.md §2);
+default `docs/`, and say which you used. `{state-root}` is that root, so the
+roadmap lives at `{state-root}/product/roadmap.md`, the strategy at
 `{state-root}/product/strategy.md`, the vision at
 `{state-root}/product/vision.md`, and the capability map is the set of
 `{state-root}/capabilities/{slug}/README.md`.
@@ -79,9 +75,9 @@ A roadmap item is a VALUE SLICE, not a capability. The single most common
 mistake is to make each item a whole capability and topologically sort them —
 that is the capability map with numbers on it, not a roadmap.
 
-A value slice is the smallest coherent increment that delivers real user
-value. It is defined by the value it delivers, not by which capability it
-belongs to. Therefore:
+A value slice (DESIGN_PRODUCT_PIPELINE.md §5.2a) is the smallest coherent
+increment that delivers real user value — defined by the value it delivers,
+not the capability it belongs to. Therefore:
 - a value slice may use only PART of a capability — a bare-bones version of a
   capability that delivers value before the full capability is built (e.g. a
   trade with just an entry and an exit price, before any reusable strategy
@@ -220,10 +216,8 @@ Each item carries:
 Plus a short **reconciliation notes** section when the roadmap was re-run (see
 below), listing what changed and why.
 
-Plus a **Changelog** section — a reverse-chronological history (newest first),
-one entry per revision: `revision N — date — what changed and why`. The
-first-ever roadmap is `revision 1 — <date> — initial roadmap`. Append-only;
-the top entry's revision equals the frontmatter `revision`.
+Plus a **Changelog** section — per DESIGN_PRODUCT_PIPELINE.md §2b (Changelog);
+first entry `revision 1 — <date> — initial roadmap`.
 
 The roadmap contains NO dates, quarters, or deadlines. It contains no PRDs, no
 specs, no technical content — only sequenced intent.
@@ -309,18 +303,7 @@ records.
 
 ## Document versioning
 
-A human must be able to tell, by opening the roadmap, whether it is current
-with the strategy it serves — without reading git history.
-
-- `roadmap.md` carries a `revision` integer and an `approved_on` date, bumped
-  on every approved change.
-- It records `reconciled-against: strategy.md revision N` — the `strategy.md`
-  revision it was authored against (and transitively the vision the strategy
-  serves).
-- Staleness is readable on the face of the file: if `strategy.md`'s `revision`
-  is higher than the roadmap's `reconciled-against` value, the roadmap is
-  STALE and must be re-run (see "Re-running the roadmap"). No git archaeology
-  required.
-
-This is the same scheme `product-vision` and `product-strategy` apply to their
-own documents.
+Per DESIGN_PRODUCT_PIPELINE.md §2b. `roadmap.md` carries `revision` and
+`reconciled-against: strategy.md revision N`; if `strategy.md`'s `revision`
+exceeds that value, the roadmap is STALE and must be re-run (see "Re-running
+the roadmap").
