@@ -51,16 +51,41 @@ Hard rules:
   existing changes.
 - Priority and dependency only. No dates, quarters, or deadlines.
 - The roadmap is advisory. It gates nothing and rejects nothing.
+- An item is a value slice, not a capability. If an item is a whole
+  capability, it has not been broken down — break it into the slices that
+  deliver value incrementally.
 - You do not approve the roadmap yourself. Approval is an explicit human act.
 
 ## Authoring the roadmap
 
 Hold the vision and the capability map together and decide: what should this
-product build next, and in what order. Each roadmap item is one intended
-change to one capability.
+product build next, and in what order. Each roadmap item is one value slice.
+
+A roadmap item is a VALUE SLICE, not a capability. The single most common
+mistake is to make each item a whole capability and topologically sort them —
+that is the capability map with numbers on it, not a roadmap.
+
+A value slice is the smallest coherent increment that delivers real user
+value. It is defined by the value it delivers, not by which capability it
+belongs to. Therefore:
+- a value slice may use only PART of a capability — a bare-bones version of a
+  capability that delivers value before the full capability is built (e.g. a
+  trade with just an entry and an exit price, before any reusable strategy
+  engine exists);
+- a value slice may SPAN several capabilities — the thinnest end-to-end thing
+  a user can feel often cuts across two or three;
+- a capability is almost never one roadmap item — it is usually delivered by
+  several slices over several items.
+
+For every item you draft, apply this test: "Is this the thinnest thing that
+delivers user value — or have I just named a capability?" If it is a whole
+capability, break it down: find the minimal slice that delivers value first,
+make that the item, and let the rest of the capability follow as later items.
+Sequence the slices by value and dependency — earliest value first, by the
+shortest path, subject to what each slice genuinely depends on.
 
 For each item, establish:
-- the capability it changes;
+- the value slice it delivers, and which capability/capabilities it draws on;
 - the vision goal it serves — its `why-link`;
 - its priority relative to the other items — why it matters now versus later;
 - its dependencies — which other roadmap items must happen first.
@@ -90,8 +115,10 @@ itself does not.
 
 Body — an ORDERED list of roadmap items, sequenced by priority and dependency.
 Each item carries:
-- a short title — the intended change;
-- the capability it changes;
+- a short title — the value slice it delivers;
+- the user-facing value the slice delivers, in one line — if it cannot state
+  one, it is not a value slice;
+- which capability/capabilities it draws on;
 - its `why-link` — the vision goal it serves (resolvable path + goal);
 - its priority rationale — why now versus later, in one or two lines;
 - its dependencies — which earlier roadmap items must happen first, or `none`.

@@ -59,6 +59,15 @@ Rules of the grill:
   deciding how to close it is theirs. A grill that rewrites the idea into a
   more defensible shape has authored the product for the owner, however
   gently. Ask the sharp question and hold.
+- Flag vision-level implications; do not resolve them. If grilling surfaces
+  something that implies a change to the product's strategy or vision — a new
+  way to make money, a new audience, a goal the product does not currently
+  have — NAME it as a vision-level question and record it as an open item for
+  the human to take to the vision. Do NOT decide it, and do NOT load or argue
+  from the product's vision: your job is to grill the idea adversarially, not
+  to defend the existing vision or adjudicate against it. Grilling may reveal
+  the vision itself is wrong or incomplete — that is a finding, surfaced to
+  the human, never settled inside the grill.
 - Grill until the idea is sharp — then stop. Do not interrogate a
   already-clear idea into the ground.
 
@@ -80,6 +89,10 @@ section:
   existing one (loose — `change-scope` classifies properly).
 - **Deliberate non-goals** — the boundary.
 - **Open product questions** — anything the grill could not resolve.
+- **Vision-level implications** — anything the grill surfaced that implies a
+  change to the product's strategy or vision (new monetization, new audience,
+  a goal the product lacks). Recorded for the human to take to `product-vision`
+  — not resolved here.
 
 The stub is scratch input. It is consumed and superseded by `change-scope`,
 which AUTHORS the PRD from it — `change-scope` does not copy it. Once the PRD

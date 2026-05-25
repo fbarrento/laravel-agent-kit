@@ -227,6 +227,14 @@ pipeline exists to prevent.
 **Stage 0 is optional.** A well-formed idea enters the pipeline directly at
 stage 1 or stage 3. The grills are the front door for vague ideas, not a gate.
 
+**Vision-level implications are flagged, never resolved.** Grilling sometimes
+surfaces something that implies a change to the product's strategy or vision —
+new monetization, a new audience, a goal the product lacks. A grill NAMES it
+as a vision-level question and records it (in the readied-idea stub) for the
+human to take to `product-vision`. A grill never decides it, and never loads
+or argues from the vision — it grills the idea adversarially, it does not
+defend or adjudicate against the existing vision.
+
 ### 5.1 product-vision
 - **Transition:** (nothing / stale vision) → `product/vision.md`.
 - **Trigger:** establishing or materially revising the product's vision.
@@ -287,6 +295,11 @@ stage 1 or stage 3. The grills are the front door for vague ideas, not a gate.
 - **Input:** `vision.md` and the set of `capabilities/{slug}/README.md`.
 - **Output:** `roadmap.md` — a sequence of intended changes across
   capabilities, ordered by PRIORITY and DEPENDENCY. Never by dates.
+- **A roadmap item is a value slice, not a capability** — the smallest
+  coherent increment that delivers user value, which may use only PART of a
+  capability or SPAN several. A capability is usually delivered by several
+  slices over several items; an item that is a whole capability has not been
+  broken down.
 - **Why-link:** each roadmap item cites a vision goal.
 - **Authored top-down.** The roadmap is authored FROM the vision and the
   capability map — what the product should do next. It is NEVER derived

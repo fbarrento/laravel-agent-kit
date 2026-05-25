@@ -57,6 +57,15 @@ Rules of the grill:
   deciding how to close it is theirs. A grill that rewrites the product into a
   more defensible shape has authored its identity for the owner, however
   gently. Ask the sharp question and hold.
+- Flag vision-level implications; do not resolve them. If grilling surfaces
+  something that implies a change to the product's strategy or vision — a new
+  way to make money, a new audience, a goal the product does not currently
+  have — NAME it as a vision-level question and record it as an open item for
+  the human to take to the vision. Do NOT decide it, and do NOT load or argue
+  from the product's vision: your job is to grill the idea adversarially, not
+  to defend the existing vision or adjudicate against it. Grilling may reveal
+  the vision itself is wrong or incomplete — that is a finding, surfaced to
+  the human, never settled inside the grill.
 - Grill until the product idea is sharp — then stop.
 
 ## The readied-idea stub
@@ -76,6 +85,10 @@ Content — a handful of fields, no prose narrative, no vision goals:
 - **Positioning** — how it differs from what exists.
 - **Deliberate non-goals** — what the product refuses to be.
 - **Open strategy questions** — anything the grill could not resolve.
+- **Vision-level implications** — anything the grill surfaced that implies a
+  change to the product's strategy or vision (new monetization, new audience,
+  a goal the product lacks). Recorded for the human to take to `product-vision`
+  — not resolved here.
 
 The stub is scratch input. It is consumed and superseded by `product-vision`,
 which AUTHORS `vision.md` from it — `product-vision` does not copy it. Once the
