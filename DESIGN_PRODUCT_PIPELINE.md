@@ -121,10 +121,66 @@ vision.
 
 ---
 
+## 4a. The desirability / feasibility line
+
+Stage 0 (grilling) interrogates an idea on **desirability and strategy** — and
+never on **feasibility or construction**. This line is absolute.
+
+- In scope for a grill: the problem and who has it; whether the problem is
+  real; value and why-now; market and positioning; the user experience and
+  journey; deliberate non-goals; whether an idea is one capability or several.
+- Out of scope, hard: anything about how it is built — architecture, data
+  shapes, the stack, effort estimates, sequencing. The moment a grill asks
+  "is this technically hard", it has become a feasibility review, which is
+  `change-spec`'s job.
+
+Marketing-as-strategy (positioning, audience, why-anyone-cares) is in scope.
+Marketing-as-execution (campaigns, copy, channels, launch plans) is a separate
+discipline and is NOT what a grill does. A grill sharpens whether and why; it
+does not write the go-to-market.
+
+---
+
 ## 5. The five skills
 
 Each is one transition. Generic (kit-shipped). Each consumes the why above and
 emits the why-link downward.
+
+### 5.0 Stage 0 — pre-pipeline grilling (optional)
+
+Stage 0 is two **grill** skills. A grill is a PRE-STAGE: it interrogates an
+idea and hands a sharpened input to a producer skill. A grill is not a
+pipeline stage — it produces no durable artifact and carries no why-link.
+
+- **`vision-grill`** — pressure-tests a PRODUCT: strategy, positioning,
+  market, the product's reason to exist. Feeds `product-vision` (stage 1).
+- **`idea-grill`** — pressure-tests a single IDEA: the problem, the user
+  experience, the smallest worthwhile version, one-capability-or-three. Feeds
+  `change-scope` (stage 3).
+
+Two grills, not one, because they interrogate different-sized things:
+product-level strategy belongs next to the vision; change-level UX belongs
+next to a change. Folding marketing/strategy into the idea grill would
+re-litigate product strategy on every feature idea.
+
+**Readied-idea handoff.** A grill ends by writing a short, structured
+**readied-idea stub** — NOT a document. A handful of fields: the problem, the
+audience, the why-now, the deliberate non-goals, and (for `idea-grill`) the
+one-capability-or-three call. No prose narrative, no user stories, no scope
+section. The stub:
+- is TRANSIENT — it is scratch input, not a durable pipeline artifact;
+- carries no `why-link` and no `status`;
+- lives in a clearly-transient location, never in the durable state tree;
+- is CONSUMED AND SUPERSEDED by the producer skill — once the PRD or vision is
+  authored, the stub is spent and is deleted.
+
+The producer skill (`change-scope` / `product-vision`) AUTHORS from the stub;
+it does not copy it. The stub must never grow into a PRD or a vision — that
+would re-weld idea-interrogation and why-authoring into one step, the bug the
+pipeline exists to prevent.
+
+**Stage 0 is optional.** A well-formed idea enters the pipeline directly at
+stage 1 or stage 3. The grills are the front door for vague ideas, not a gate.
 
 ### 5.1 product-vision
 - **Transition:** (nothing / stale vision) → `product/vision.md`.
@@ -270,6 +326,9 @@ reading the document body, never its title or a commit message.
 2. **product-vision** + **capability-map** — stages 1–2, once the contract is
    proven.
 3. **spec-breakdown** — last.
+4. **vision-grill** + **idea-grill** — stage 0, built last, once the pipeline
+   they feed is complete. Each is a pre-stage producing a transient
+   readied-idea stub, not a pipeline artifact.
 
 Per-skill briefs are written in that order. Each brief: frontmatter (matching
 the kit's existing SKILL.md shape — `name`, `description`, `license`,
