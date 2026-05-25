@@ -161,10 +161,23 @@ emits the why-link downward.
 - **Why-link:** each `README.md` cites a vision goal.
 - **Owns the judgment:** "is this one capability or three." This is
   architectural reasoning, not folder scaffolding — the skill owns the
-  decomposition logic, not just the `mkdir`.
-- **Future responsibility:** review and promote the **provisional capability
-  stubs** that `change-scope` creates during bootstrap (§5.3) into considered
-  capability READMEs.
+  decomposition logic, not just the `mkdir`. It promotes the **provisional
+  capability stubs** `change-scope` creates during bootstrap (§5.3) into
+  considered capability READMEs.
+- **Refuses without a vision.** No approved `vision.md` → no criterion to
+  decompose against → STOP.
+- **Batch proposal, human-approved.** Produces ONE considered decomposition of
+  the whole product at once — not stub-by-stub — as a PROPOSAL; nothing in the
+  state tree is rewritten before a human approves it (a skill that can
+  mass-break `why-link`s must not act unreviewed).
+- **Reshaping a populated capability is a migration.** A merge / split /
+  rename of a capability that already has a `changes/` history moves the
+  affected `changes/` folders and rewrites every `why-link` / `capability:`
+  field that pointed at the old capability — applied atomically so every link
+  resolves again. A capability with shipped changes is reshaped, **never
+  erased**; its history is real and moves with it.
+- **Build order:** built and runs AFTER `product-vision` (stage 1). This is
+  the last of the five pipeline skills — stages 1–5 are complete.
 
 ### 5.3 change-scope  *(build first)*
 - **Transition:** a raw idea → `changes/{NNNN}/prd.md`.
