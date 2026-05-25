@@ -228,6 +228,13 @@ Drift invariant: a change whose implementation merged with its building blocks
 touched, but whose capability `README.md` was not updated in that merge, is a
 source-of-truth violation.
 
+When the capability `README.md` is updated as part of a shipped change, bump
+its `revision` and append a `## Changelog` entry in the same act — one line:
+the new revision, the date, and what the change altered about the capability.
+The README update, the revision bump, and the changelog entry all land
+together in the implementation merge. A revision bumped without a changelog
+entry is a defect.
+
 ## Approval
 
 `issues.md` is approved only by an explicit human act — the same rule as the

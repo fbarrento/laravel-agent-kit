@@ -98,6 +98,10 @@ Body — every section required; concise throughout:
   WHY (competitive window, runway, the need to test an unproven bet). This is
   the input the roadmap uses to sequence for earliest shippable value.
 - **Reconciliation report** — the findings from "Reconciliation".
+- **Changelog** — a reverse-chronological history (newest first), one entry
+  per revision: `revision N — date — what changed and why`. The first-ever
+  strategy is `revision 1 — <date> — initial strategy`. Append-only; the top
+  entry's revision equals the frontmatter `revision`.
 
 The strategy is the WHAT. It names no capabilities, no roadmap items, no
 implementation. It is concise enough to be internalized.
@@ -106,9 +110,10 @@ implementation. It is concise enough to be internalized.
 
 `strategy.md` is durable state and can go stale as the vision changes.
 `product-strategy` is re-runnable: re-read the current vision, reconcile, and
-re-propose. On every run, bump `revision` and set `reconciled-against` to the
-vision revision used. A re-run produces a reconciliation report of what
-changed and is human-approved like any strategy.
+re-propose. On every run, bump `revision`, set `reconciled-against` to the
+vision revision used, and append a `## Changelog` entry naming the change. A
+re-run produces a reconciliation report of what changed and is human-approved
+like any strategy.
 
 ## Approval
 
@@ -123,6 +128,11 @@ vision. You cannot approve it; a sub-agent cannot; vague assent does not count.
    `approved_on`, and the current `revision`.
 3. Any later edit to an approved strategy INVALIDATES the approval — reset to
    `draft`, clear the fields, seek fresh approval.
+
+On approval, before writing `status: approved`, append a `## Changelog` entry
+for this revision: the new `revision` number, the date, and one or two
+sentences on what changed and why. Bumping `revision` without the matching
+changelog entry is a defect — they are one act.
 
 ## When this skill applies
 

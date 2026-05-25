@@ -143,6 +143,11 @@ Each item carries:
 Plus a short **reconciliation notes** section when the roadmap was re-run (see
 below), listing what changed and why.
 
+Plus a **Changelog** section — a reverse-chronological history (newest first),
+one entry per revision: `revision N — date — what changed and why`. The
+first-ever roadmap is `revision 1 — <date> — initial roadmap`. Append-only;
+the top entry's revision equals the frontmatter `revision`.
+
 The roadmap contains NO dates, quarters, or deadlines. It contains no PRDs, no
 specs, no technical content — only sequenced intent.
 
@@ -168,8 +173,9 @@ the current `strategy.md` `revision` (see "Document versioning").
   the original authoring.
 
 Re-running produces a new proposal with a reconciliation-notes section, bumps
-`revision`, and sets `reconciled-against` to the `strategy.md` revision used.
-It is human-approved like any roadmap.
+`revision`, sets `reconciled-against` to the `strategy.md` revision used, and
+appends a `## Changelog` entry naming the change. It is human-approved like
+any roadmap.
 
 ## Approval
 
@@ -186,6 +192,11 @@ sub-agent cannot; vague assent does not count.
    `roadmap.md` frontmatter.
 3. Any later edit to an approved roadmap INVALIDATES the approval — reset to
    `draft`, clear the fields, seek fresh approval.
+
+On approval, before writing `status: approved`, append a `## Changelog` entry
+for this revision: the new `revision` number, the date, and one or two
+sentences on what changed and why. Bumping `revision` without the matching
+changelog entry is a defect — they are one act.
 
 ## How the roadmap feeds the pipeline
 

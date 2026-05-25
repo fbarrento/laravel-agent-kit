@@ -124,6 +124,27 @@ whether what depends on it is current — without reading git history.
 This is a readability convention, not a why-link tier — it tells a human what
 is stale; it does not add an artifact to the no-orphan chain.
 
+### Changelog
+
+Every product-level document (`vision.md`, `strategy.md`, `roadmap.md`) and
+every capability `README.md` carries a `## Changelog` section: a
+reverse-chronological history, newest first, one entry per revision.
+
+Each entry is one line:
+`revision N — YYYY-MM-DD — short description of what changed and why`
+
+Rules:
+- A skill MUST NOT bump a document's `revision` without appending the matching
+  changelog entry in the same act. Revision bump and changelog entry are
+  atomic. A revision with no entry, or an entry with no revision bump, is a
+  defect.
+- The top changelog entry's revision MUST equal the frontmatter `revision`.
+- Entries are decision-level and short — what changed, and why (the trigger:
+  a reconciliation finding, a human decision, an upstream revision). Not a
+  diff. One or two sentences.
+- The changelog is append-only. Past entries are never edited or removed —
+  the history is the point.
+
 ---
 
 ## 3. The why-link — hard, checkable, the spine of the system
@@ -169,6 +190,12 @@ change whose implementation merged with its building blocks touched, but whose
 capability `README.md` was not updated in that merge, is a source-of-truth
 violation. `spec-breakdown` enforces it by drafting the README update as the
 final issue, landed atomically with the implementation (§5.5).
+
+**Changelog defect check (amendment).** A fourth check joins the same
+verification family: on every product-level document and every capability
+README, the top `## Changelog` entry's revision MUST equal the frontmatter
+`revision` (§2b Changelog). A `revision` bumped without a matching changelog
+entry — or an entry without a bump — is a defect.
 
 Why this is the spine: it is what stops stage N from rationalizing stage N-1.
 A skill cannot invent a why — it must cite the why above it. Remove this rule
@@ -521,3 +548,7 @@ scripts/lint-skills.py`).
   documents carry a `revision`; downstream documents record
   `reconciled-against`; staleness is readable on the face of a document
   without git (§2b).
+- **Document changelog.** RESOLVED (changelog amendment). Every product-level
+  document and every capability README carries an append-only `## Changelog`;
+  a `revision` bump and its changelog entry are one atomic act, enforced in
+  every skill that writes these documents.
