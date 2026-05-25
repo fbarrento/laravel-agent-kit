@@ -2,13 +2,14 @@
 
 **Status:** design contract. The per-skill handoff briefs derive from this
 document; nothing here is a brief yet.
-**Repo:** `fbarrento/laravel-agent-kit` — five new generic skills.
+**Repo:** `fbarrento/laravel-agent-kit` — a family of generic pipeline skills.
 **Decisions locked:** (1) the why-link is a hard, checkable requirement;
 (2) skills are generic, the state-tree paths are project-declared; (3) build
 order is `change-scope` and `change-spec` first.
 
-This document is the single source of truth for how the five skills compose.
-A skill brief that contradicts it is wrong; fix the brief.
+This document is the single source of truth for how the pipeline skills
+compose: stage 0 (the two grills) and stages 1, 1.5, 2, 2.5, 3, 4, 5. A skill
+brief that contradicts it is wrong; fix the brief.
 
 ---
 
@@ -167,14 +168,24 @@ not a remembered title or a commit reference. Reconstructing the upstream why
 from a filename, a commit message, or memory does NOT satisfy the link. This
 is the no-orphan check from the routing-table work, applied to the pipeline.
 
-**Strategy tier (amendment).** The product model is vision → strategy →
-roadmap. `strategy.md` cites a vision goal; each roadmap item cites a strategy
-goal (tracing to a vision goal via the strategy). The full upward chain a
-shipped line of code traces is: issue → spec → PRD → capability → vision, with
-the roadmap item (when a PRD cites one) threading change → roadmap item →
-strategy → vision in parallel. A capability `README.md` cites a vision goal
-directly; it may additionally relate to the strategy, but its mandatory link
-remains the vision.
+**The full chain.** The product model is vision → strategy → roadmap, and
+every artifact's mandatory citation is the table above. Two facts must be held
+together, and they do not contradict:
+
+- **The mandatory spine** a shipped line of code traces upward is
+  issue → spec → PRD → capability → **vision**. A capability `README.md` cites
+  a **vision goal directly** — that is its mandatory link, and it is CORRECT,
+  never a chain break. A capability may additionally relate to the strategy,
+  but its required citation is the vision.
+- **The roadmap thread runs in parallel.** `strategy.md` cites a vision goal;
+  each `roadmap.md` item cites a strategy goal (→ vision via the strategy).
+  When a PRD cites its roadmap item, the change threads
+  change → roadmap item → strategy → vision **alongside** the spine. Citing a
+  roadmap item is optional (the roadmap is advisory, §5.2a); the spine is not.
+
+A capability citing the vision directly while the roadmap cites the strategy is
+**by design** — it is not an inconsistency, a chain break, or a gap to work
+around.
 
 **Bootstrap resolution (amendment).** A PRD always cites a real, resolvable
 capability `README.md` — if none exists, `change-scope` creates a provisional
@@ -203,8 +214,8 @@ and "product → capabilities → changes" is just three folders; with it, it is
 an auditable chain of justification from a line of code up to the product
 vision.
 
-The why-link binds capabilities to vision goals only. Infrastructure-tier
-items (§2a) carry no why-link by definition — their absence of a goal is
+Infrastructure-tier items (§2a) sit outside this chain entirely: they carry no
+why-link and no vision goal by definition — their absence of a goal is
 correct, not an orphan.
 
 ---
@@ -219,9 +230,10 @@ correct, not an orphan.
    cheat-sheet bug across a skill boundary, where agents read the summary
    instead of the rule.
 3. **Enter at any stage; over-fire at none.** Most work enters at stage 3 or 4
-   and *reads* stages 1–2 as settled state. The pipeline must run partially —
-   if it only works end-to-end it becomes ceremony and gets routed around. And
-   a one-line bug fix triggers none of the five skills; the classify step in
+   and *reads* the product-level stages (vision, strategy, capabilities,
+   roadmap) as settled state. The pipeline must run partially — if it only
+   works end-to-end it becomes ceremony and gets routed around. And a one-line
+   bug fix triggers none of the pipeline stages; the classify step in
    `change-scope` must be allowed to answer "in-shape — go to the code gate."
 
 ---
@@ -246,10 +258,11 @@ does not write the go-to-market.
 
 ---
 
-## 5. The five skills
+## 5. The pipeline skills
 
 Each is one transition. Generic (kit-shipped). Each consumes the why above and
-emits the why-link downward.
+emits the why-link downward. Stage 0 (the two grills) feeds the pipeline;
+stages 1, 1.5, 2, 2.5, 3, 4, 5 run it.
 
 ### 5.0 Stage 0 — pre-pipeline grilling (optional)
 
@@ -369,16 +382,18 @@ defend or adjudicate against the existing vision.
   field that pointed at the old capability — applied atomically so every link
   resolves again. A capability with shipped changes is reshaped, **never
   erased**; its history is real and moves with it.
-- **Build order:** built and runs AFTER `product-vision` (stage 1). This is
-  the last of the five pipeline skills — stages 1–5 are complete.
+- **Build order:** runs AFTER `product-vision` (stage 1) — the vision it
+  decomposes against — and is built after `product-strategy` (stage 1.5) in
+  pipeline order (see §7).
 
 ### 5.2a product-roadmap  *(stage 2.5)*
-- **Transition:** `product/vision.md` + the capability map →
+- **Transition:** `product/strategy.md` + the capability map →
   `product/roadmap.md`.
 - **Trigger:** establishing or revising the product's roadmap.
-- **Input:** `vision.md` and the set of `capabilities/{slug}/README.md`.
-- **Output:** `roadmap.md` — a sequence of intended changes across
-  capabilities, ordered by PRIORITY and DEPENDENCY. Never by dates.
+- **Input:** `strategy.md` (and the vision it serves) and the set of
+  `capabilities/{slug}/README.md`.
+- **Output:** `roadmap.md` — a sequence of value slices across capabilities,
+  ordered de-risk → ROI → dependency (below). Never by dates.
 - **A roadmap item is a value slice, not a capability** — the smallest
   coherent increment that delivers user value, which may use only PART of a
   capability or SPAN several. A capability is usually delivered by several
@@ -393,8 +408,9 @@ defend or adjudicate against the existing vision.
   never hands an ordering judgment back to the human via a flag ("promote
   if…"). Surfacing genuine findings (no why-link, missing capability, vision
   gap) remains required and is distinct from deferring an ordering decision.
-- **Why-link:** each roadmap item cites a vision goal.
-- **Authored top-down.** The roadmap is authored FROM the vision and the
+- **Why-link:** each roadmap item cites a strategy goal (→ vision via the
+  strategy, per §3).
+- **Authored top-down.** The roadmap is authored FROM the strategy and the
   capability map — what the product should do next. It is NEVER derived
   bottom-up from the changes that already exist; a roadmap assembled from
   scoped changes reports activity instead of expressing intent.
@@ -402,18 +418,19 @@ defend or adjudicate against the existing vision.
   change — when its turn comes it feeds `idea-grill` / `change-scope` as a
   prioritized starting point. But a change may enter the pipeline without a
   roadmap item. A PRD MAY cite a roadmap item (`roadmap-link`); if it does,
-  the why-link chain extends upward to the vision; if it does not, nothing
-  breaks.
+  the why-link thread extends upward through the strategy to the vision; if it
+  does not, nothing breaks.
 - **Human-approved.** The roadmap is produced as a proposal and approved by a
-  human, like the vision and the capability map.
-- **Re-runnable.** The roadmap is durable state and can go stale as the vision
-  shifts or `capability-map` reshapes capabilities. `product-roadmap` re-runs:
-  it reconciles the existing roadmap against the current vision and capability
-  map and re-proposes — the same review-and-reconcile pattern `product-vision`
-  and `capability-map` use.
-- **No dates.** The roadmap sequences by priority and dependency only. Dated
-  promises slip, the roadmap lies, and a roadmap nobody trusts violates the
-  source-of-truth principle louder than anything else.
+  human, like the vision, strategy, and capability map; it carries
+  `revision` / `reconciled-against` for visible versioning (§2b).
+- **Re-runnable.** The roadmap is durable state and can go stale as the
+  strategy shifts or `capability-map` reshapes capabilities. `product-roadmap`
+  re-runs: it reconciles the existing roadmap against the current strategy and
+  capability map and re-proposes — the same review-and-reconcile pattern
+  `product-vision`, `product-strategy`, and `capability-map` use.
+- **No dates.** The roadmap sequences by de-risk, ROI, and dependency — never
+  by dates. Dated promises slip, the roadmap lies, and a roadmap nobody trusts
+  violates the source-of-truth principle louder than anything else.
 
 ### 5.3 change-scope  *(build first)*
 - **Transition:** a raw idea → `changes/{NNNN}/prd.md`.
@@ -481,9 +498,9 @@ defend or adjudicate against the existing vision.
   factual present-tense README (decomposition/vision relation stay
   `capability-map`'s).
 
-**Implementation is not a sixth skill.** It is the existing code STOP gate in
-`laravel-rules` / `inertia-rules`, fed by issues that already carry their
-authority. The pipeline ends at issues; the gate takes over.
+**Implementation is not a further pipeline skill.** It is the existing code
+STOP gate in `laravel-rules` / `inertia-rules`, fed by issues that already
+carry their authority. The pipeline ends at issues; the gate takes over.
 
 ---
 
@@ -505,10 +522,11 @@ reading the document body, never its title or a commit message.
    next feature and force the PRD→spec contract everything else inherits.
 2. **product-vision** + **capability-map** — stages 1–2, once the contract is
    proven.
-3. **spec-breakdown** — last.
-4. **vision-grill** + **idea-grill** — stage 0, built last, once the pipeline
-   they feed is complete. Each is a pre-stage producing a transient
-   readied-idea stub, not a pipeline artifact.
+3. **spec-breakdown** — stage 5, last of the original change pipeline (the
+   later items below were added by subsequent amendments).
+4. **vision-grill** + **idea-grill** — stage 0, built once the pipeline they
+   feed is complete. Each is a pre-stage producing a transient readied-idea
+   stub, not a pipeline artifact.
 5. **product-roadmap** — stage 2.5, built after `capability-map` (it sequences
    changes across capabilities, so it needs the capability map) and before
    the change pipeline. Advisory; not a gate.
@@ -569,3 +587,25 @@ scripts/lint-skills.py`).
   decides every slice's position and justifies it; it never ships an ordering
   flag ("promote if…") in place of a decision. This generalizes the
   value-slice and de-risk amendments — roadmap ordering is now complete.
+
+---
+
+## 9. The verification family
+
+The invariants the skills enforce, collected for audit. This section
+introduces nothing — each is defined in the section pointed to.
+
+- **No-orphan** (§3) — every capability cites a vision goal; no artifact is
+  left unaccounted for above it.
+- **Resolvable why-link** (§3) — every why-link is a real, resolvable
+  path-and-section; an unresolved link is invalid.
+- **Drift invariant** (§3, §5.5) — a capability `README.md` matches reality
+  because the same merge that changes the capability updates it.
+- **Changelog defect check** (§2b, §3) — a document's top `## Changelog`
+  entry's revision equals its frontmatter `revision`; a revision bump without
+  a matching entry (or an entry without a bump) is a defect.
+- **Staleness check** (§2b) — a downstream document whose `reconciled-against`
+  upstream revision is lower than the upstream's current `revision` is stale
+  and must be re-run.
+- **Infrastructure tier** (§2a) — substrate carries no why-link and no vision
+  goal and is not folded into a capability; this is correct, not a gap.
