@@ -62,6 +62,12 @@ Hard rules:
   existential bet named by the strategy is sequenced first, ahead of ROI. A
   roadmap that ranks the bet-testing slice below feature slices, and flags it
   rather than fixing it, has the wrong sort key.
+- Commit to the order; never flag it. The roadmap decides every slice's
+  position and states why — including enabler-pairs and close calls. An
+  ordering flag ("promote X if…", "this may be mis-ranked") handed to the
+  human in place of a decision is a defect. Surfacing genuine findings (no
+  why-link, missing capability, vision gap) is still required — that is not
+  an ordering decision.
 - You do not approve the roadmap yourself. Approval is an explicit human act.
 
 ## Authoring the roadmap
@@ -142,6 +148,36 @@ Do NOT read the `changes/` directories to build the roadmap. The roadmap is
 intent; the changes are execution. Authoring from execution is the back-fill
 bug. (Existing changes are relevant only during reconciliation — see below.)
 
+Commit to the order. Do not defer.
+
+Sequencing is this skill's job. For every slice, the roadmap decides its
+position and states why. The roadmap must NOT output an ordering flag — "promote
+this pair if…", "consider moving X earlier", "this may be mis-ranked, your
+call" — in place of a decision. A flag that hands an ordering judgment back to
+the human is the defect, not a courtesy.
+
+This applies especially to the hard calls:
+- **Enabler-pairs.** When a low-ROI slice enables a high-value slice, evaluate
+  the pair by the value it ultimately unlocks (the de-risk amendment) — and
+  then PLACE it. Decide whether the pair leads or stays, by asking what
+  concretely depends on the high-value slice: if nothing downstream is gated
+  on it, the pair holds its dependency-ordered position; if downstream value
+  is gated on it, the pair moves up. Either way the roadmap states the call
+  and the reason — it does not offer the human the fork.
+- **Close calls.** When two slices are near-equal, pick one, on a stated
+  tie-breaker (dependency depth, de-risking value, smaller blast radius). A
+  decided close call with a one-line reason is correct; a flagged one is not.
+
+The test: if a sequencing note in your draft contains the word "if" addressed
+to the human — "promote if", "move if", "reconsider if" — you have deferred a
+decision you were supposed to make. Replace the conditional with the decision
+and its reason.
+
+Genuine findings are different and still required: a slice tied to no vision
+goal, a missing capability, a vision gap — surface those for a human. The
+prohibition is on deferring ORDERING, which is the skill's own work, not on
+surfacing findings, which is not.
+
 ## What roadmap.md must contain
 
 Write to `{state-root}/product/roadmap.md`.
@@ -175,6 +211,11 @@ Each item carries:
   de-risking slice (and which strategy bet it tests), or ROI-ranked, or
   dependency-constrained. An item the skill itself believes is mis-ranked is
   not a valid roadmap — re-order, do not annotate.
+  `why here` states a COMMITTED reason: a de-risking slice, an ROI rank, a
+  dependency constraint, or a decided enabler-pair / tie-break. It never
+  contains a conditional addressed to the human ("promote if…"). If the skill
+  cannot commit to a position, the ordering rule is incomplete — resolve it,
+  do not annotate it.
 
 Plus a short **reconciliation notes** section when the roadmap was re-run (see
 below), listing what changed and why.
