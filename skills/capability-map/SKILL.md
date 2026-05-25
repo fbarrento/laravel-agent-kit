@@ -79,6 +79,18 @@ Most runs the provisional set will be broadly sound and the decomposition
 mostly confirms it with light edits. Reserve merges and splits for where the
 decomposition genuinely changes shape.
 
+Not every thing in the product is a capability. Some are infrastructure —
+substrate that capabilities consume but that is not a product area:
+authentication and user accounts, third-party data feeds, the database (see
+`DESIGN_PRODUCT_PIPELINE.md` §2a). When decomposing, classify each such thing
+explicitly as infrastructure: it is NOT a capability, it carries no why-link
+and no vision goal, and it is NOT folded inside a capability — it sits below
+the capability layer, consumed by capabilities directly. Do not invent a
+vision goal to give an infrastructure item a why-link, and do not bury shared
+substrate inside one capability. If a thing looks like infrastructure but the
+vision implies users experience it as a product surface, it is a capability
+and the vision has a gap — flag it, do not misclassify it as infrastructure.
+
 ## The proposal
 
 Produce the decomposition as a PROPOSAL before changing anything. The proposal
@@ -91,6 +103,8 @@ states:
   history, the migration it entails — which `changes/` folders move and which
   `why-link`s must be rewritten;
 - any capability that cannot be tied to a vision goal, flagged for a human.
+- any thing classified as infrastructure rather than a capability — listed
+  separately, with no why-link, noted as below the capability layer.
 
 Present the proposal for review and explicitly invite rejection or revision. A
 skill that can mass-break `why-link`s must not act unreviewed. Nothing in the
@@ -117,6 +131,10 @@ Only after the proposal is human-approved, apply it:
   removes a capability as a standalone, its changes are folded into whichever
   capability absorbs them — the history moves, it is never dropped. Erasing
   shipped history would make the repo lie about what was built.
+- **Infrastructure-tier items** — record each in the capability-map output as
+  infrastructure: below the capability layer, consumed by named capabilities,
+  no why-link, no vision goal. Do NOT create a `capabilities/{slug}/` folder
+  or a considered README for it — it is not a capability.
 
 After applying, every `why-link` in the tree must resolve. Verify it.
 
