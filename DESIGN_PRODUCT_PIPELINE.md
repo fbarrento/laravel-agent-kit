@@ -13,6 +13,51 @@ brief that contradicts it is wrong; fix the brief.
 
 ---
 
+## 0. Foundational principle — agents are sidecars; artifacts are shared memory
+
+This section governs every other section of this contract and every skill in
+the pipeline. Where any later rule seems to conflict with it, this principle
+wins, and the later rule is the thing to fix.
+
+**The human builds the product.** The agents are sidecars. They help the human
+think, and they create and maintain the durable memory of that thinking. They
+do not build the product in the human's place, and they do not own its
+decisions.
+
+**Every artifact is durable shared memory.** The vision, the strategy, the
+capability READMEs, the roadmap, every PRD, spec, and issue set — each is
+durable memory: a single shared record that is, equally and at once, the
+memory of both the human and the machine. It is not a human document a machine
+parses, nor a machine record a human inspects. It is one memory, holding one
+truth, that must be fully legible and fully trustworthy to both readers — and
+the human's reading and the machine's reading must never diverge. A skill
+keeps no private memory beside the artifact; the artifact is the memory.
+
+**A skill helps the human think, then records what was decided.** A skill is
+not "produce the artifact". A skill is: help the human think a thing through,
+and write down what was decided in a form both of them can trust later. The
+artifact's honesty and legibility is the point — not its existence. A skill is
+in service to the memory, never its owner.
+
+**The operational test.** A skill that produces an artifact the human did not
+genuinely think through has failed — *even if the artifact is correct*. An
+unshared decision is not shared memory, however well written the document. A
+correct artifact the human merely ratified at a gate is not the same as a
+decision the human and the agent reached together and recorded. Where a skill
+makes a judgment — a classification, a scope boundary, an ordering, a
+one-thing-or-two call — it surfaces that judgment and reaches understanding
+with the human *before* it writes, not only at an approval gate after. The
+gate confirms; it does not substitute for the thinking.
+
+**What this means for "mechanical".** The parts of the pipeline that form new
+shared memory — deciding the vision, the strategy, the scope, the breakdown —
+are where the human and the agent must genuinely think together; a skill there
+is conversational, not a silent producer. The parts that only execute an
+already-decided, already-recorded memory can be mechanical. The line is
+memory-formation versus execution — not planning versus code by label.
+
+---
+
 ## 1. The two halves — never conflate them
 
 **State** — durable artifacts on disk, in the consuming project.
@@ -22,6 +67,11 @@ A skill is a *transition between states*. A skill is never itself a layer.
 "Manage a capability" is not a skill — it is a folder that skills act on. If a
 skill and a layer become the same thing, the why has no clean place to live
 and the pipeline rots. Skills are verbs; folders are nouns.
+
+The two-halves rule, the why-link (§3), and every skill contract below are
+expressions of the foundational principle (§0): the state is the shared
+durable memory, and the skills are the sidecars that help form and maintain
+it.
 
 ---
 
@@ -587,6 +637,18 @@ scripts/lint-skills.py`).
   decides every slice's position and justifies it; it never ships an ordering
   flag ("promote if…") in place of a decision. This generalizes the
   value-slice and de-risk amendments — roadmap ordering is now complete.
+- **Foundational principle.** RESOLVED (foundational-principle amendment).
+  Agents are sidecars; every artifact is durable shared memory, equally the
+  human's and the machine's; a skill helps the human think and records the
+  decision, and is judged by whether the human genuinely thought the artifact
+  through — not only by the artifact's correctness. §0 governs the contract.
+- **Skills' producer posture.** OPEN. The pipeline skills were written as
+  producers (read input, emit artifact, stop at a gate). §0 requires they
+  instead help the human think, surfacing judgment before producing. Retro-
+  fitting an elicitation step into the planning skills (change-scope,
+  change-spec, capability-map, product-vision, product-strategy,
+  product-roadmap) is owed work — to be specified as its own amendment, after
+  a first real run shows where the producer posture most needs correcting.
 
 ---
 
