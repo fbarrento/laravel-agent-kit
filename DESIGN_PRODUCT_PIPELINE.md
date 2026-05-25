@@ -384,6 +384,10 @@ defend or adjudicate against the existing vision.
   capability or SPAN several. A capability is usually delivered by several
   slices over several items; an item that is a whole capability has not been
   broken down.
+- **Ordering: de-risk first, then ROI, within hard dependencies.** The
+  cheapest slice testing an unproven existential bet the strategy names leads,
+  ahead of value-÷-effort ranking; a low-ROI enabler of a high-value slice is
+  evaluated as a pair, by the value ultimately unlocked.
 - **Why-link:** each roadmap item cites a vision goal.
 - **Authored top-down.** The roadmap is authored FROM the vision and the
   capability map — what the product should do next. It is NEVER derived
@@ -552,3 +556,7 @@ scripts/lint-skills.py`).
   document and every capability README carries an append-only `## Changelog`;
   a `revision` bump and its changelog entry are one atomic act, enforced in
   every skill that writes these documents.
+- **Roadmap ordering.** RESOLVED (de-risk amendment). The roadmap sequences
+  de-risking slices first (cheapest test of each unproven existential bet the
+  strategy names), then by ROI, within hard dependencies. A roadmap that ranks
+  the bet-testing slice below feature slices has the wrong sort key.

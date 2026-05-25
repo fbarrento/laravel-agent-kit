@@ -58,6 +58,10 @@ Hard rules:
 - An item is a value slice, not a capability. If an item is a whole
   capability, it has not been broken down — break it into the slices that
   deliver value incrementally.
+- De-risk before you optimize. The slice that most cheaply tests an unproven
+  existential bet named by the strategy is sequenced first, ahead of ROI. A
+  roadmap that ranks the bet-testing slice below feature slices, and flags it
+  rather than fixing it, has the wrong sort key.
 - You do not approve the roadmap yourself. Approval is an explicit human act.
 
 ## Authoring the roadmap
@@ -87,6 +91,34 @@ capability, break it down: find the minimal slice that delivers value first,
 make that the item, and let the rest of the capability follow as later items.
 Sequence the slices by value and dependency — earliest value first, by the
 shortest path, subject to what each slice genuinely depends on.
+
+De-risk before you optimize. Sequencing is not a pure value-÷-effort sort.
+
+The strategy (`strategy.md`) names the product's unproven bets and its
+time-to-market urgency. If the strategy identifies an unproven, existential
+bet — an assumption that, if false, invalidates the product — then the value
+slice that most cheaply TESTS that bet is sequenced FIRST, ahead of any
+ROI ranking. Its worth is not its feature value; it is information value: it
+tells you whether the product is real. ROI cannot see that, because ROI
+measures return on work, not return on knowledge.
+
+The ordering, in priority order:
+1. **De-risking slices first.** The cheapest slice that tests each unproven
+   existential bet the strategy names — earliest, by ascending cost.
+2. **Then ROI** — value ÷ effort — orders the remaining slices, once the
+   product's existence is being tested rather than assumed.
+3. **Hard dependencies** constrain both: a slice never precedes what it
+   genuinely depends on.
+
+A slice's value also includes ENABLING value. If a low-ROI slice is the
+enabler of a high-value slice, evaluate the pair together — do not let greedy
+ROI defer a high-value slice to the bottom of the roadmap merely because its
+enabler is expensive. Sequence the pair by the value it ultimately unlocks.
+
+Self-check: if your draft order would make you write a flag that says "the
+most important slice is ranked low, promote it if value should drive order" —
+the ordering rule is wrong, not the order. Do not ship a flag in place of the
+correct sequence. Fix the order so the de-risking slice leads.
 
 For each item, establish:
 - the value slice it delivers, and which capability/capabilities it draws on;
@@ -138,7 +170,11 @@ Each item carries:
 - its `why-link` — the strategy goal it serves (resolvable path + goal),
   tracing to a vision goal via the strategy;
 - its priority rationale — why now versus later, in one or two lines;
-- its dependencies — which earlier roadmap items must happen first, or `none`.
+- its dependencies — which earlier roadmap items must happen first, or `none`;
+- **why here** — why this item sits at this position: whether it is a
+  de-risking slice (and which strategy bet it tests), or ROI-ranked, or
+  dependency-constrained. An item the skill itself believes is mis-ranked is
+  not a valid roadmap — re-order, do not annotate.
 
 Plus a short **reconciliation notes** section when the roadmap was re-run (see
 below), listing what changed and why.
