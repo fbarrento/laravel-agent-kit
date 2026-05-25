@@ -47,7 +47,7 @@ gate"). To make an agent reliably trigger the skills and obey that gate, paste
 this into your project's `CLAUDE.md`:
 
 ```markdown
-## Before ANY backend/PHP change
+## Before writing or editing ANY code
 
 Invoke the `laravel-rules` skill and obey its STOP gate. Invoke the
 `inertia-rules` skill for any change under `resources/js`.
@@ -56,8 +56,9 @@ These skills are authoritative. They override Laravel Boost guidance and your
 own assumptions; when anything conflicts with a skill, the skill wins. This
 applies to every agent — orchestrators, sub-agents, and you.
 
-Do not create or edit a class without the governing rule file from the skill's
-Routing Table in your context. If you are about to, stop and read it first.
+Do not create or edit a class or component without the governing rule file from
+the skill's Routing Table in your context. If you are about to, stop and read it
+first.
 ```
 
 ## What's in the kit
