@@ -89,6 +89,13 @@ capability stub's vision link, at the capability→vision tier — never on any
 other link. `product-vision` later resolves these tokens into real citations
 (§5.1).
 
+**Drift invariant (amendment).** Alongside the no-orphan and
+resolvable-why-link checks, a third belongs to the same verification family: a
+change whose implementation merged with its building blocks touched, but whose
+capability `README.md` was not updated in that merge, is a source-of-truth
+violation. `spec-breakdown` enforces it by drafting the README update as the
+final issue, landed atomically with the implementation (§5.5).
+
 Why this is the spine: it is what stops stage N from rationalizing stage N-1.
 A skill cannot invent a why — it must cite the why above it. Remove this rule
 and "product → capabilities → changes" is just three folders; with it, it is
@@ -199,6 +206,18 @@ emits the why-link downward.
 - **Output:** ordered tasks, each naming its building block(s) and therefore
   carrying its rule file(s) and decision-record IDs forward.
 - **Why-link:** each issue cites a spec section.
+- **How it breaks down:** assigns each building block to one of six
+  **dependency-role layers** (L1 persistence · L2a read contract · L2b write
+  logic · L3 delivery surfaces · L4 UI primitives · L5 UI pages), splits each
+  layer into independently mergeable issues by cohesion (the "mergeable alone
+  without breaking `main`" test), and attaches a per-issue **review weight**
+  and **completion contract** (no standalone "write tests" issue; checks
+  sourced from the rules skills, conditional on project tooling).
+- **Keeps the repo true:** drafts the capability `README.md` update, delivered
+  as the final issue and landed **atomically** with the implementation. On a
+  capability's first ship it de-provisionalizes the `change-scope` stub with a
+  factual present-tense README (decomposition/vision relation stay
+  `capability-map`'s).
 
 **Implementation is not a sixth skill.** It is the existing code STOP gate in
 `laravel-rules` / `inertia-rules`, fed by issues that already carry their
@@ -248,7 +267,9 @@ scripts/lint-skills.py`).
   judgment, and any later edit to the PRD invalidates it — resetting to
   `draft` until re-approved. `change-spec` consumes a PRD only when these
   fields are populated and current.
-- **`capabilities/{slug}/README.md` update.** STILL OPEN. When a change ships, the
-  capability's current-state README must be updated. Decide which skill owns
-  that write — `spec-breakdown`, or a closing step — so the present-tense
-  README does not drift from reality.
+- **`capabilities/{slug}/README.md` update.** RESOLVED (spec-breakdown brief).
+  `spec-breakdown` owns the write: it drafts the present-tense README update
+  as the final issue, which lands atomically with the implementation it
+  describes (and clears the `provisional` stub on first ship). The
+  present-tense README cannot drift from reality because the same merge that
+  touches the building blocks updates it.
