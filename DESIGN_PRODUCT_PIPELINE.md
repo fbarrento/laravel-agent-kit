@@ -188,6 +188,9 @@ emits the why-link downward.
 - **Routes to** `laravel-rules` / `inertia-rules` by rule-file path only
   (contract rule 2). Owns the judgment of splitting a change into one spec vs
   several (e.g. a domain spec + an HTTP spec).
+- **Approval:** the spec carries human-approval frontmatter (`status` /
+  `approved_by` / `approved_on`), invalidated on edit — the same mechanism as
+  the PRD; `spec-breakdown` consumes only an approved spec.
 
 ### 5.5 spec-breakdown
 - **Transition:** `changes/{NNNN}/spec.md` → `changes/{NNNN}/issues.md`.
