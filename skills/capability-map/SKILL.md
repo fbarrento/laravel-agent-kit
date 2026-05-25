@@ -136,7 +136,17 @@ Only after the proposal is human-approved, apply it:
   no why-link, no vision goal. Do NOT create a `capabilities/{slug}/` folder
   or a considered README for it — it is not a capability.
 
+When writing or updating a capability `README.md`, bump its `revision` and
+append a matching `## Changelog` entry in the same act — what changed and why
+(promotion from a provisional stub, a reshape, a reconciliation finding).
+Revision bump and changelog entry are atomic.
+
 After applying, every `why-link` in the tree must resolve. Verify it.
+
+`capability-map` is not the only skill that writes a capability `README.md`:
+`spec-breakdown` updates the present-tense README when a change ships. Any
+skill that writes a capability README is bound by the same atomic
+revision+changelog rule (see `spec-breakdown`'s "Keeping the repo true").
 
 ## When this skill applies
 
@@ -169,6 +179,7 @@ Frontmatter:
 ```
 ---
 capability: {slug}
+revision: 1
 why-link: {resolvable path + goal in product/vision.md}
 status: considered
 ---
@@ -180,6 +191,10 @@ Body:
 - **Why it exists** — the vision goal it serves.
 - **Boundary** — what falls inside this capability and what belongs to a
   neighbouring one.
+- **Changelog** — a reverse-chronological history (newest first), one entry
+  per revision: `revision N — date — what changed and why`. A newly-promoted
+  capability's first entry is `revision 1 — <date> — capability established`.
+  Append-only; the top entry's revision equals the frontmatter `revision`.
 
 The README is the considered description. The per-change present-tense detail
 of what the capability currently does is maintained by `spec-breakdown` on

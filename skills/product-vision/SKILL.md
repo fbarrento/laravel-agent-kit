@@ -46,6 +46,11 @@ Before writing `vision.md` you MUST, in order:
    pipeline; it gets an explicit human approval step.
 5. RESOLVE BOOTSTRAP TOKENS, gated (see "Resolving bootstrap vision-links").
 
+On approval, before writing `status: approved`, append a `## Changelog` entry
+for this revision: the new `revision` number, the date, and one or two
+sentences on what changed and why. Bumping `revision` without the matching
+changelog entry is a defect — they are one act.
+
 Hard rules:
 - You author the vision from human intent. You never derive it from what got
   built. A vision traced from the codebase can only ratify the product; it
@@ -82,6 +87,7 @@ Write to `{state-root}/product/vision.md`.
 Frontmatter:
 ```
 ---
+revision: 1
 status: draft
 approved_by:
 approved_on:
@@ -100,6 +106,10 @@ Body — every section required:
 - **Reconciliation report** — the findings from "Reconciliation": capabilities
   the vision does not account for, intent no capability serves, contradictions.
   Each flagged for a human. If the project had no capabilities, say so.
+- **Changelog** — a reverse-chronological history (newest first), one entry
+  per revision: `revision N — date — what changed and why`. The first-ever
+  vision is `revision 1 — <date> — initial vision`. Append-only; the top
+  entry's revision equals the frontmatter `revision`.
 
 The vision is written from intent. It contains no capability decompositions,
 no technical content.
@@ -121,6 +131,9 @@ reconciliation:
 Resolving a `BOOTSTRAP` token is an assertion that the capability genuinely
 serves the vision. Never resolve a token by inventing a vision goal to point
 at — that would re-hide the very drift reconciliation just surfaced.
+
+A re-run that changes the vision bumps `revision` and appends a `## Changelog`
+entry naming the change — the same atomic act required at approval (STOP gate).
 
 ## When this skill applies
 
