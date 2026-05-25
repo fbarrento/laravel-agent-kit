@@ -45,11 +45,11 @@ Before producing a PRD you MUST, in order:
 2. RESOLVE THE CAPABILITY ANCHOR.
    - The capability already exists → the PRD will cite its `README.md`.
    - The capability does NOT exist → create a provisional capability stub
-     (Task 5) so the PRD has a real parent to cite. The stub is an anchor, not
-     a capability description.
-3. ALLOCATE THE CHANGE NUMBER (Task 6).
-4. WRITE THE PRD (Task 7).
-5. SEEK HUMAN APPROVAL (Task 8). Until a human approves, the PRD is not
+     (see "Creating a provisional capability stub") so the PRD has a real
+     parent to cite. The stub is an anchor, not a capability description.
+3. ALLOCATE THE CHANGE NUMBER (see "Numbering a change").
+4. WRITE THE PRD (see "What a PRD must contain").
+5. SEEK HUMAN APPROVAL (see "Approval"). Until a human approves, the PRD is not
    approved and `change-spec` may not consume it.
 
 Hard rules:
@@ -59,7 +59,8 @@ Hard rules:
 - A good PRD passes this test: a non-engineer can read it and disagree with
   it. If half of it is only meaningful to someone who has read the code
   conventions, the why and the how have been welded — start over.
-- You do not approve your own PRD. Approval is an explicit human act (Task 8).
+- You do not approve your own PRD. Approval is an explicit human act (see
+  "Approval").
 
 ## Creating a provisional capability stub
 
