@@ -134,9 +134,22 @@ emits the why-link downward.
   it solves, what it explicitly is not.
 - **Why-link:** none above it — this is the root why.
 - **Not triggered by:** a single feature idea (that is stage 3).
-- **Future responsibility:** resolve `BOOTSTRAP — no product vision yet`
-  tokens left on capability stubs (§3, §5.3) into real citations to vision
-  goals.
+- **Three parts:** (1) elicit the vision from human product intent; (2)
+  reconcile it against any capabilities the project has already grown,
+  producing a reconciliation report of drift flagged for a human; (3) gated
+  `BOOTSTRAP`-token resolution. The vision is authored from human intent and
+  NEVER derived from the codebase or the stubs — a vision traced from what got
+  built can only ratify the product, never judge it.
+- **Approval:** `vision.md` carries human-approval frontmatter (`status` /
+  `approved_by` / `approved_on`) — the highest-stakes artifact in the
+  pipeline.
+- **`BOOTSTRAP`-token resolution is gated** on the reconciliation: a stub the
+  reconciled vision justifies has its `BOOTSTRAP — no product vision yet`
+  (§3, §5.3) replaced with a real vision-goal citation; a capability flagged
+  as unaccounted-for KEEPS its token until a human resolves the tension.
+- **Build order:** `product-vision` (stage 1) is built and runs before
+  `capability-map` (stage 2) — `capability-map` refuses to run without
+  `vision.md`.
 
 ### 5.2 capability-map
 - **Transition:** `product/vision.md` → the set of
