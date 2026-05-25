@@ -51,6 +51,12 @@ Rules of the grill:
   channels are not this grill's concern; positioning and audience are.
 - Push back. A grill that only agrees has failed. If an answer is thin, say so
   and ask again.
+- Surface, do not resolve. When you find a contradiction or a weak point,
+  NAME it and put it back to the product owner to resolve — do not hand them a
+  reworded, cleaned-up version of their idea. Exposing the hole is your job;
+  deciding how to close it is theirs. A grill that rewrites the product into a
+  more defensible shape has authored its identity for the owner, however
+  gently. Ask the sharp question and hold.
 - Grill until the product idea is sharp — then stop.
 
 ## The readied-idea stub
