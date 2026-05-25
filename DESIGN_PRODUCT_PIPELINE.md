@@ -69,6 +69,41 @@ Rules of the tree:
 
 ---
 
+## 2a. The infrastructure tier
+
+Not everything a product is built from is a capability. Below the capability
+layer sits the **infrastructure tier** — substrate that capabilities consume
+but that is not itself a product area.
+
+A thing is infrastructure, not a capability, when ALL of these hold:
+- a user does not experience it as a product area — it has no surface of its
+  own, it is plumbing;
+- it is consumed by capabilities as a dependency, typically by several;
+- no vision goal names it, and naming one would be inventing a goal to satisfy
+  a link.
+
+Canonical examples: authentication and user accounts; third-party data feeds
+(e.g. a market-data API); the database.
+
+Rules of the infrastructure tier:
+- Infrastructure carries **no why-link and no vision goal**. This is correct,
+  not a gap: the why-link contract binds *capabilities* to vision goals, and
+  infrastructure is not a capability. An infrastructure item without a goal is
+  not an orphan and not a product-vision gap.
+- Infrastructure is **not folded inside a capability**. Burying shared
+  substrate inside one consumer creates a false dependency — other capabilities
+  would reach *through* that capability for the substrate. Infrastructure sits
+  *below* the capability layer, available to all consumers directly.
+- The capability-vs-infrastructure call is a deliberate classification, made
+  the same way the "one capability or several" call is made. If a thing a user
+  genuinely experiences as a product surface is mistaken for infrastructure,
+  that is a misclassification — substrate has no user-facing surface.
+- A borderline case: if a thing looks like substrate but the vision implies
+  users *experience* it as a product area, it is a capability and the vision
+  has a gap — flag it, do not bury it as infrastructure to dodge the gap.
+
+---
+
 ## 3. The why-link — hard, checkable, the spine of the system
 
 Every artifact cites the why of the stage above it. An artifact without a
@@ -107,6 +142,10 @@ A skill cannot invent a why — it must cite the why above it. Remove this rule
 and "product → capabilities → changes" is just three folders; with it, it is
 an auditable chain of justification from a line of code up to the product
 vision.
+
+The why-link binds capabilities to vision goals only. Infrastructure-tier
+items (§2a) carry no why-link by definition — their absence of a goal is
+correct, not an orphan.
 
 ---
 
@@ -396,3 +435,7 @@ scripts/lint-skills.py`).
   describes (and clears the `provisional` stub on first ship). The
   present-tense README cannot drift from reality because the same merge that
   touches the building blocks updates it.
+- **Infrastructure tier.** RESOLVED (infrastructure-tier amendment). Substrate
+  consumed by capabilities — authentication, third-party data feeds, the
+  database — is the infrastructure tier (§2a): below the capability layer, no
+  why-link, no vision goal, not folded into any capability.
