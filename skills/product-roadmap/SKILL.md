@@ -261,7 +261,7 @@ vision, the capability map, the PRD, the spec. You cannot approve it; a
 sub-agent cannot; vague assent does not count.
 
 1. Present the roadmap to the user FOR REVIEW — the item order, the priority
-   rationale, the dependencies, and any item not tied to a vision goal.
+   rationale, the dependencies, and any item not tied to a strategy goal.
    For a re-run, surface the reconciliation notes. Explicitly invite rejection
    or revision.
 2. On unambiguous human approval, write `status: approved`, `approved_by`,
