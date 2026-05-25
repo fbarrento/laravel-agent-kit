@@ -36,6 +36,8 @@ docs/
   product/
     vision.md                       ← durable: what the product is, who it
                                        serves, what it solves. The root why.
+    roadmap.md                      ← durable: the sequenced intent — which
+                                       changes, in what order, and why
   capabilities/
     {capability-slug}/
       README.md                     ← durable: what this capability IS today,
@@ -60,6 +62,10 @@ Rules of the tree:
   it became that, change by change.
 - A refactor does not get its own folder. It is a change inside the
   capability's `changes/` series.
+- `roadmap.md` is product-level state — a deliberate,
+  priority-and-dependency-ordered sequence of intended changes across
+  capabilities. It is advisory: it guides what to build next; it gates
+  nothing.
 
 ---
 
@@ -235,6 +241,35 @@ stage 1 or stage 3. The grills are the front door for vague ideas, not a gate.
 - **Build order:** built and runs AFTER `product-vision` (stage 1). This is
   the last of the five pipeline skills — stages 1–5 are complete.
 
+### 5.2a product-roadmap  *(stage 2.5)*
+- **Transition:** `product/vision.md` + the capability map →
+  `product/roadmap.md`.
+- **Trigger:** establishing or revising the product's roadmap.
+- **Input:** `vision.md` and the set of `capabilities/{slug}/README.md`.
+- **Output:** `roadmap.md` — a sequence of intended changes across
+  capabilities, ordered by PRIORITY and DEPENDENCY. Never by dates.
+- **Why-link:** each roadmap item cites a vision goal.
+- **Authored top-down.** The roadmap is authored FROM the vision and the
+  capability map — what the product should do next. It is NEVER derived
+  bottom-up from the changes that already exist; a roadmap assembled from
+  scoped changes reports activity instead of expressing intent.
+- **Advisory, not a gate.** A roadmap item is the RECOMMENDED upstream of a
+  change — when its turn comes it feeds `idea-grill` / `change-scope` as a
+  prioritized starting point. But a change may enter the pipeline without a
+  roadmap item. A PRD MAY cite a roadmap item (`roadmap-link`); if it does,
+  the why-link chain extends upward to the vision; if it does not, nothing
+  breaks.
+- **Human-approved.** The roadmap is produced as a proposal and approved by a
+  human, like the vision and the capability map.
+- **Re-runnable.** The roadmap is durable state and can go stale as the vision
+  shifts or `capability-map` reshapes capabilities. `product-roadmap` re-runs:
+  it reconciles the existing roadmap against the current vision and capability
+  map and re-proposes — the same review-and-reconcile pattern `product-vision`
+  and `capability-map` use.
+- **No dates.** The roadmap sequences by priority and dependency only. Dated
+  promises slip, the roadmap lies, and a roadmap nobody trusts violates the
+  source-of-truth principle louder than anything else.
+
 ### 5.3 change-scope  *(build first)*
 - **Transition:** a raw idea → `changes/{NNNN}/prd.md`.
 - **Trigger:** a feature idea, an extension, or a refactor request for the
@@ -329,6 +364,9 @@ reading the document body, never its title or a commit message.
 4. **vision-grill** + **idea-grill** — stage 0, built last, once the pipeline
    they feed is complete. Each is a pre-stage producing a transient
    readied-idea stub, not a pipeline artifact.
+5. **product-roadmap** — stage 2.5, built after `capability-map` (it sequences
+   changes across capabilities, so it needs the capability map) and before
+   the change pipeline. Advisory; not a gate.
 
 Per-skill briefs are written in that order. Each brief: frontmatter (matching
 the kit's existing SKILL.md shape — `name`, `description`, `license`,
