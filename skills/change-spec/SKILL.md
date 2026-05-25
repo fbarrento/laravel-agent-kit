@@ -20,13 +20,9 @@ rules say. The spec it produces, once human-approved, is the input to
 
 ## Where the state tree lives
 
-This skill is generic. It hard-codes no path. Resolve the state-tree root from
-the consuming project's `CLAUDE.md` (the path it declares for the
-product/capabilities tree, the same way the rules skills read `docs/adr/` and
-the same way `change-scope` resolves it). If the project declares no root, use
-the default `docs/` and say so explicitly in your reply.
-
-Throughout this skill, `{capabilities-root}` means
+Generic skill — hard-codes no path. Resolve the state-tree root from the
+project's `CLAUDE.md` (project-declared paths, DESIGN_PRODUCT_PIPELINE.md §2);
+default `docs/`, and say which you used. `{capabilities-root}` means
 `{declared-root}/capabilities` (default `docs/capabilities`).
 
 ## STOP — how this skill works

@@ -20,13 +20,9 @@ last pipeline skill: after it, implementation is the code STOP gate in
 
 ## Where the state tree lives
 
-This skill is generic. It hard-codes no path. Resolve the state-tree root from
-the consuming project's `CLAUDE.md` (the path it declares for the
-product/capabilities tree, the same way the rules skills read `docs/adr/` and
-the same way `change-scope` / `change-spec` resolve it). If the project
-declares no root, use the default `docs/` and say so explicitly in your reply.
-
-Throughout this skill, `{capabilities-root}` means
+Generic skill — hard-codes no path. Resolve the state-tree root from the
+project's `CLAUDE.md` (project-declared paths, DESIGN_PRODUCT_PIPELINE.md §2);
+default `docs/`, and say which you used. `{capabilities-root}` means
 `{declared-root}/capabilities` (default `docs/capabilities`).
 
 ## STOP — how this skill works
@@ -224,16 +220,13 @@ CLEARS the `provisional` marker. Write only what the capability factually does
 now. Do NOT write a considered decomposition, scope boundaries, or any vision
 relation — that is `capability-map`'s exclusive output.
 
-Drift invariant: a change whose implementation merged with its building blocks
-touched, but whose capability `README.md` was not updated in that merge, is a
-source-of-truth violation.
+Drift invariant (DESIGN_PRODUCT_PIPELINE.md §9): a merged change that touched
+its building blocks but did not update the capability `README.md` in that
+merge is a source-of-truth violation.
 
-When the capability `README.md` is updated as part of a shipped change, bump
-its `revision` and append a `## Changelog` entry in the same act — one line:
-the new revision, the date, and what the change altered about the capability.
-The README update, the revision bump, and the changelog entry all land
-together in the implementation merge. A revision bumped without a changelog
-entry is a defect.
+When the capability `README.md` is updated on a shipped change, bump its
+`revision` and append a `## Changelog` entry in the same act (§2b) — the README
+update, the bump, and the entry all land together in the implementation merge.
 
 ## Approval
 

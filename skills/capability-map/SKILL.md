@@ -20,13 +20,9 @@ it reshapes. It is the last pipeline skill.
 
 ## Where the state tree lives
 
-This skill is generic. It hard-codes no path. Resolve the state-tree root from
-the consuming project's `CLAUDE.md` (the path it declares for the
-product/capabilities tree, the same way the rules skills read `docs/adr/` and
-the same way the other pipeline skills resolve it). If the project declares no
-root, use the default `docs/` and say so explicitly in your reply.
-
-Throughout this skill, `{capabilities-root}` means
+Generic skill — hard-codes no path. Resolve the state-tree root from the
+project's `CLAUDE.md` (project-declared paths, DESIGN_PRODUCT_PIPELINE.md §2);
+default `docs/`, and say which you used. `{capabilities-root}` means
 `{declared-root}/capabilities` (default `docs/capabilities`), and
 `product/vision.md` means `{declared-root}/product/vision.md`.
 
@@ -80,16 +76,13 @@ mostly confirms it with light edits. Reserve merges and splits for where the
 decomposition genuinely changes shape.
 
 Not every thing in the product is a capability. Some are infrastructure —
-substrate that capabilities consume but that is not a product area:
-authentication and user accounts, third-party data feeds, the database (see
-`DESIGN_PRODUCT_PIPELINE.md` §2a). When decomposing, classify each such thing
-explicitly as infrastructure: it is NOT a capability, it carries no why-link
-and no vision goal, and it is NOT folded inside a capability — it sits below
-the capability layer, consumed by capabilities directly. Do not invent a
-vision goal to give an infrastructure item a why-link, and do not bury shared
-substrate inside one capability. If a thing looks like infrastructure but the
-vision implies users experience it as a product surface, it is a capability
-and the vision has a gap — flag it, do not misclassify it as infrastructure.
+substrate (DESIGN_PRODUCT_PIPELINE.md §2a): authentication, third-party data
+feeds, the database. When decomposing, classify each such thing explicitly as
+infrastructure (not a capability): do NOT invent a vision goal to give it a
+why-link, and do NOT bury it inside one capability — it sits below the
+capability layer, consumed directly. If a thing looks like infrastructure but
+the vision implies users experience it as a product surface, it is a
+capability and the vision has a gap — flag it, do not misclassify it.
 
 ## The proposal
 
@@ -191,10 +184,9 @@ Body:
 - **Why it exists** — the vision goal it serves.
 - **Boundary** — what falls inside this capability and what belongs to a
   neighbouring one.
-- **Changelog** — a reverse-chronological history (newest first), one entry
-  per revision: `revision N — date — what changed and why`. A newly-promoted
-  capability's first entry is `revision 1 — <date> — capability established`.
-  Append-only; the top entry's revision equals the frontmatter `revision`.
+- **Changelog** — per DESIGN_PRODUCT_PIPELINE.md §2b (Changelog); a
+  newly-promoted capability's first entry is
+  `revision 1 — <date> — capability established`.
 
 The README is the considered description. The per-change present-tense detail
 of what the capability currently does is maintained by `spec-breakdown` on

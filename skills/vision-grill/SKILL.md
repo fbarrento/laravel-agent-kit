@@ -70,8 +70,8 @@ Rules of the grill:
 
 ## The readied-idea stub
 
-When the product idea is sharp, write a transient readied-idea stub — NOT a
-document, and NOT a vision.
+The readied-idea stub is defined in DESIGN_PRODUCT_PIPELINE.md §5.0. When the
+product idea is sharp, write one — NOT a document, and NOT a vision.
 
 Location: a clearly-transient path — `{declared-scratch-path}` if the project
 declares one, else `docs/.scratch/` — never the durable state tree.
@@ -90,10 +90,9 @@ Content — a handful of fields, no prose narrative, no vision goals:
   a goal the product lacks). Recorded for the human to take to `product-vision`
   — not resolved here.
 
-The stub is scratch input. It is consumed and superseded by `product-vision`,
-which AUTHORS `vision.md` from it — `product-vision` does not copy it. Once the
-vision exists, the stub is spent; delete it. The stub must never grow into a
-vision: no vision goals, no why-link, no status. If you are writing vision
+`product-vision` authors `vision.md` from this stub and does not copy it
+(§5.0); once the vision exists, delete the stub. It must never grow into a
+vision — no vision goals, no why-link, no status. If you are writing vision
 goals, you have stopped grilling and started authoring — the wrong skill.
 
 ## Handoff

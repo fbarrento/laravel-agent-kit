@@ -19,14 +19,10 @@ capabilities are sequenced and shaped to serve it.
 
 ## Where the state tree lives
 
-This skill is generic. It hard-codes no path. Resolve the state-tree root from
-the consuming project's `CLAUDE.md` (the path it declares for the
-product/capabilities tree, the same way the rules skills read `docs/adr/` and
-the same way the other pipeline skills resolve it). If the project declares no
-root, use the default `docs/` and say so explicitly in your reply.
-
-Throughout this skill, `{state-root}` is that declared root (default `docs/`),
-so the strategy lives at `{state-root}/product/strategy.md` and the vision at
+Generic skill — hard-codes no path. Resolve the state-tree root from the
+project's `CLAUDE.md` (project-declared paths, DESIGN_PRODUCT_PIPELINE.md §2);
+default `docs/`, and say which you used. `{state-root}` is that root, so the
+strategy lives at `{state-root}/product/strategy.md` and the vision at
 `{state-root}/product/vision.md`.
 
 ## STOP — how this skill works
@@ -98,10 +94,8 @@ Body — every section required; concise throughout:
   WHY (competitive window, runway, the need to test an unproven bet). This is
   the input the roadmap uses to sequence for earliest shippable value.
 - **Reconciliation report** — the findings from "Reconciliation".
-- **Changelog** — a reverse-chronological history (newest first), one entry
-  per revision: `revision N — date — what changed and why`. The first-ever
-  strategy is `revision 1 — <date> — initial strategy`. Append-only; the top
-  entry's revision equals the frontmatter `revision`.
+- **Changelog** — per DESIGN_PRODUCT_PIPELINE.md §2b (Changelog); first entry
+  `revision 1 — <date> — initial strategy`.
 
 The strategy is the WHAT. It names no capabilities, no roadmap items, no
 implementation. It is concise enough to be internalized.
@@ -152,19 +146,6 @@ strategy.
 
 ## Document versioning
 
-A human must be able to tell, by opening a document, when it last changed and
-whether what depends on it is current — without reading git history.
-
-- Every product-level document (`vision.md`, `strategy.md`, `roadmap.md`)
-  carries a `revision` integer and `approved_on` date in its frontmatter,
-  bumped on every approved change.
-- Every downstream document records, in frontmatter, the revision of each
-  upstream document it was reconciled against (`reconciled-against`).
-- Staleness is then readable on the face of the document: if an upstream
-  document's `revision` is higher than the `reconciled-against` value a
-  downstream document records, the downstream document is STALE and must be
-  re-run. No git archaeology required.
-
-`product-strategy` sets its own `revision` and its `reconciled-against:
-vision.md revision N`. The same scheme applies to `product-vision` and
-`product-roadmap` (see their amendments).
+Per DESIGN_PRODUCT_PIPELINE.md §2b. `product-strategy` sets its own `revision`
+and `reconciled-against: vision.md revision N`; a vision whose `revision`
+exceeds that value means this strategy is STALE and must be re-run.
