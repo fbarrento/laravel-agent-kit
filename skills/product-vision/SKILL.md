@@ -19,15 +19,11 @@ cites the vision this skill writes.
 
 ## Where the state tree lives
 
-This skill is generic. It hard-codes no path. Resolve the state-tree root from
-the consuming project's `CLAUDE.md` (the path it declares for the
-product/capabilities tree, the same way the rules skills read `docs/adr/` and
-the same way the other pipeline skills resolve it). If the project declares no
-root, use the default `docs/` and say so explicitly in your reply.
-
-Throughout this skill, `{state-root}` is that declared root (default `docs/`),
-so the vision lives at `{state-root}/product/vision.md` and capability stubs
-at `{state-root}/capabilities/{slug}/README.md`.
+Generic skill — hard-codes no path. Resolve the state-tree root from the
+project's `CLAUDE.md` (project-declared paths, DESIGN_PRODUCT_PIPELINE.md §2);
+default `docs/`, and say which you used. `{state-root}` is that root, so the
+vision lives at `{state-root}/product/vision.md` and capability stubs at
+`{state-root}/capabilities/{slug}/README.md`.
 
 ## STOP — how this skill works
 
@@ -106,10 +102,8 @@ Body — every section required:
 - **Reconciliation report** — the findings from "Reconciliation": capabilities
   the vision does not account for, intent no capability serves, contradictions.
   Each flagged for a human. If the project had no capabilities, say so.
-- **Changelog** — a reverse-chronological history (newest first), one entry
-  per revision: `revision N — date — what changed and why`. The first-ever
-  vision is `revision 1 — <date> — initial vision`. Append-only; the top
-  entry's revision equals the frontmatter `revision`.
+- **Changelog** — per DESIGN_PRODUCT_PIPELINE.md §2b (Changelog); first entry
+  `revision 1 — <date> — initial vision`.
 
 The vision is written from intent. It contains no capability decompositions,
 no technical content.
