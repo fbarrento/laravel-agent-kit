@@ -36,8 +36,10 @@ docs/
   product/
     vision.md                       ← durable: what the product is, who it
                                        serves, what it solves. The root why.
+    strategy.md                     ← durable: the WHAT — personas,
+                                       positioning, goals, monetization, urgency
     roadmap.md                      ← durable: the sequenced intent — which
-                                       changes, in what order, and why
+                                       value slices, in what order, and why
   capabilities/
     {capability-slug}/
       README.md                     ← durable: what this capability IS today,
@@ -104,6 +106,26 @@ Rules of the infrastructure tier:
 
 ---
 
+## 2b. Document versioning
+
+A human must be able to tell, by opening a document, when it last changed and
+whether what depends on it is current — without reading git history.
+
+- Every product-level document (`vision.md`, `strategy.md`, `roadmap.md`)
+  carries a `revision` integer and an `approved_on` date in its frontmatter,
+  bumped on every approved change.
+- Every downstream document records, in frontmatter, the `revision` of each
+  upstream document it was reconciled against (`reconciled-against`).
+- Staleness is then readable on the face of the document: if an upstream
+  document's `revision` is higher than the `reconciled-against` value a
+  downstream document records, the downstream document is STALE and must be
+  re-run. No git archaeology required.
+
+This is a readability convention, not a why-link tier — it tells a human what
+is stale; it does not add an artifact to the no-orphan chain.
+
+---
+
 ## 3. The why-link — hard, checkable, the spine of the system
 
 Every artifact cites the why of the stage above it. An artifact without a
@@ -112,6 +134,8 @@ orphan, and that fails verification.
 
 | Artifact | MUST cite |
 |---|---|
+| `product/strategy.md` | a goal in `product/vision.md` |
+| each item in `product/roadmap.md` | a goal in `product/strategy.md` |
 | `capabilities/{slug}/README.md` | a goal in `product/vision.md` |
 | `changes/{NNNN}/prd.md` | its capability's `README.md` + states its own product why |
 | `changes/{NNNN}/spec.md` | its `prd.md` |
@@ -121,6 +145,15 @@ orphan, and that fails verification.
 not a remembered title or a commit reference. Reconstructing the upstream why
 from a filename, a commit message, or memory does NOT satisfy the link. This
 is the no-orphan check from the routing-table work, applied to the pipeline.
+
+**Strategy tier (amendment).** The product model is vision → strategy →
+roadmap. `strategy.md` cites a vision goal; each roadmap item cites a strategy
+goal (tracing to a vision goal via the strategy). The full upward chain a
+shipped line of code traces is: issue → spec → PRD → capability → vision, with
+the roadmap item (when a PRD cites one) threading change → roadmap item →
+strategy → vision in parallel. A capability `README.md` cites a vision goal
+directly; it may additionally relate to the strategy, but its mandatory link
+remains the vision.
 
 **Bootstrap resolution (amendment).** A PRD always cites a real, resolvable
 capability `README.md` — if none exists, `change-scope` creates a provisional
@@ -259,6 +292,30 @@ defend or adjudicate against the existing vision.
 - **Build order:** `product-vision` (stage 1) is built and runs before
   `capability-map` (stage 2) — `capability-map` refuses to run without
   `vision.md`.
+- **Personas live in the strategy, not here.** A vision is short and
+  aspirational; target-customer definitions and personas are a strategy
+  artifact (§5.1a), not a vision section.
+
+### 5.1a product-strategy  *(stage 1.5)*
+- **Transition:** `product/vision.md` → `product/strategy.md`.
+- **Trigger:** establishing or revising the product's strategy.
+- **Input:** the approved `vision.md` + human intent about market, customers,
+  positioning, monetization, and urgency.
+- **Output:** `strategy.md` — the WHAT between the vision's why and the
+  roadmap's when: target customers and **personas**, positioning, measurable
+  goals, **monetization**, and **time-to-market urgency**.
+- **Why-link:** `strategy.md` cites a vision goal.
+- **Authored from intent**, never derived from the codebase, capabilities, or
+  the readied-idea stub; reconciled against the vision with findings flagged
+  for a human. Kept concise — a strategy nobody can internalize is dead.
+- **Approval:** human-approved like the vision; carries `revision` /
+  `reconciled-against` for visible versioning (§2b).
+- **The roadmap and capabilities serve it:** `product-roadmap` sequences value
+  slices to serve the strategy (and its time-to-market urgency); capabilities
+  are shaped to serve it.
+- **Refuses without an approved vision.** No vision → the strategy has nothing
+  to serve → STOP.
+- **Build order:** stage 1.5, built and runs after `product-vision`.
 
 ### 5.2 capability-map
 - **Transition:** `product/vision.md` → the set of
@@ -419,6 +476,9 @@ reading the document body, never its title or a commit message.
 5. **product-roadmap** — stage 2.5, built after `capability-map` (it sequences
    changes across capabilities, so it needs the capability map) and before
    the change pipeline. Advisory; not a gate.
+6. **product-strategy** — stage 1.5, built after `product-vision` (it serves
+   the vision and refuses to run without one) and before `capability-map` /
+   `product-roadmap`, which it in turn governs.
 
 Per-skill briefs are written in that order. Each brief: frontmatter (matching
 the kit's existing SKILL.md shape — `name`, `description`, `license`,
@@ -452,3 +512,12 @@ scripts/lint-skills.py`).
   consumed by capabilities — authentication, third-party data feeds, the
   database — is the infrastructure tier (§2a): below the capability layer, no
   why-link, no vision goal, not folded into any capability.
+- **Strategy layer.** RESOLVED (product-strategy amendment). Personas,
+  positioning, measurable goals, and monetization belong to `strategy.md`
+  (§5.1a, stage 1.5) — the WHAT between the vision's why and the roadmap's
+  when — not to the vision or the roadmap. The roadmap sequences value slices
+  to serve the strategy and its time-to-market urgency.
+- **Document versioning.** RESOLVED (product-strategy amendment). Product-level
+  documents carry a `revision`; downstream documents record
+  `reconciled-against`; staleness is readable on the face of a document
+  without git (§2b).
