@@ -8,6 +8,37 @@ metadata:
 
 # Inertia Rules
 
+## STOP — how this skill works
+
+This file is a ROUTER, not the rules. Reading it does NOT mean you have
+"applied the skill." The actual rules live in `rules/**/*.md` and are NOT in
+your context yet.
+
+Before you write or edit ANY file under `resources/js` you MUST, in order:
+
+1. Identify the role or artifact you are touching (page, feature, `ui`
+   primitive, `app` component, layout, hook, generated type, design token,
+   story, …).
+2. Open and READ IN FULL the matching rule file(s) from the Routing Table
+   below. The table gives pointers only — never rule content. You cannot
+   satisfy a rule you have not read.
+3. Before emitting any code in your reply, output a line:
+   `Rules consulted: <comma-separated relative paths of every rule file you read>`
+   If that line would be empty, you are NOT ready to write code — return to
+   step 2.
+4. After writing, re-read the `## Checklist` section of each rule file you
+   used and confirm every item against your code. Report any item you cannot
+   satisfy instead of silently skipping it.
+
+Hard rules:
+- Do not work from memory, from the Routing Table labels, or from a single
+  nearby example. Nearby code may itself violate these rules.
+- Before building UI, confirm the backend contract exists (generated types via
+  Spatie Data, routes/actions via Wayfinder). If it is missing, that is a
+  backend task first — do NOT hand-write the shapes.
+- This applies to EVERY agent: orchestrators, sub-agents, and you. A sub-agent
+  that writes code must perform steps 1–4 itself.
+
 Conventions that give AI agents Laravel-like discipline on the **Inertia
 frontend**: predictable page/resource/component roles, generated
 backend-derived types, backend-owned copy and formatting, a
@@ -20,37 +51,6 @@ Inertia, React, Tailwind, Pest, or Wayfinder API syntax, use the
 framework docs (and Laravel **Boost** for live app facts — see
 [boost-boundary](rules/architecture/boost-boundary.md)); use these files
 for code shape.
-
-## STOP — how this skill works
-
-This file is a ROUTER, not the rules. Reading it does NOT mean you have
-"applied the skill." The actual rules live in `rules/**/*.md` and are NOT in
-your context yet.
-
-Before you write or edit ANY component, page, hook, or type you MUST, in order:
-
-1. Identify the building block you are touching (a page, a feature component, a
-   primitive/app component, a form, a hook, a layout, a story, a generated
-   type, …).
-2. Open and READ IN FULL the matching rule file(s) from the Routing Table
-   below. The table gives pointers only — never rule content. You cannot
-   satisfy a rule you have not read.
-3. Before emitting any code in your reply, output a line:
-   `Rules consulted: <comma-separated relative paths of every rule file you read>`
-   If that line would be empty, you are NOT ready to write code — return to
-   step 2.
-4. After writing the code, re-read the `## Checklist` section of each rule file
-   you used and confirm every item against your code. Report any item you
-   cannot satisfy instead of silently skipping it.
-
-Hard rules:
-- Do not work from memory, from the Routing Table labels, or from a single
-  nearby example. Nearby code may itself violate these rules.
-- If you are about to create or edit a component/page/hook/type without the
-  governing rule file in context, STOP and read it first.
-- This applies to EVERY agent: orchestrators, sub-agents, and you. A sub-agent
-  that writes code must perform steps 1–4 itself; it may not assume the
-  orchestrator did.
 
 ## Glossary
 
@@ -145,78 +145,88 @@ rule says. You must open the file.
 | You are touching… | Read (in full) |
 |---|---|
 | A page (route adapter) | `rules/architecture/roles.md` |
-| A feature component | `rules/architecture/roles.md`, `rules/design-system/components.md` |
-| A design-system primitive or app component | `rules/design-system/components.md`, `rules/design-system/styling.md`, `rules/design-system/tokens.md` |
-| Styling / Tailwind / `ds-` classes / layout arrangement | `rules/design-system/styling.md`, `rules/design-system/tokens.md` |
-| Raw HTML / markup inside a feature, page, or layout | `rules/design-system/components.md` |
-| A hook | `rules/architecture/roles.md` |
-| Backend-derived / generated types | `rules/types/generated.md` |
-| Rendering backend text, money, dates, enum labels | `rules/types/formatting.md` |
-| A form | `rules/forms/conventions.md` |
-| Navigation & data loading (partial reloads, deferred props, prefetch, polling, infinite scroll) | `rules/navigation/conventions.md` |
-| Optimistic updates or a non-Inertia request | `rules/interactivity/conventions.md` |
-| Shared / ambient page data, flash, or page title/meta | `rules/shared-data/conventions.md` |
+| A feature component | `rules/architecture/roles.md` |
+| A `ui` primitive (`components/ui`) | `rules/design-system/components.md`, `rules/design-system/styling.md`, `rules/design-system/tokens.md` |
+| An `app` component (`components/app`) | `rules/design-system/components.md` |
 | A layout | `rules/layouts/conventions.md` |
-| Code splitting / lazy loading / asset perf | `rules/performance/conventions.md` |
-| A Storybook story | `rules/stories/conventions.md` |
-| Running the headless story suite / story CI | `rules/stories/operations.md` |
-| Client-side side effects (effects, prop-copy, optimism) | `rules/side-effects/conventions.md` |
-| Client vs server state ownership | `rules/state/conventions.md` |
+| A hook or `lib/` helper | `rules/architecture/roles.md` |
+| Backend-derived / generated types | `rules/types/generated.md` |
+| User-facing copy, formatting, dates, translation | `rules/types/formatting.md` |
+| Design tokens / `--ds-*` | `rules/design-system/tokens.md` |
+| Styling / Tailwind / variants | `rules/design-system/styling.md` |
+| A form | `rules/forms/conventions.md` |
+| Navigation, partial reloads, prefetch, polling, infinite scroll | `rules/navigation/conventions.md` |
+| Optimistic updates, instant visits, non-Inertia requests | `rules/interactivity/conventions.md` |
+| Shared data, page meta, flash | `rules/shared-data/conventions.md` |
+| Performance / code-splitting / lazy loading | `rules/performance/conventions.md` |
 | Loading / empty / error states | `rules/loading-states/conventions.md` |
-| Capability-gated UI / authorization in the UI | `rules/authorization/conventions.md` |
-| Accessibility (semantic HTML, labels, focus) | `rules/accessibility/conventions.md` |
-| Writing a frontend test | `rules/testing/conventions.md` |
-| Naming a file, component, hook, type, or story id | `rules/naming/conventions.md` |
-| Brand copy / brand contract | `rules/brand/conventions.md` |
-| Boost vs this skill (tool boundary) | `rules/architecture/boost-boundary.md` |
-| A human-in-the-loop feedback item | `rules/feedback/conventions.md` |
+| Component state / props-as-state | `rules/state/conventions.md` |
+| Side effects | `rules/side-effects/conventions.md` |
+| Authorization / capability props | `rules/authorization/conventions.md` |
+| Accessibility | `rules/accessibility/conventions.md` |
+| A Storybook story | `rules/stories/conventions.md` |
+| Story CI / the headless story suite | `rules/stories/operations.md` |
+| Tests (story interaction / Pest Browser / Vitest) | `rules/testing/conventions.md` |
+| Laravel Boost for app facts | `rules/architecture/boost-boundary.md` |
+| Naming a file, component, story id, type alias, or data attribute | `rules/naming/conventions.md` |
+| Brand / the brand contract | `rules/brand/conventions.md` |
+| Human-in-the-loop feedback | `rules/feedback/conventions.md` |
 | Pre-handoff verification | `rules/verification/conventions.md` |
-| Self-check before handoff | `rules/audit/conventions.md` |
-| Assembling a handoff | `rules/handoff/conventions.md` |
+| Self-check before handoff (violation catalog) | `rules/audit/conventions.md` |
+| Producing a handoff | `rules/handoff/conventions.md` |
 
-Building-block vocabulary (page, feature, primitive/app component, generated
-type, story, hook, layout, …) is defined in [LANGUAGE.md](LANGUAGE.md). Use
-those terms exactly.
+Frontend vocabulary (page, feature, component, token, generated type, story,
+hook, `data-part`, …) is defined in [LANGUAGE.md](LANGUAGE.md). Use those terms
+exactly.
 
 ## How to apply
 
-1. Read the project's `CONTEXT.md` / `CONTEXT-MAP.md` (if present) and any
-   relevant `docs/adr/` before touching code. Name resources, features, and
-   types from the domain glossary; never an `_Avoid_` alias.
+1. Read the project's `CONTEXT.md` / `CONTEXT-MAP.md` (if present) before
+   touching code. Name resources, features, and types from the domain
+   glossary; never an `_Avoid_` alias.
 2. Follow the STOP gate at the top of this file. It is not optional.
-3. Before building UI, confirm the backend contract exists: generated types
-   (Spatie Data) and routes/actions (Wayfinder). If they're missing, that's a
-   backend task first — do not handwrite the shapes.
-4. When rules conflict, this skill wins over Boost's Inertia/React guidance and
-   `.agents/skills/laravel-best-practices` on frontend shape.
-5. Before handoff, run the verification checklist and assemble handoff evidence.
+3. Confirm the backend contract exists (generated types, Wayfinder
+   routes/actions) before building UI. Missing contract = backend task first.
+4. When rules conflict, this skill wins over Laravel Boost's Inertia/React
+   guidance — that skill is the API reference; these files own code shape.
+5. Use Boost for live Laravel facts (routes, schema, logs, docs) instead of
+   guessing — see `rules/architecture/boost-boundary.md`.
 
-## Enforcement: mechanical where a tool exists, a hard checklist where it doesn't
+## Enforcement: mechanical where a tool exists, a hard checklist where it does not
 
 Mechanically checkable rules MUST be backed by an automated check WHEN the
 consuming project has tooling for it. Where no tool exists, the rule is a
-MANDATORY manual checklist item that is never skipped — the inertia-rules
-skill is intentionally CLI-agnostic (see its "Conventions-only" section).
+MANDATORY manual checklist item that is never skipped — this skill is
+intentionally CLI-agnostic (see `## Conventions-only (no CLI assumed)`).
 
-The executing agent MUST first read the project's `package.json` scripts and
-lint/TS config and bind each rule to a check that ACTUALLY exists. Do not name
-a script, lint rule, or test suite the project does not define.
+Before mapping checks, the agent MUST read the project's `package.json`
+scripts and its lint / TypeScript config, and bind each rule to a check that
+ACTUALLY exists. Do not name a script, lint rule, or test suite the project
+does not define. A valuable check with no tool yields a TODO to add that
+tooling — never a hallucinated command.
 
-Automated (bind to the project's real scripts before claiming done):
+Automated (bind to the project's real scripts; run before claiming done):
 - Generated types are regenerated, never hand-edited — run the
-  laravel-typescript-transformer generate step, then `tsc --noEmit` (or the
+  `laravel-typescript-transformer` generate step, then `tsc --noEmit` (or the
   project's type-check script); the generated-file diff must be intentional.
   See `rules/types/generated.md`.
-- Lint and type-check scripts pass with zero new errors.
-- Storybook build succeeds; reusable UI has a story (`rules/stories/conventions.md`).
-- If an a11y test runner exists, it passes (`rules/accessibility/conventions.md`).
+- The project's lint and type-check scripts pass with zero new errors.
+- The Storybook build succeeds and reusable UI has a story
+  (`rules/stories/conventions.md`); honor the headless-suite gotchas in
+  `rules/stories/operations.md`.
+- If the project has an accessibility test step (e.g. an axe gate in the story
+  suite), it passes (`rules/accessibility/conventions.md`).
+- Route/interaction tests pass (`rules/testing/conventions.md`).
 
 Manual checklist (no command assumed — verify by hand, per rule file):
-- Pages are thin route adapters (`rules/architecture/roles.md`).
-- Styling goes through design-system primitives, not raw Tailwind in features
-  (`rules/design-system/styling.md`).
-- User-facing copy/format comes from backend props (`rules/types/formatting.md`).
-- Verification done per `rules/verification/conventions.md`.
-
-Do not invent tooling. A valuable check with no tool yields a TODO to add that
-tooling — never a hallucinated command.
+- Pages are thin route adapters; resource UI lives in `features/<resource>`
+  (`rules/architecture/roles.md`).
+- Styling flows through design-system primitives and variant props, not raw
+  Tailwind or inline `ds-` in features (`rules/design-system/styling.md`).
+- User-facing copy and locale-sensitive formatting come from backend props,
+  not inline strings (`rules/types/formatting.md`).
+- No `useEffect` data fetching, no `useState` prop-copy
+  (`rules/side-effects/conventions.md`).
+- Pre-handoff verification and evidence assembled
+  (`rules/verification/conventions.md`, `rules/audit/conventions.md`,
+  `rules/handoff/conventions.md`).
