@@ -388,6 +388,11 @@ defend or adjudicate against the existing vision.
   cheapest slice testing an unproven existential bet the strategy names leads,
   ahead of value-÷-effort ranking; a low-ROI enabler of a high-value slice is
   evaluated as a pair, by the value ultimately unlocked.
+- **Commits to ordering; never defers it.** The roadmap decides every slice's
+  position — including enabler-pairs and close calls — and justifies it; it
+  never hands an ordering judgment back to the human via a flag ("promote
+  if…"). Surfacing genuine findings (no why-link, missing capability, vision
+  gap) remains required and is distinct from deferring an ordering decision.
 - **Why-link:** each roadmap item cites a vision goal.
 - **Authored top-down.** The roadmap is authored FROM the vision and the
   capability map — what the product should do next. It is NEVER derived
@@ -560,3 +565,7 @@ scripts/lint-skills.py`).
   de-risking slices first (cheapest test of each unproven existential bet the
   strategy names), then by ROI, within hard dependencies. A roadmap that ranks
   the bet-testing slice below feature slices has the wrong sort key.
+- **Roadmap commits to ordering.** RESOLVED (commit amendment). The roadmap
+  decides every slice's position and justifies it; it never ships an ordering
+  flag ("promote if…") in place of a decision. This generalizes the
+  value-slice and de-risk amendments — roadmap ordering is now complete.
