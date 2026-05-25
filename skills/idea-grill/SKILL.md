@@ -73,7 +73,8 @@ Rules of the grill:
 
 ## The readied-idea stub
 
-When the idea is sharp, write a transient readied-idea stub — NOT a document.
+The readied-idea stub is defined in DESIGN_PRODUCT_PIPELINE.md §5.0. When the
+idea is sharp, write one — NOT a document.
 
 Location: a clearly-transient path — `{declared-scratch-path}` if the project
 declares one, else `docs/.scratch/` — never the durable state tree.
@@ -94,12 +95,10 @@ section:
   a goal the product lacks). Recorded for the human to take to `product-vision`
   — not resolved here.
 
-The stub is scratch input. It is consumed and superseded by `change-scope`,
-which AUTHORS the PRD from it — `change-scope` does not copy it. Once the PRD
-exists, the stub is spent; delete it. The stub must never grow into a PRD: no
+`change-scope` authors the PRD from this stub and does not copy it (§5.0);
+once the PRD exists, delete the stub. It must never grow into a PRD — no
 why-link, no status, no user stories, no scope section. If you are writing
-those, you have stopped grilling and started scoping — that is the wrong
-skill.
+those, you have stopped grilling and started scoping — the wrong skill.
 
 ## Handoff
 
