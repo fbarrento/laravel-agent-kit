@@ -109,6 +109,7 @@ rule says. You must open the file.
 | The pipeline pattern | `rules/patterns/pipeline.md` |
 | The pluggable / strategy pattern | `rules/patterns/pluggable.md` |
 | Class shape / final / strict types | `rules/architecture/classes.md` |
+| Comments / when to comment | `rules/architecture/comments.md` |
 | Where a class should live | `rules/architecture/placement.md`, `rules/architecture/structure.md` |
 | Read vs write separation | `rules/architecture/cqrs.md` |
 | Dependency injection | `rules/architecture/dependency-injection.md` |

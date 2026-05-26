@@ -162,6 +162,7 @@ rule says. You must open the file.
 | Loading / empty / error states | `rules/loading-states/conventions.md` |
 | Component state / props-as-state | `rules/state/conventions.md` |
 | Side effects | `rules/side-effects/conventions.md` |
+| Comments / when to comment | `rules/architecture/comments.md` |
 | Authorization / capability props | `rules/authorization/conventions.md` |
 | Accessibility | `rules/accessibility/conventions.md` |
 | A Storybook story | `rules/stories/conventions.md` |
