@@ -2,7 +2,7 @@
 
 [![skills.sh](https://skills.sh/b/fbarrento/laravel-agent-kit)](https://skills.sh/fbarrento/laravel-agent-kit)
 
-A kit of [agent skills](https://skills.sh) for Laravel and PHP work — my opinionated project conventions, packaged so any coding agent can apply them consistently.
+A set of Laravel and Inertia **convention skills** for AI coding agents — my opinionated project conventions, packaged so any coding agent can apply them consistently.
 
 These skills override generic Laravel guidance with the patterns I actually use day to day: CQRS-shaped actions and queries, Pest with `test()` and `->and()`, named factories for data objects, conventional-commit branches, and so on. They're small, composable, and meant to be forked and adapted.
 
@@ -83,6 +83,10 @@ first.
 - **[new-task](./skills/new-task/SKILL.md)** — Creates a fresh task branch from the latest `origin/main` using conventional-commit branch naming before starting any new task.
 - **[git-conventions](./skills/git-conventions/SKILL.md)** — Canonical naming rules for commits, PR titles, and branches (Conventional Commits): shared type vocabulary, subject grammar, footers, breaking-change marking.
 - **[finish-task](./skills/finish-task/SKILL.md)** — Wraps up a task: discovers and runs the project's quality gates (tests, typecheck, lint, static analysis, format), shows the diff for review, then commits per `git-conventions`.
+
+## Archive
+
+[`archive/product-pipeline/`](./archive/product-pipeline/README.md) holds an earlier exploration of an AI-driven product-development pipeline (vision → strategy → capabilities → roadmap → scope → spec → issues). It is **superseded** by the decision to use [GitHub Spec Kit](https://github.com/github/spec-kit) for spec-driven development, and is retained for reference, not maintained — it is not installed by the kit and not part of CI.
 
 ## Contributing
 
