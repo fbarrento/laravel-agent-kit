@@ -14,11 +14,10 @@ Two distinct vocabularies are in play, and they must not blur:
 - **This file (`LANGUAGE.md`)** names the **frontend architecture** — page,
   feature, primitive, token. It ships with the skill and is the same in
   every project.
-- **The project's `CONTEXT.md`** names the **domain** — Signup, Invoice,
-  Vehicle. It lives in the target repo, is written by `/grill-with-docs`,
-  and differs per project.
+- **The product's own language** names the **domain** — Signup, Invoice,
+  Vehicle — and differs per project.
 
-So you write *"the `vehicles` **feature**"* — `vehicle` from `CONTEXT.md`,
+So you write *"the `vehicles` **feature**"* — `vehicle` is the domain term,
 `feature` from here. Domain naming is governed by
 [rules/naming/conventions.md](rules/naming/conventions.md).
 

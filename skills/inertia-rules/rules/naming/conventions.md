@@ -9,25 +9,20 @@ page-props alias, hook, `data-part`) are defined in
 [../../LANGUAGE.md](../../LANGUAGE.md); the rules below say how to spell
 them.
 
-## Rule: domain names come from `CONTEXT.md`
+## Rule: domain names come from the product's own language
 
 `LANGUAGE.md` names the **frontend architecture** (page, feature,
-generated type); the project's `CONTEXT.md` names the **domain** (Signup,
-Invoice, Vehicle). A resource folder, feature, or type alias is named with
-the **domain** term — `features/vehicles/`, `VehicleListItem` — where
-`vehicle` is the `CONTEXT.md` term (matching the backend route resource).
+generated type); the **domain** half (Signup, Invoice, Vehicle) comes from
+the product's own language. A resource folder, feature, or type alias is
+named with the **domain** term — `features/vehicles/`, `VehicleListItem`.
 
-- If the repo has a `CONTEXT.md` / `CONTEXT-MAP.md`, name every domain
-  concept with **its** term, and never with a term that glossary lists
-  under `_Avoid_`. Keep the frontend resource name aligned with the
-  backend route resource and the `CONTEXT.md` term — all three should read
-  the same.
-- If the concept isn't in the glossary, that's a signal — either you're
-  inventing language the project doesn't use (reconsider) or there's a
-  real gap; surface it and suggest `/grill-with-docs` rather than coining
-  a term silently.
-- No `CONTEXT.md` at all → proceed silently. The glossary is produced by
-  `/grill-with-docs`, not by this skill.
+- Name every domain concept with the term the product and its users actually
+  use. Keep the frontend resource name aligned with the backend route
+  resource — `features/vehicles/` mirrors the `vehicles` route resource — so
+  both read the same.
+- If you are unsure what a concept is called, ask rather than coining a term
+  silently. Inventing language the product does not use is itself a naming
+  bug.
 
 ## Rule: casing by kind
 

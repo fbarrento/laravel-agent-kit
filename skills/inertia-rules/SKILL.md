@@ -62,7 +62,7 @@ states, backend-owned copy, feedback) — is defined once in
 [LANGUAGE.md](LANGUAGE.md). Use
 those terms exactly; rule files carry the grammar and link back to the
 definition. Name the **frontend architecture** from `LANGUAGE.md`; name
-the **domain** from the project's `CONTEXT.md` (see
+the **domain** from the product's own language (see
 [naming](rules/naming/conventions.md)). The backend **Data object** that
 becomes a frontend *generated type* is owned by **laravel-rules**.
 
@@ -182,9 +182,9 @@ exactly.
 
 ## How to apply
 
-1. Read the project's `CONTEXT.md` / `CONTEXT-MAP.md` (if present) before
-   touching code. Name resources, features, and types from the domain
-   glossary; never an `_Avoid_` alias.
+1. Name the **frontend architecture** (resources, features, types) from
+   `LANGUAGE.md` — never an `_Avoid_` alias — and domain terms from the
+   product's own language, kept aligned with the backend route resource.
 2. Follow the STOP gate at the top of this file. It is not optional.
 3. Confirm the backend contract exists (generated types, Wayfinder
    routes/actions) before building UI. Missing contract = backend task first.
