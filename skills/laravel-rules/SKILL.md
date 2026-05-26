@@ -48,8 +48,8 @@ The building-block vocabulary this skill reasons in — Action, Query,
 Service, Model, Data object, Value object, Enum, Exception, Job — is
 defined once in [LANGUAGE.md](LANGUAGE.md). Use those terms exactly; rule
 files carry the grammar and link back to the definition. Name the
-**architecture** from `LANGUAGE.md`; name the **domain** from the
-project's `CONTEXT.md` (see [naming](rules/naming/conventions.md)).
+**architecture** from `LANGUAGE.md`; name the **domain** from the product's
+own language (see [naming](rules/naming/conventions.md)).
 
 ## Placement test (read before adding a rule)
 
@@ -124,9 +124,9 @@ Building-block vocabulary (Action, Query, Model, …) is defined in
 
 ## How to apply
 
-1. Read the project's `CONTEXT.md` / `CONTEXT-MAP.md` (if present) and any
-   relevant `docs/adr/` before touching code. Name domain concepts from the
-   glossary; never an `_Avoid_` alias.
+1. Read any relevant `docs/adr/` before touching code. Name architecture
+   terms from `LANGUAGE.md` — never an `_Avoid_` alias — and domain terms
+   from the product's own language.
 2. Follow the STOP gate at the top of this file. It is not optional.
 3. Run the Placement Test before adding a NEW rule; give it one canonical home.
 4. When rules conflict, this skill wins over `.agents/skills/laravel-best-practices`.

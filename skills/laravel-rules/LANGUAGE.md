@@ -15,11 +15,10 @@ Two distinct vocabularies are in play, and they must not blur:
 
 - **This file (`LANGUAGE.md`)** names the **architecture** — Action, Query,
   Data object. It ships with the skill and is the same in every project.
-- **The project's `CONTEXT.md`** names the **domain** — Signup, Invoice,
-  Vehicle. It lives in the target repo, is written by `/grill-with-docs`,
-  and differs per project.
+- **The product's own language** names the **domain** — Signup, Invoice,
+  Vehicle — and differs per project.
 
-So you write *"the `CreateSignup` **action**"* — `Signup` from `CONTEXT.md`,
+So you write *"the `CreateSignup` **action**"* — `Signup` is the domain term,
 `action` from here. Domain naming is governed by
 [rules/naming/conventions.md](rules/naming/conventions.md).
 
